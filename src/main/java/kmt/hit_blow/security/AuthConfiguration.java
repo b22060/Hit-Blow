@@ -17,12 +17,14 @@ public class AuthConfiguration {
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.formLogin(login -> login
+        .loginPage("/login") // ログインページを明示的に指定（デフォルトのログインページを使用する場合は不要）
+        .defaultSuccessUrl("/index", true) // ログイン成功後に /index にリダイレクト
         .permitAll())
         .logout(logout -> logout
             .logoutUrl("/logout")
             .logoutSuccessUrl("/")) // ログアウト後にトップページにリダイレクト
         .authorizeHttpRequests(authz -> authz
-            .requestMatchers(AntPathRequestMatcher.antMatcher("/hit_blow"))
+            .requestMatchers(AntPathRequestMatcher.antMatcher("/index"))
             .authenticated()
             .requestMatchers(AntPathRequestMatcher.antMatcher("/**"))
             .permitAll())
