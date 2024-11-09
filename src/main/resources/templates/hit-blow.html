@@ -1,1 +1,48 @@
-hit-hit-blowwwwwwwww
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>hit-blow</title>
+</head>
+
+<body>
+  <h1>Hit&Blow</h1>
+  <!--<a href="/sample">練習へ</a>
+  <div th:if="${success}">
+    <p>[[${success}]]</p>
+  </div>-->
+
+  <h3>数字を入力してください(数字は重複しないでください)</h3><!--入力を促す-->
+  <form th:action="@{/play}" method="post">
+    <input type="number" name="line1" />
+    <input type="number" name="line2" />
+    <input type="number" name="line3" />
+    <input type="number" name="line4" />
+    <input type="submit" value="送信"><input type="reset" value="リセット">
+  </form>
+
+  <div th:switch="${Formatcheak}"><!--入力が正しいか-->
+    <div th:case="1"><!--正しければこっち-->
+    <!--<div th:if="${answers}">
+      <li th:each="answer : ${answers}" th:text="${answer}"></li>
+    </div>-->
+    <div th:if="${Hit}">
+      Hit:[[${Hit}]]
+    </div>
+    <div th:if="${Blow}">
+      Blow:[[${Blow}]]
+    </div>
+    <div th:if="${goalflag}">
+      <p>おめでとうございます</p>
+      <li th:each="answer : ${answers}" th:text="${answer}"></li>
+      <a href="/">もどる</a>
+    </div>
+    </div>
+    <div th:case="2"><!--正しくないとこっち-->
+      <p>入力が不正ですもう一度入力してください</p>
+    </div>
+  </div>
+</body>
+
+</html>
