@@ -24,20 +24,20 @@
 
   <div th:switch="${Formatcheak}"><!--入力が正しいか-->
     <div th:case="1"><!--正しければこっち-->
-    <!--<div th:if="${answers}">
+      <!--<div th:if="${answers}">
       <li th:each="answer : ${answers}" th:text="${answer}"></li>
     </div>-->
-    <div th:if="${Hit}">
-      Hit:[[${Hit}]]
-    </div>
-    <div th:if="${Blow}">
-      Blow:[[${Blow}]]
-    </div>
-    <div th:if="${goalflag}">
-      <p>おめでとうございます</p>
-      <li th:each="answer : ${answers}" th:text="${answer}"></li>
-      <a href="/">もどる</a>
-    </div>
+      <div th:if="${Hit}">
+        Hit:[[${Hit}]]
+      </div>
+      <div th:if="${Blow}">
+        Blow:[[${Blow}]]
+      </div>
+      <div th:if="${goalflag}">
+        <p>おめでとうございます</p>
+        <li th:each="answer : ${answers}" th:text="${answer}"></li>
+        <a href="/">もどる</a>
+      </div>
     </div>
     <div th:case="2"><!--正しくないとこっち-->
       <p>入力が不正ですもう一度入力してください</p>
@@ -45,6 +45,7 @@
   </div>
 
   <a href="/history">試合結果</a>
+  <a href="/match">CPU</a>
 </body>
 
 </html>
