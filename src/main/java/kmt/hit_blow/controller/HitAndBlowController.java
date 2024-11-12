@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 //import java.util.ArrayList;
 
-import kmt.hit_blow.model.Hit_Blow;
+import kmt.hit_blow.model.HitAndBlow;
 
 //import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,21 +18,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.ui.ModelMap;
 
 @Controller
-public class Hit_BlowController {
+public class HitAndBlowController {
 
   int flag = 0;
   int[] answer = new int[4];// 4つの場合
 
   @GetMapping("/hit-blow") //hit-blow.htmlに遷移する
   public String hit_blow() {
-    return "hit-blow.html";
+    return "hitandblow.html";
   }
 
   @GetMapping("/sample") //練習で使用したため関係なし
   public String sample(ModelMap model) {
     String a = "成功";
     model.addAttribute("success", a);
-    return "hit-blow.html";
+    return "hitandblow.html";
   }
 
   @GetMapping("/history") // historyに遷移する
@@ -49,7 +49,7 @@ public class Hit_BlowController {
     int[] Hit_Blow; //HitとBlowの値を格納する配列
     int goakflag = 0; //正解かどうかの判定
     int Formatcheak = 1; //入力が正常か確認する変数
-    Hit_Blow cheak = new Hit_Blow(); //Hit_Blowクラスのメソッドを呼び出す
+    HitAndBlow cheak = new HitAndBlow(); //Hit_Blowクラスのメソッドを呼び出す
 
     if (cheak.numFormat(in) != true) { //数値の重複があるかの確認
       Formatcheak = 2;
@@ -82,6 +82,6 @@ public class Hit_BlowController {
     model.addAttribute("goalflag", goakflag);
     model.addAttribute("Formatcheak", Formatcheak);
 
-    return "hit-blow.html";
+    return "hitandblow.html";
   }
 }

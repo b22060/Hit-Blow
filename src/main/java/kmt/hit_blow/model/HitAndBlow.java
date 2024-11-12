@@ -2,10 +2,10 @@ package kmt.hit_blow.model;
 
 import java.util.HashSet;
 
-public class Hit_Blow {
+public class HitAndBlow {
 
   // コンストラクタ
-  public Hit_Blow() {
+  public HitAndBlow() {
   }
 
  public boolean numFormat(int[] input) {// 入力が重複しているか確認する
