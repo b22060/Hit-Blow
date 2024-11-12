@@ -35,6 +35,11 @@ public class Hit_BlowController {
     return "hit-blow.html";
   }
 
+  @GetMapping("/history") // historyに遷移する
+  public String history() {
+    return "history.html";
+  }
+
   @PostMapping("/play")//実際のゲームを行う
   public String play(@RequestParam Integer line1, @RequestParam Integer line2, @RequestParam Integer line3,
       @RequestParam Integer line4, ModelMap model) {
