@@ -6,7 +6,12 @@ import java.util.List;
 //import java.util.ArrayList;
 
 import kmt.hit_blow.model.HitAndBlow;
+import kmt.hit_blow.model.UserMapper;
+import kmt.hit_blow.model.User;
+import kmt.hit_blow.model.MatchMapper;
+import kmt.hit_blow.model.Match;
 
+import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,9 +27,20 @@ public class HitAndBlowController {
 
   int flag = 0;
   int[] answer = new int[4];// 4つの場合
+  @Autowired
+  private UserMapper userMapper;
+  @Autowired
+  private MatchMapper matchMapper;
 
   @GetMapping("/hit-blow") // hit-blow.htmlに遷移する
-  public String hit_blow() {
+  public String hit_blow(ModelMap model) {
+    // 表示に必要なデータをMapperで格納する
+    ArrayList<User> users = userMapper.selectAllByUsers();
+    ArrayList<Match> matches = matchMapper.selectAllBymatches();
+
+    // 表示に必要なデータをmodelに渡す
+    model.addAttribute("users", users);
+    model.addAttribute("matches", matches);
     return "hitandblow.html";
   }
 

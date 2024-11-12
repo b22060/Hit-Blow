@@ -7,45 +7,75 @@
 </head>
 
 <body>
+  <a href="/logout">ログアウト</a>
   <h1>Hit&Blow</h1>
-  <!--<a href="/sample">練習へ</a>
-  <div th:if="${success}">
-    <p>[[${success}]]</p>
-  </div>-->
+  <h3>
+    Hi <nobr sec:authentication="name"></nobr>
+  </h3>
 
-  <h3>数字を入力してください(数字は重複しないでください)</h3><!--入力を促す-->
-  <form th:action="@{/play}" method="post">
+  <div th:if="${users}"> <!-- 対戦相手を選択する -->
+    <h2>対戦相手</h2>
+    <li th:each="user:${users}"><a th:href="@{/match(userid=${user.userid})}"> [[${user.name}]]</a></li>
+    <!-- （例：・User1 のようにuserテーブル内の全てが出力される) -->
+  </div>
+
+  <div th:if="${waitmatchs}"><!-- マッチング待ちのリストがあれば表示される -->
+    <h2>マッチング待ち</h2>
+    <!-- マッチングの処理を記入する -->
+  </div>
+
+  <div th:if="matches"><!-- 確認したい試合結果の履歴を選択する -->
+    <h2>試合結果</h2>
+    <li th:each="match:${matches}">
+      <a th:href="@{/history(matchid=${match.matchid})}">
+        <!-- ↓useridのまま表示されてしまう場合の記述方法 -->
+        id:[[${match.matchid}]] userid1:[[${match.userid1}]] userid2:[[${match.userid2}]]
+        userid1の値:[[${match.usernum1}]] userid2の値:[[${match.usernum2}]] 勝敗:[[${match.judge}]]
+
+      </a>
+    </li>
+  </div>
+
+
+
+  <!--<a href=" /sample">練習へ</a>
+      <div th:if="${success}">
+        <p>[[${success}]]</p>
+      </div>-->
+
+  <!-- <h3>数字を入力してください(数字は重複しないでください)</h3> --> <!--入力を促す-->
+  <!-- <form th:action="@{/play}" method="post">
     <input type="number" name="line1" />
     <input type="number" name="line2" />
     <input type="number" name="line3" />
     <input type="number" name="line4" />
     <input type="submit" value="送信"><input type="reset" value="リセット">
-  </form>
+  </form> -->
 
-  <div th:switch="${Formatcheak}"><!--入力が正しいか-->
-    <div th:case="1"><!--正しければこっち-->
-      <!--<div th:if="${answers}">
+  <!-- <div th:switch="${Formatcheak}"> --><!--入力が正しいか-->
+  <!-- <div th:case="1"> --><!--正しければこっち-->
+  <!--<div th:if="${answers}">
       <li th:each="answer : ${answers}" th:text="${answer}"></li>
     </div>-->
-      <div th:if="${Hit}">
-        Hit:[[${Hit}]]
-      </div>
-      <div th:if="${Blow}">
-        Blow:[[${Blow}]]
-      </div>
-      <div th:if="${goalflag}">
-        <p>おめでとうございます</p>
-        <li th:each="answer : ${answers}" th:text="${answer}"></li>
-        <a href="/">もどる</a>
-      </div>
-    </div>
-    <div th:case="2"><!--正しくないとこっち-->
-      <p>入力が不正ですもう一度入力してください</p>
-    </div>
+  <!-- <div th:if="${Hit}">
+    Hit:[[${Hit}]]
   </div>
+  <div th:if="${Blow}">
+    Blow:[[${Blow}]]
+  </div>
+  <div th:if="${goalflag}">
+    <p>おめでとうございます</p>
+    <li th:each="answer : ${answers}" th:text="${answer}"></li>
+    <a href="/">もどる</a>
+  </div>
+  </div> -->
+  <!-- <div th:case="2"> --><!--正しくないとこっち-->
+  <!-- <p>入力が不正ですもう一度入力してください</p>
+  </div>
+  </div> -->
 
-  <a href="/history">試合結果</a>
-  <a href="/match">CPU</a>
+  <!-- <a href="/history">試合結果</a>
+  <a href="/match">CPU</a> -->
 </body>
 
 </html>
