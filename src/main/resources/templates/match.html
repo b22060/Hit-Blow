@@ -1,1 +1,125 @@
-ほげほげ
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>hit-blow</title>
+  <style>
+    /* 基本スタイル */
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      /*中央揃え*/
+      margin: 1;
+      padding: 1;
+    }
+
+    /* タイトルスタイル */
+    h1 {
+      text-align: left;
+      /*左寄せと定義*/
+      font-size: 36px;
+      /*文字の大きさ定義*/
+      margin-top: 20px;
+      /*間隔を定義 正であれば遠くなり、負であれば近くなる*/
+    }
+
+    /*システムメッセージスタイル*/
+    h2 {
+      text-align: left;
+      font-size: 20px;
+      margin-top: -10px;
+    }
+
+
+    /* システムメッセージと入力エリアのスタイル */
+    .messageandformarea {
+      display: flex;
+      /* 横並びで表示する設定 */
+      justify-content: space-around;
+
+      margin-top: 40px;
+    }
+
+    .messagearea {
+      text-align: center;
+      font-size: 20px;
+      margin-top: -10px;
+    }
+
+
+
+    /* ユーザー表示エリアのスタイル */
+    .userarea {
+      display: flex;
+      /* 横並びで表示する設定 */
+      justify-content: space-around;
+
+      margin-top: 40px;
+    }
+
+    .user {
+      text-align: center;
+      font-size: 24px;
+    }
+
+    .username {
+      /*ユーザ名を表示する際のフォント等の設定*/
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    .usersecret {
+      /*秘密の数字を表示する際のフォント等の設定*/
+      font-size: 48px;
+      letter-spacing: 20px;
+    }
+  </style>
+
+
+
+</head>
+
+<body>
+
+  <div class="messageandformarea">
+    <h1>Hit&Blow</h1>
+
+    <div class="messagearea"> <!-- 入力フォームエリア -->
+
+      <h3>数字を入力してください(数字は重複しないでください)</h3> <!--入力を促す-->
+      <form th:action="@{/play}" method="post">
+        <input type="number" min="0" max="9" name="line1" />
+        <input type="number" min="0" max="9" name="line2" />
+        <input type="number" min="0" max="9" name="line3" />
+        <input type="number" min="0" max="9" name="line4" />
+        <input type="submit" value="送信"><input type="reset" value="リセット">
+      </form>
+    </div>
+
+  </div>
+
+  <h2>
+    <nobr sec:authentication="name"></nobr>の秘密の数字入力を待っています。
+  </h2>
+
+
+
+  <!-- ユーザーエリア -->
+  <div class="userarea">
+    <div class="user">
+      <div class="username">
+        <nobr sec:authentication="name"></nobr>
+      </div>
+      <div class="usersecret">？ ？ ？ ？</div><!-- ここの？が秘密の数字部分 -->
+
+    </div>
+    <div class="user">
+      <div class="username">[[${name}]]</div>
+      <div class="usersecret">？ ？ ？ ？</div><!-- ここの？が秘密の数字部分 -->
+    </div>
+  </div>
+
+</body>
+
+</html>

@@ -56,8 +56,10 @@ public class HitAndBlowController {
     return "history.html";
   }
 
-  @GetMapping("/match") // historyに遷移する
-  public String match() {
+  @GetMapping("/match") // matchに遷移する
+  public String match(@RequestParam Integer userid, ModelMap model) {
+    String name = userMapper.selectNameByUsers(userid);// 対戦相手の名前を取得する変数
+    model.addAttribute("name", name);// Thymeleafで値をHTMLに渡す
     return "match.html";
   }
 
