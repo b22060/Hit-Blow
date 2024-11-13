@@ -36,10 +36,10 @@ public class AuthConfiguration {
 
   @Bean
   public InMemoryUserDetailsManager userDetailsService() {
-    UserDetails user1 = User.withUsername("user1")
-        .password("{bcrypt}$2y$05$PDAWN.TQDlz4h9irY60K8e/GYCwyOzhDAJZJEZF5e01vZkOEwpdzK").roles("USER").build();
-    UserDetails user2 = User.withUsername("user2")
-        .password("{bcrypt}$2y$05$HKk3Q50KDpi3DdK8SS02u.3HBZm8wlQZCWq/X2yRc2i.SgGcKoYC.").roles("USER").build();
+    UserDetails user1 = User.withUsername("User1")
+        .password("{bcrypt}$2y$05$gTjyU0Cy8WLahOVTsRYPx.zzsVpbOcQfTLwiuQO6Su9FsNYzlXKn2").roles("USER").build();
+    UserDetails user2 = User.withUsername("User2")
+        .password("{bcrypt}$2y$05$gTjyU0Cy8WLahOVTsRYPx.zzsVpbOcQfTLwiuQO6Su9FsNYzlXKn2").roles("USER").build();
 
     return new InMemoryUserDetailsManager(user1, user2);
   }
