@@ -9,4 +9,7 @@ import org.apache.ibatis.annotations.Select;
 public interface MatchMapper {
   @Select("SELECT * from matches")
   ArrayList<Match> selectAllBymatches();
+
+  @Select("SELECT * FROM matches WHERE matchid = #{matchid}")
+  Match selectMatchById(int matchid);
 }

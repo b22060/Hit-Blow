@@ -10,6 +10,8 @@ import kmt.hit_blow.model.UserMapper;
 import kmt.hit_blow.model.User;
 import kmt.hit_blow.model.MatchMapper;
 import kmt.hit_blow.model.Match;
+import kmt.hit_blow.model.MatchInfo;
+import kmt.hit_blow.model.MatchInfoMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,8 @@ public class HitAndBlowController {
   private UserMapper userMapper;
   @Autowired
   private MatchMapper matchMapper;
+  @Autowired
+  private MatchInfoMapper matchInfoMapper;
 
   @GetMapping("/hit-blow") // hit-blow.htmlに遷移する
   public String hit_blow(ModelMap model) {
@@ -52,7 +56,12 @@ public class HitAndBlowController {
   }
 
   @GetMapping("/history") // historyに遷移する
-  public String history() {
+  public String history(@RequestParam("matchid") int matchid, ModelMap model) {
+    Match match = matchMapper.selectMatchById(matchid);
+    ArrayList<MatchInfo> matchInfo = matchInfoMapper.selectByMatchId(matchid);
+
+    model.addAttribute("match", match);
+    model.addAttribute("matchInfo", matchInfo);
     return "history.html";
   }
 

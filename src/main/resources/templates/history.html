@@ -1,1 +1,76 @@
-aaaaaaaa
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <title>History</title>
+  <style>
+    a {
+      text-align: left;
+    }
+
+    .matches-details {
+      text-align: left;
+    }
+
+    .area {
+      display: flex;
+      /* 横並びで表示する設定 */
+      justify-content: space-around;
+
+      margin-top: 40px;
+    }
+
+    .list {
+      text-align: center;
+      font-size: 24px;
+    }
+  </style>
+</head>
+
+<body>
+  <a href="/hit-blow">戻る</a>
+
+  <!-- idを取得し、結果を表示 -->
+  <div th:if="matches" class="matches-details">
+    id:[[${match.matchid}]] userid1:[[${match.userid1}]] userid2:[[${match.userid2}]]
+    userid1の値:[[${match.usernum1}]] userid2の値:[[${match.usernum2}]]　の詳細
+  </div>
+
+  <div class="area">
+    <div class="list">
+      <p>User1</p>
+      <div th:if="matches" class="user1-score">
+        [[${match.usernum1}]]
+      </div>
+      <ul>
+        <li th:each="matchInfo : ${matchInfo}" th:if="${matchInfo.userid == 1}" th:classappend="'user1'">
+          <p>
+            User1の推理: [[${matchInfo.guess}]],
+            Hit: [[${matchInfo.hit}]],
+            Blow: [[${matchInfo.blow}]]
+          </p>
+        </li>
+      </ul>
+    </div>
+
+    <div class="list">
+      <p>User2</p>
+      <div th:if="matches" class="user2-score">
+        [[${match.usernum2}]]
+      </div>
+      <ul>
+        <li th:each="matchInfo : ${matchInfo}" th:if="${matchInfo.userid == 2}" th:classappend="'user1'">
+          <p>
+            User2の推理: [[${matchInfo.guess}]],
+            Hit: [[${matchInfo.hit}]],
+            Blow: [[${matchInfo.blow}]]
+          </p>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+</body>
+
+</html>
