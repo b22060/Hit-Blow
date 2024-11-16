@@ -14,6 +14,6 @@ INSERT INTO matchinfo (matchid,userid,guess,hit,blow) VALUES(1,1,'2345',4,0);
 
 -- 試合情報を格納(matchid2の情報)
 INSERT INTO matchinfo (matchid,userid,guess,hit,blow) VALUES(2,1,'1234',0,3);
-INSERT INTO matchinfo (matchid,userid,guess,hit,blow) VALUES(2,2,'9876',1,2);
+INSERT INTO matchinfo (matchid,userid,guess,hit,blow) VALUES(2,2,'9876',1,1);
 INSERT INTO matchinfo (matchid,userid,guess,hit,blow) VALUES(2,1,'9876',0,0);
-INSERT INTO matchinfo (matchid,userid,guess,hit,blow) VALUES(2,2,'5678',4,0);
+INSERT INTO matchinfo (matchid,userid,guess,hit,blow) VALUES(2,2,'5673',4,0);
