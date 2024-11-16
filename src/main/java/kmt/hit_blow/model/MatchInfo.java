@@ -8,6 +8,14 @@ public class MatchInfo {
   int hit;
   int blow;
 
+  public MatchInfo(int matchid, int userid, String guess, int hit, int blow) {//コンストラクタ
+    this.matchid = matchid;
+    this.userid = userid;
+    this.guess = guess;
+    this.hit = hit;
+    this.blow = blow;
+  }
+
   public int getMatchinfoid() {
     return matchinfoid;
   }

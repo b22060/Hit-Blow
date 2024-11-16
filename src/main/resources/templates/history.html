@@ -44,7 +44,8 @@
         [[${match.usernum1}]]
       </div>
       <ul>
-        <li th:each="matchInfo : ${matchInfo}" th:if="${matchInfo.userid == 1}" th:classappend="'user1'">
+        <li th:each="matchInfo : ${matchInfo}" th:if="${matchInfo.userid == 1}"
+        th:classappend="'user1'">
           <p>
             User1の推理: [[${matchInfo.guess}]],
             Hit: [[${matchInfo.hit}]],

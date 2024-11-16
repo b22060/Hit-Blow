@@ -2,9 +2,19 @@ package kmt.hit_blow.model;
 
 public class Match {
   int matchid;
-  int userid1;
-  int userid2;
-  String usernum1;
+  int userid1; //自分のid
+  int userid2; //相手のid
+  String usernum1; //自分の答え
+  String usernum2; //相手の答え
+  String judge; //勝敗
+
+  public Match(int userid1, int userid2, String myanswer, String rivalanswer, String judge) {//コンストラクタ
+    this.userid1 = userid1;
+    this.userid2 = userid2;
+    this.usernum1 = myanswer;
+    this.usernum2 = rivalanswer;
+    this.judge = judge;
+  }
 
   public int getMatchid() {
     return matchid;
@@ -54,7 +64,6 @@ public class Match {
     this.judge = judge;
   }
 
-  String usernum2;
-  String judge;
+
 
 }
