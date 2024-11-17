@@ -18,7 +18,7 @@ public class HitAndBlow {
     return set.size() == 4;
   }
 
-  public int[] chackHit(int[] input, int[] answer) {// HitとBlowの数を数える
+  public int[] chackHit_Blow(int[] input, int[] answer) {// HitとBlowの数を数える
     int Hit = 0;
     int Blow = 0;
     for (int i = 0; i < input.length; i++) {

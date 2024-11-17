@@ -74,10 +74,20 @@
       font-size: 48px;
       letter-spacing: 20px;
     }
+
+    .area {
+      display: flex;
+      /* 横並びで表示する設定 */
+      justify-content: space-around;
+
+      margin-top: 40px;
+    }
+
+    .list {
+      text-align: center;
+      font-size: 24px;
+    }
   </style>
-
-
-
 </head>
 
 <body>
@@ -103,21 +113,45 @@
     <nobr sec:authentication="name"></nobr>の秘密の数字入力を待っています。
   </h2>
 
-
-
-  <!-- ユーザーエリア -->
+  <!--ユーザーエリア-->
   <div class="userarea">
     <div class="user">
       <div class="username">
         <nobr sec:authentication="name"></nobr>
       </div>
-      <div class="usersecret">？ ？ ？ ？</div><!-- ここの？が秘密の数字部分 -->
-
+      <div class="usersecret">？ ？ ？ ？</div> <!--ここの？が秘密の数字部分-->
+      <ul>
+        <li th:each="matchInfo : ${matchInfo}" th:if="${matchInfo.userid == loginid}">
+          <p>
+            User1の推理: [[${matchInfo.guess}]],
+            Hit: [[${matchInfo.hit}]],
+            Blow: [[${matchInfo.blow}]]
+          </p>
+        </li>
+      </ul>
     </div>
     <div class="user">
       <div class="username">[[${name}]]</div>
-      <div class="usersecret">？ ？ ？ ？</div><!-- ここの？が秘密の数字部分 -->
+      <div class="usersecret">？ ？ ？ ？</div> <!--ここの？が秘密の数字部分-->
+      <ul>
+        <li th:each="matchInfo : ${matchInfo}" th:if="${matchInfo.userid == battleid}">
+          <p>
+            [[${name}]]の推理: [[${matchInfo.guess}]],
+            Hit: [[${matchInfo.hit}]],
+            Blow: [[${matchInfo.blow}]]
+          </p>
+        </li>
+      </ul>
     </div>
+  </div>
+
+  <div>
+    <li th:each="answer : ${myanswer}" th:text="${answer}"></li>
+  </div>
+
+  <div th:if="${goalflag}">
+    <p>おめでとうございます</p>
+    <a href="/">もどる</a>
   </div>
 
 </body>
