@@ -158,37 +158,39 @@ public class HitAndBlowController {
     MatchInfo mymatchInfo = new MatchInfo(matchid, loginUser_id, myguess, myHit, myBlow); // 情報を格納する
     matchInfoMapper.insertMatchInfo(mymatchInfo);
 
-    // ここでcpuの手を決める
-    List<Integer> numbers = new ArrayList<>(); // ランダムな値を生成
-    int[] rivalguess = new int[4];
-    for (int i = 0; i <= 9; i++) {
-      numbers.add(i);
-    }
-    Collections.shuffle(numbers);
-    for (int i = 0; i < 4; i++) {
-      rivalguess[i] = numbers.get(i);
-    }
-
-    Hit_Blow = cheak.chackHit_Blow(rivalguess, this.rivalanswer);
-    rivalHit = Hit_Blow[0];
-    rivalBlow = Hit_Blow[1];
-    StringBuilder sa = new StringBuilder();
-    for (int num : rivalguess) {
-      sa.append(num);
-    }
-    String rivalguesshand = sa.toString(); // ここで相手の予想を4桁の文字列にする
-    MatchInfo rivalmatchInfo = new MatchInfo(matchid, battleid, rivalguesshand, rivalHit, rivalBlow); // 情報を格納する
-    matchInfoMapper.insertMatchInfo(rivalmatchInfo);
-
     if (myHit == 4) { // Hitが4だと正解にする
       goakflag = 1;
       this.flag = 0;
-      Match match = new Match(loginUser_id, battleid, this.Myanswers, this.Rivalanswers,"勝利");//勝敗を更新
+      Match match = new Match(matchid, loginUser_id, battleid, this.Myanswers, this.Rivalanswers, "勝利");// 勝敗を更新
       matchMapper.updateById(match);
-    } else if (rivalHit == 4) {
+    } else {
+      // ここでcpuの手を決める
+      List<Integer> numbers = new ArrayList<>(); // ランダムな値を生成
+      int[] rivalguess = new int[4];
+      for (int i = 0; i <= 9; i++) {
+        numbers.add(i);
+      }
+      Collections.shuffle(numbers);
+      for (int i = 0; i < 4; i++) {
+        rivalguess[i] = numbers.get(i);
+      }
+
+      Hit_Blow = cheak.chackHit_Blow(rivalguess, this.rivalanswer);
+      rivalHit = Hit_Blow[0];
+      rivalBlow = Hit_Blow[1];
+      StringBuilder sa = new StringBuilder();
+      for (int num : rivalguess) {
+        sa.append(num);
+      }
+      String rivalguesshand = sa.toString(); // ここで相手の予想を4桁の文字列にする
+      MatchInfo rivalmatchInfo = new MatchInfo(matchid, battleid, rivalguesshand, rivalHit, rivalBlow); // 情報を格納する
+      matchInfoMapper.insertMatchInfo(rivalmatchInfo);
+    }
+
+    if (rivalHit == 4) {
       goakflag = 1;
       this.flag = 0;
-      Match match = new Match(loginUser_id, battleid, this.Myanswers, this.Rivalanswers,"負け");//勝敗を更新
+      Match match = new Match(matchid, loginUser_id, battleid, this.Myanswers, this.Rivalanswers, "負け");// 勝敗を更新
       matchMapper.updateById(match);
     }
 
