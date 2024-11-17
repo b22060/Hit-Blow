@@ -13,7 +13,7 @@ public interface UserMapper {
   @Select("SELECT name from users where userid =#{userid}")
   String selectNameByUsers(int userid);
 
-  @Select("SELECT id from users where userName = #{userName}") // 特定の名前で特定のidを表示
+  @Select("SELECT userid from users where name = #{name}") // 特定の名前で特定のidを表示
   int selectIdByName(String userName);
 
 }

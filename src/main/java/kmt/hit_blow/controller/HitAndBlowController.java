@@ -31,6 +31,8 @@ public class HitAndBlowController {
   int flag = 0;
   int[] playeranswer = new int[4];// 自分の回答
   int[] rivalanswer = new int[4];// 相手の回答
+  String Myanswers;
+  String Rivalanswers;
   int battleid = 0; // 対戦相手のidを格納する
   @Autowired
   private UserMapper userMapper;
@@ -59,12 +61,16 @@ public class HitAndBlowController {
   }
 
   @GetMapping("/history") // historyに遷移する
-  public String history(@RequestParam("matchid") int matchid, ModelMap model) {
+  public String history(@RequestParam("matchid") int matchid, ModelMap model, Principal prin) {
     Match match = matchMapper.selectMatchById(matchid);
     ArrayList<MatchInfo> matchInfo = matchInfoMapper.selectByMatchId(matchid);
+    String loginUser = prin.getName(); // ログイン名を取得
+    int loginUser_id = userMapper.selectIdByName(loginUser);// 自分のID取得
 
     model.addAttribute("match", match);
     model.addAttribute("matchInfo", matchInfo);
+    model.addAttribute("battleid", battleid);
+    model.addAttribute("loginid", loginUser_id);
     return "history.html";
   }
 
@@ -119,13 +125,14 @@ public class HitAndBlowController {
       for (int i = 0; i < 4; i++) {
         this.rivalanswer[i] = numbers.get(i);
       }
-
+      StringBuilder sa = new StringBuilder();
       for (int num : rivalanswer) {
-        sb.append(num);
+        sa.append(num);
       }
 
-      String rivalanswer = sb.toString(); // ここで相手の答えを4桁の文字列にする
-
+      String rivalanswer = sa.toString(); // ここで相手の答えを4桁の文字列にする
+      this.Myanswers = myanswer;
+      this.Rivalanswers = rivalanswer;
       Match match = new Match(loginUser_id, battleid, myanswer, rivalanswer, "");// 自分のid,相手のid,自分の答え,相手の答えを格納
       matchMapper.insertMatch(match);// 1試合追加(勝敗は不明)
       this.flag = 1; // 生成は1回のみだから
@@ -165,26 +172,33 @@ public class HitAndBlowController {
     Hit_Blow = cheak.chackHit_Blow(rivalguess, this.rivalanswer);
     rivalHit = Hit_Blow[0];
     rivalBlow = Hit_Blow[1];
-
+    StringBuilder sa = new StringBuilder();
     for (int num : rivalguess) {
-      sb.append(num);
+      sa.append(num);
     }
-    String rivalguesshand = sb.toString(); // ここで相手の予想を4桁の文字列にする
+    String rivalguesshand = sa.toString(); // ここで相手の予想を4桁の文字列にする
     MatchInfo rivalmatchInfo = new MatchInfo(matchid, battleid, rivalguesshand, rivalHit, rivalBlow); // 情報を格納する
     matchInfoMapper.insertMatchInfo(rivalmatchInfo);
 
     if (myHit == 4) { // Hitが4だと正解にする
       goakflag = 1;
       this.flag = 0;
+      Match match = new Match(loginUser_id, battleid, this.Myanswers, this.Rivalanswers,"勝利");//勝敗を更新
+      matchMapper.updateById(match);
     } else if (rivalHit == 4) {
       goakflag = 1;
       this.flag = 0;
+      Match match = new Match(loginUser_id, battleid, this.Myanswers, this.Rivalanswers,"負け");//勝敗を更新
+      matchMapper.updateById(match);
     }
 
-    // 明日ここに全部のmatchinfoを取ってくるselect文を書くそれをHTMLに渡す。
-    model.addAttribute("Hit", myHit); // Thymeleafで値をHTMLに渡す
-    model.addAttribute("Blow", myBlow);
-    model.addAttribute("answers", playeranswer);
+    ArrayList<MatchInfo> matchInfo = matchInfoMapper.selectByMatchId(matchid);
+
+    model.addAttribute("matchInfo", matchInfo);
+    model.addAttribute("myanswer", playeranswer);
+    model.addAttribute("loginid", loginUser_id);
+    model.addAttribute("battleid", battleid);
+    model.addAttribute("rivalanswer", rivalanswer);
     model.addAttribute("goalflag", goakflag);
     model.addAttribute("Formatcheak", Formatcheak);
 

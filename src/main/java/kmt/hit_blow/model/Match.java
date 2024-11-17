@@ -16,6 +16,15 @@ public class Match {
     this.judge = judge;
   }
 
+  public Match(int matchid, int userid1, int userid2, String myanswer, String rivalanswer, String judge) {// コンストラクタ
+    this.matchid = matchid;
+    this.userid1 = userid1;
+    this.userid2 = userid2;
+    this.usernum1 = myanswer;
+    this.usernum2 = rivalanswer;
+    this.judge = judge;
+  }
+
   public int getMatchid() {
     return matchid;
   }

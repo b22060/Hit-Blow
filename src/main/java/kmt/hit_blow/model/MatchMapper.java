@@ -4,8 +4,9 @@ import java.util.ArrayList;
 
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Options;
+//import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 @Mapper
 public interface MatchMapper {
@@ -20,6 +21,8 @@ public interface MatchMapper {
   int selectMatchIdByuserId(int userid1,int userid2);
 
   @Insert("INSERT INTO matches (userid1,userid2,usernum1,usernum2,judge) VALUES (#{userid1},#{userid2},#{usernum1},#{usernum2},#{judge});")
-  @Options(useGeneratedKeys = true, keyColumn = "id", keyProperty = "id")
-  void insertMatch(Match match);
+  void insertMatch(Match match);//optionsは消したおそらくmatchidとかにしたら行けるはず
+
+  @Update("UPDATE matches SET judge=#{judge} WHERE matchid = #{matchid}")
+  void updateById(Match match);
 }
