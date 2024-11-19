@@ -1,5 +1,6 @@
 package kmt.hit_blow.controller;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,8 +19,8 @@ import kmt.hit_blow.model.MatchInfoMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
+//import org.springframework.security.core.annotation.AuthenticationPrincipal;
+//import org.springframework.security.core.userdetails.UserDetails;
 //import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -51,14 +52,24 @@ public class HitAndBlowController {
   @Autowired
   private MatchInfoMapper matchInfoMapper;
 
-  @GetMapping("/match/step1")
-  public SseEmitter step1(@AuthenticationPrincipal UserDetails user) {
+  @GetMapping("step1") // テスト用
+  public SseEmitter pushCount() {
     // infoレベルでログを出力する
-    String role = "USER";
-    logger.info("pushFruit");
-    final SseEmitter sseEmitter = new SseEmitter();
-    this.HaB.count(sseEmitter,role);
-    return sseEmitter;
+    logger.info("pushCount");
+
+    // finalは初期化したあとに再代入が行われない変数につける（意図しない再代入を防ぐ）
+    final SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);//
+    // 引数にLongの最大値をTimeoutとして指定する
+
+    try {
+      String role = "USER";
+      this.HaB.count(emitter, role);
+    } catch (IOException e) {
+      // 例外の名前とメッセージだけ表示する
+      logger.warn("Exception:" + e.getClass().getName() + ":" + e.getMessage());
+      emitter.complete();
+    }
+    return emitter;
   }
 
   @GetMapping("/hit-blow") // hit-blow.htmlに遷移する
