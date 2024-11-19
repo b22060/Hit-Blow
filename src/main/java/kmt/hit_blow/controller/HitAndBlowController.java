@@ -88,7 +88,22 @@ public class HitAndBlowController {
   public String sample(ModelMap model) {
     String a = "成功";
     model.addAttribute("success", a);
-    return "hitandblow.html";
+    HaB.samplechange();
+    return "sample.html";
+  }
+
+  @GetMapping("/sampleSSE") // SSE通信テスト用
+  public SseEmitter sampleSSE() {
+    final SseEmitter sseEmitter = new SseEmitter();
+    try {
+
+      this.HaB.sample(sseEmitter);
+
+    } catch (Exception e) {
+      System.out.println("エラー発生！！");
+      System.out.println(e);
+    }
+    return sseEmitter;
   }
 
   @GetMapping("/history") // historyに遷移する
