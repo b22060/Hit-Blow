@@ -8,7 +8,7 @@ public class HitAndBlow {
   public HitAndBlow() {
   }
 
- public boolean numFormat(int[] input) {// 入力が重複しているか確認する
+  public boolean numFormat(int[] input) {// 入力が重複しているか確認する
     // charc型
     // right than string
     HashSet<String> set = new HashSet<String>();
@@ -24,14 +24,14 @@ public class HitAndBlow {
     for (int i = 0; i < input.length; i++) {
       if (input[i] == answer[i]) {
         Hit++;
-      }else if(contains(answer, input[i])){
+      } else if (contains(answer, input[i])) {
         Blow++;
       }
     }
-    return new int[]{Hit,Blow};
+    return new int[] { Hit, Blow };
   }
 
-  public static boolean contains(int[] answers, int guess) { //Blowの判定を行う
+  public static boolean contains(int[] answers, int guess) { // Blowの判定を行う
     for (int answer : answers) {
       if (answer == guess)
         return true;

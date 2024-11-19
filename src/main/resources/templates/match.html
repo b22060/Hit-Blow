@@ -110,7 +110,7 @@
   </div>
 
   <h2>
-    <nobr sec:authentication="name"></nobr>の秘密の数字入力を待っています。
+    [[${message}]]
   </h2>
 
   <!--ユーザーエリア-->
@@ -119,11 +119,11 @@
       <div class="username">
         <nobr sec:authentication="name"></nobr>
       </div>
-      <div class="usersecret">？ ？ ？ ？</div> <!--ここの？が秘密の数字部分-->
+      <div class="usersecret">[[${mysecret}]]</div> <!--ここが????で秘密の数字部分-->
       <ul>
         <li th:each="matchInfo : ${matchInfo}" th:if="${matchInfo.userid == loginid}">
           <p>
-            User1の推理: [[${matchInfo.guess}]],
+            <nobr sec:authentication="name"></nobr>の推理: [[${matchInfo.guess}]],
             Hit: [[${matchInfo.hit}]],
             Blow: [[${matchInfo.blow}]]
           </p>
@@ -132,7 +132,7 @@
     </div>
     <div class="user">
       <div class="username">[[${name}]]</div>
-      <div class="usersecret">？ ？ ？ ？</div> <!--ここの？が秘密の数字部分-->
+      <div class="usersecret">[[${rivalsecret}]]</div> <!--ここが????で秘密の数字部分-->
       <ul>
         <li th:each="matchInfo : ${matchInfo}" th:if="${matchInfo.userid == battleid}">
           <p>
@@ -146,7 +146,7 @@
   </div>
 
   <div>
-    <li th:each="answer : ${myanswer}" th:text="${answer}"></li>
+    <li th:each="answer : ${debuganswer}" th:text="${answer}"></li>
   </div>
 
   <div th:if="${goalflag}">
