@@ -8,25 +8,35 @@ import java.util.List;
 
 import kmt.hit_blow.model.HitAndBlow;
 import kmt.hit_blow.model.UserMapper;
+import kmt.hit_blow.service.AsyncHitAndBlow;
 import kmt.hit_blow.model.User;
 import kmt.hit_blow.model.MatchMapper;
 import kmt.hit_blow.model.Match;
 import kmt.hit_blow.model.MatchInfo;
 import kmt.hit_blow.model.MatchInfoMapper;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 //import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 //import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 //import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 
 @Controller
 public class HitAndBlowController {
+
+  private final Logger logger = LoggerFactory.getLogger(HitAndBlowController.class);
+
+  @Autowired
+  private AsyncHitAndBlow HaB;
 
   int flag = 0;
   int[] playeranswer = new int[4];// 自分の回答
@@ -40,6 +50,16 @@ public class HitAndBlowController {
   private MatchMapper matchMapper;
   @Autowired
   private MatchInfoMapper matchInfoMapper;
+
+  @GetMapping("/match/step1")
+  public SseEmitter step1(@AuthenticationPrincipal UserDetails user) {
+    // infoレベルでログを出力する
+    String role = "USER";
+    logger.info("pushFruit");
+    final SseEmitter sseEmitter = new SseEmitter();
+    this.HaB.count(sseEmitter,role);
+    return sseEmitter;
+  }
 
   @GetMapping("/hit-blow") // hit-blow.htmlに遷移する
   public String hit_blow(ModelMap model) {
