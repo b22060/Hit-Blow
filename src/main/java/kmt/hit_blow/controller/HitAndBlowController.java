@@ -42,8 +42,8 @@ public class HitAndBlowController {
   int flag = 0;
   int[] playeranswer = new int[4];// 自分の回答
   int[] rivalanswer = new int[4];// 相手の回答
-  String Myanswers;
-  String Rivalanswers;
+  String Myanswers; // 自分の回答（文字列）
+  String Rivalanswers;// 相手の回答（文字列）
   int battleid = 0; // 対戦相手のidを格納する
   @Autowired
   private UserMapper userMapper;
@@ -136,8 +136,9 @@ public class HitAndBlowController {
   @PostMapping("/play") // ここで対戦の処理をする
   public String play(@RequestParam Integer line1, @RequestParam Integer line2, @RequestParam Integer line3,
       @RequestParam Integer line4, ModelMap model, Principal prin) {
+
     int[] in = { line1, line2, line3, line4 }; // 入力を配列に格納する
-    String mysecret = Myanswers;// 自分の？？？？と表示されている秘密の数字を格納する変数
+    String mysecret = this.Myanswers;// 自分の？？？？と表示されている秘密の数字を格納する変数
     int myHit = 0; // 自分のHitを数える変数
     int myBlow = 0; // 自分のBlowを数える変数
     String rivalsecret = "????";// 相手の？？？？と表示されている秘密の数字を格納する変数
@@ -146,7 +147,7 @@ public class HitAndBlowController {
     String name = userMapper.selectNameByUsers(battleid);// 対戦相手の名前を取得する変数
     int[] Hit_Blow; // HitとBlowの値を格納する配列
     int goakflag = 0; // 正解かどうかの判定
-    int Formatcheak = 1; // 入力が正常か確認する変数
+    // int Formatcheak = 1; // 入力が正常か確認する変数
 
     HitAndBlow cheak = new HitAndBlow(); // Hit_Blowクラスのメソッドを呼び出す
 
@@ -154,8 +155,7 @@ public class HitAndBlowController {
     String message = loginUser + "の数字入力を待っています。";// システムメッセージを格納する変数
     int loginUser_id = userMapper.selectIdByName(loginUser);// 自分のID取得
 
-    if (cheak.numFormat(in) != true) { // 数値の重複があるかの確認
-      Formatcheak = 2;
+    if (cheak.numFormat(in) != true) { // 数値の重複があった場合
       // 重複しているため例外処理を行う。
       message = loginUser + "の数字入力を待っています。" + "エラー：数値を重複させないでください。";
       model.addAttribute("message", message);// Thymeleafで値をHTMLに渡す
@@ -169,54 +169,17 @@ public class HitAndBlowController {
     }
 
     if (this.flag == 0) { // 初回はここに入る
-      // List<Integer> numbers = new ArrayList<>(); // ランダムな値を生成
 
-      // for (int i = 0; i <= 9; i++) {
-      // numbers.add(i);
-      // }
-
-      // Collections.shuffle(numbers);
-
-      // for (int i = 0; i < 4; i++) {
-      // this.playeranswer[i] = numbers.get(i);
-      // }
-
-      // 自分の答えを代入する
-      for (int i = 0; i < 4; i++) {
-        this.playeranswer[i] = in[i];
-      }
-      StringBuilder sb = new StringBuilder();
-
-      for (int num : playeranswer) {
-        sb.append(num);
-      }
-
-      String myanswer = sb.toString(); // ここで自分の答えを4桁の文字列にする
+      this.Myanswers = cheak.translateString(in);// ここで自分の答えを4桁の文字列にする
+      mysecret = this.Myanswers;// 自分の秘密の数字が確定したため更新
 
       // ここからは相手の答えを生成する
-      List<Integer> numbers = new ArrayList<>(); // ランダムな値を生成
+      this.rivalanswer = cheak.generateNumber();// 相手の答えを生成する
+      this.Rivalanswers = cheak.translateString(this.rivalanswer); // ここで相手の答えを4桁の文字列にする
 
-      for (int i = 0; i <= 9; i++) {
-        numbers.add(i);
-      }
-
-      Collections.shuffle(numbers);
-
-      for (int i = 0; i < 4; i++) {
-        this.rivalanswer[i] = numbers.get(i);
-      }
-      StringBuilder sa = new StringBuilder();
-      for (int num : rivalanswer) {
-        sa.append(num);
-      }
-
-      String rivalanswer = sa.toString(); // ここで相手の答えを4桁の文字列にする
-      this.Myanswers = myanswer;
-      this.Rivalanswers = rivalanswer;
-      Match match = new Match(loginUser_id, battleid, myanswer, rivalanswer, "");// 自分のid,相手のid,自分の答え,相手の答えを格納
+      Match match = new Match(loginUser_id, battleid, this.Myanswers, this.Rivalanswers, "");// 自分のid,相手のid,自分の答え,相手の答えを格納
       matchMapper.insertMatch(match);// 1試合追加(勝敗は不明)
       this.flag = 1; // 生成は1回のみだから
-      mysecret = Myanswers;// 自分の秘密の数字が確定したため更新
 
       model.addAttribute("message", message);// Thymeleafで値をHTMLに渡す
       model.addAttribute("mysecret", mysecret);
@@ -224,8 +187,7 @@ public class HitAndBlowController {
       model.addAttribute("name", name);
       return "match.html";
     }
-
-    model.addAttribute("name", name);// Thymeleafで値をHTMLに渡す
+    // 以降はflag=1。つまり、秘密の数字決定後の処理を行う
 
     int matchid = matchMapper.selectMatchIdByuserId(loginUser_id, battleid);
 
@@ -245,7 +207,7 @@ public class HitAndBlowController {
       this.flag = 0;
       message = loginUser + "の勝利です。";
 
-      rivalsecret = Rivalanswers;// 相手の？？？？を開示
+      rivalsecret = this.Rivalanswers;// 相手の？？？？を開示
       Match match = new Match(matchid, loginUser_id, battleid, this.Myanswers, this.Rivalanswers, "勝利");// 勝敗を更新
       matchMapper.updateById(match);
     } else {
@@ -260,7 +222,7 @@ public class HitAndBlowController {
         rivalguess[i] = numbers.get(i);
       }
 
-      Hit_Blow = cheak.chackHit_Blow(rivalguess, this.playeranswer);
+      Hit_Blow = cheak.chackHit_Blow(rivalguess, this.playeranswer);// HitとBlowの数を計算
       rivalHit = Hit_Blow[0];
       rivalBlow = Hit_Blow[1];
       StringBuilder sa = new StringBuilder();
@@ -282,13 +244,13 @@ public class HitAndBlowController {
 
     ArrayList<MatchInfo> matchInfo = matchInfoMapper.selectByMatchId(matchid);
 
+    model.addAttribute("name", name);// Thymeleafで値をHTMLに渡す
     model.addAttribute("matchInfo", matchInfo);
-    model.addAttribute("debuganswer", rivalanswer);// デバッグ用製品版で削除すること。
+    model.addAttribute("debuganswer", this.rivalanswer);// デバッグ用製品版で削除すること。
     model.addAttribute("loginid", loginUser_id);
     model.addAttribute("battleid", battleid);
     model.addAttribute("rivalsecret", rivalsecret);
     model.addAttribute("goalflag", goakflag);
-    model.addAttribute("Formatcheak", Formatcheak);
     model.addAttribute("message", message);
     model.addAttribute("mysecret", mysecret);
     return "match.html";
