@@ -3,8 +3,8 @@ package kmt.hit_blow.controller;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+// import java.util.Collections;
+// import java.util.List;
 //import java.util.ArrayList;
 
 import kmt.hit_blow.model.HitAndBlow;
@@ -147,7 +147,6 @@ public class HitAndBlowController {
     String name = userMapper.selectNameByUsers(battleid);// 対戦相手の名前を取得する変数
     int[] Hit_Blow; // HitとBlowの値を格納する配列
     int goakflag = 0; // 正解かどうかの判定
-    // int Formatcheak = 1; // 入力が正常か確認する変数
 
     HitAndBlow cheak = new HitAndBlow(); // Hit_Blowクラスのメソッドを呼び出す
 
@@ -171,6 +170,7 @@ public class HitAndBlowController {
     if (this.flag == 0) { // 初回はここに入る
 
       this.Myanswers = cheak.translateString(in);// ここで自分の答えを4桁の文字列にする
+      this.playeranswer = in;// 自分の答えを格納する
       mysecret = this.Myanswers;// 自分の秘密の数字が確定したため更新
 
       // ここからは相手の答えを生成する
@@ -194,11 +194,8 @@ public class HitAndBlowController {
     Hit_Blow = cheak.chackHit_Blow(in, this.rivalanswer);// HitとBlowを確認する
     myHit = Hit_Blow[0];
     myBlow = Hit_Blow[1];
-    StringBuilder sb = new StringBuilder();
-    for (int num : in) {
-      sb.append(num);
-    }
-    String myguess = sb.toString(); // ここで自分の予想を4桁の文字列にする
+
+    String myguess = cheak.translateString(in); // ここで自分の予想を4桁の文字列にする
     MatchInfo mymatchInfo = new MatchInfo(matchid, loginUser_id, myguess, myHit, myBlow); // 情報を格納する
     matchInfoMapper.insertMatchInfo(mymatchInfo);
 
@@ -208,51 +205,46 @@ public class HitAndBlowController {
       message = loginUser + "の勝利です。";
 
       rivalsecret = this.Rivalanswers;// 相手の？？？？を開示
-      Match match = new Match(matchid, loginUser_id, battleid, this.Myanswers, this.Rivalanswers, "勝利");// 勝敗を更新
+      Match match = new Match(matchid, loginUser_id, battleid, this.Myanswers, this.Rivalanswers, loginUser + "の勝利!");// 勝敗を更新
       matchMapper.updateById(match);
-    } else {
-      // ここでcpuの手を決める
-      List<Integer> numbers = new ArrayList<>(); // ランダムな値を生成
-      int[] rivalguess = new int[4];
-      for (int i = 0; i <= 9; i++) {
-        numbers.add(i);
-      }
-      Collections.shuffle(numbers);
-      for (int i = 0; i < 4; i++) {
-        rivalguess[i] = numbers.get(i);
-      }
+    } else if (battleid == 3) {// battleid =3はCPUである。CPU戦の場合の処理をelse ifで記述している
+      // プレイヤーが勝利していないためcpuの手を決める
+
+      int[] rivalguess = new int[4];// ここでcpuの推測を格納する
+
+      rivalguess = cheak.generateNumber();// cpuの推測（現状は完全ランダムに生成するためgenerateNumberを用いている）
 
       Hit_Blow = cheak.chackHit_Blow(rivalguess, this.playeranswer);// HitとBlowの数を計算
       rivalHit = Hit_Blow[0];
       rivalBlow = Hit_Blow[1];
-      StringBuilder sa = new StringBuilder();
-      for (int num : rivalguess) {
-        sa.append(num);
-      }
-      String rivalguesshand = sa.toString(); // ここで相手の予想を4桁の文字列にする
+
+      String rivalguesshand = cheak.translateString(rivalguess);// ここで相手の予想を4桁の文字列にする
       MatchInfo rivalmatchInfo = new MatchInfo(matchid, battleid, rivalguesshand, rivalHit, rivalBlow); // 情報を格納する
       matchInfoMapper.insertMatchInfo(rivalmatchInfo);
     }
 
-    if (rivalHit == 4) {
+    if (rivalHit == 4) {// Hitが4だと正解にする
       goakflag = 1;
       this.flag = 0;
       message = name + "の勝利です。";
-      Match match = new Match(matchid, loginUser_id, battleid, this.Myanswers, this.Rivalanswers, "負け");// 勝敗を更新
+      Match match = new Match(matchid, loginUser_id, battleid, this.Myanswers, this.Rivalanswers, name + "の勝利!");// 勝敗を更新
       matchMapper.updateById(match);
     }
 
     ArrayList<MatchInfo> matchInfo = matchInfoMapper.selectByMatchId(matchid);
 
-    model.addAttribute("name", name);// Thymeleafで値をHTMLに渡す
-    model.addAttribute("matchInfo", matchInfo);
+    model.addAttribute("matchInfo", matchInfo);// Thymeleafで試合情報をHTMLに渡す
+    model.addAttribute("message", message);// システムメッセージを表示するために用いる
+    model.addAttribute("goalflag", goakflag);// ゲーム終了時用のフラグ
     model.addAttribute("debuganswer", this.rivalanswer);// デバッグ用製品版で削除すること。
-    model.addAttribute("loginid", loginUser_id);
-    model.addAttribute("battleid", battleid);
-    model.addAttribute("rivalsecret", rivalsecret);
-    model.addAttribute("goalflag", goakflag);
-    model.addAttribute("message", message);
-    model.addAttribute("mysecret", mysecret);
+
+    model.addAttribute("mysecret", mysecret);// 自身の秘密の数字部分を表示する
+    model.addAttribute("loginid", loginUser_id);// matchInfoで自身の試合情報を表示するために用いる
+
+    model.addAttribute("name", name);// 相手の名前を表示するために用いる
+    model.addAttribute("rivalsecret", rivalsecret);// 相手の秘密の数字部分を表示する
+    model.addAttribute("battleid", battleid);// matchInfoで相手の試合情報を表示するために用いる
+
     return "match.html";
   }
 }
