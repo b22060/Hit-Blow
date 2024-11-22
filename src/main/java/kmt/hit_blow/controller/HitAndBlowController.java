@@ -112,10 +112,11 @@ public class HitAndBlowController {
     ArrayList<MatchInfo> matchInfo = matchInfoMapper.selectByMatchId(matchid);
     String loginUser = prin.getName(); // ログイン名を取得
     int loginUser_id = userMapper.selectIdByName(loginUser);// 自分のID取得
+    int opponentsid = matchMapper.selectopponentsIdById(loginUser_id,matchid);
 
     model.addAttribute("match", match);
     model.addAttribute("matchInfo", matchInfo);
-    model.addAttribute("battleid", battleid);
+    model.addAttribute("battleid", opponentsid);
     model.addAttribute("loginid", loginUser_id);
     return "history.html";
   }
