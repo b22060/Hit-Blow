@@ -16,8 +16,14 @@ public interface MatchMapper {
   @Select("SELECT * FROM matches WHERE matchid = #{matchid}")
   Match selectMatchById(int matchid);
 
-  @Select("SELECT userid2 FROM matches WHERE userid1 = #{userid1} and matchid = #{matchid}")
-  int selectopponentsIdById(int userid1, int matchid);// 対戦相手のidを取得
+  @Select("SELECT userid1 FROM matches WHERE matchid = #{matchid}")
+  int selectUserId1ByMatchId(int matchid);
+
+  @Select("SELECT userid2 FROM matches WHERE matchid = #{matchid}")
+  int selectUserId2ByMatchId(int matchid);
+
+  //@Select("SELECT userid2 FROM matches WHERE userid1 = #{userid1} and matchid = #{matchid}")
+  //int selectopponentsIdById(int userid1, int matchid);// 対戦相手のidを取得
 
   @Select("SELECT matchid FROM matches WHERE userid1 = #{userid1} and userid2 = #{userid2} ORDER BY matchid DESC LIMIT 1")
   // useridからmatchidを入手

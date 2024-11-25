@@ -39,14 +39,14 @@
 
   <div class="area">
     <div class="list">
-      <p>User1</p>
+      <p>[[${myname}]]</p>
       <div th:if="matches" class="user1-score">
         [[${match.usernum1}]]
       </div>
       <ul>
         <li th:each="matchInfo : ${matchInfo}" th:if="${matchInfo.userid == loginid}">
           <p>
-            User1の推理: [[${matchInfo.guess}]],
+            [[${myname}]]の推理: [[${matchInfo.guess}]],
             Hit: [[${matchInfo.hit}]],
             Blow: [[${matchInfo.blow}]]
           </p>
@@ -55,14 +55,14 @@
     </div>
 
     <div class="list">
-      <p>User2</p>
+      <p>[[${opponentsname}]]</p>
       <div th:if="matches" class="user2-score">
         [[${match.usernum2}]]
       </div>
       <ul>
         <li th:each="matchInfo : ${matchInfo}" th:if="${matchInfo.userid == battleid}">
           <p>
-            User2の推理: [[${matchInfo.guess}]],
+            [[${opponentsname}]]の推理: [[${matchInfo.guess}]],
             Hit: [[${matchInfo.hit}]],
             Blow: [[${matchInfo.blow}]]
           </p>
