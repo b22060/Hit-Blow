@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>待機中</title>
+  <script>
+
+  </script>
+
+</head>
+
+<body>
+  <div> <!-- 入力フォームエリア -->
+    [[${name}]]を待っています。
+
+    <h3>数字を入力してください(数字は重複しないでください)</h3> <!--入力を促す-->
+    <form th:action="@{/wait}" method="post">
+      <input type="number" min="0" max="9" name="line1" />
+      <input type="number" min="0" max="9" name="line2" />
+      <input type="number" min="0" max="9" name="line3" />
+      <input type="number" min="0" max="9" name="line4" />
+      <input type="submit" value="送信"><input type="reset" value="リセット">
+    </form>
+  </div>
+
+</body>
+
+</html>
