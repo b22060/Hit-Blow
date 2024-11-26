@@ -37,7 +37,7 @@ public class HitAndBlowController {
   private final Logger logger = LoggerFactory.getLogger(HitAndBlowController.class);
 
   @Autowired
-  private AsyncHitAndBlow HaB;
+  private AsyncHitAndBlow HitAndBlow;
 
   int flag = 0;
   int[] playeranswer = new int[4];// 自分の回答
@@ -63,7 +63,7 @@ public class HitAndBlowController {
 
     try {
       String role = "USER";
-      this.HaB.count(emitter, role);
+      this.HitAndBlow.count(emitter, role);
     } catch (IOException e) {
       // 例外の名前とメッセージだけ表示する
       logger.warn("Exception:" + e.getClass().getName() + ":" + e.getMessage());
@@ -88,7 +88,7 @@ public class HitAndBlowController {
   public String sample(ModelMap model) {
     String a = "成功";
     model.addAttribute("success", a);
-    HaB.samplechange();
+    HitAndBlow.samplechange();
     return "sample.html";
   }
 
@@ -97,7 +97,7 @@ public class HitAndBlowController {
     final SseEmitter sseEmitter = new SseEmitter();
     try {
 
-      this.HaB.sample(sseEmitter);
+      this.HitAndBlow.sample(sseEmitter);
 
     } catch (Exception e) {
       System.out.println("エラー発生！！");
@@ -126,15 +126,41 @@ public class HitAndBlowController {
 
   @GetMapping("/match") // 対戦相手を決定する
   public String match(@RequestParam Integer userid, ModelMap model, Principal prin) {
-    String name = userMapper.selectNameByUsers(userid);// 対戦相手の名前を取得する変数
     String loginUser = prin.getName(); // ログイン名を取得
-    String message = loginUser + "の秘密の数字入力を待っています。";// システムメッセージを格納する変数
+    String name = userMapper.selectNameByUsers(userid);// 対戦相手の名前を取得する変数
+    if (userid == 3) {// CPU戦のとき
+      String message = loginUser + "の秘密の数字入力を待っています。";// システムメッセージを格納する変数
+      model.addAttribute("name", name);// Thymeleafで値をHTMLに渡す
+      model.addAttribute("message", message);// Thymeleafで値をHTMLに渡す
+      model.addAttribute("mysecret", "????");// 自分の秘密の数字は最初????のため
+      model.addAttribute("rivalsecret", "????");// 相手の秘密の数字は????のため
+      this.battleid = userid;// ここは一度しか経由しないから
+      return "match.html";
+    }
+    if (userid == userMapper.selectIdByName(loginUser)) {// User1がUser1と対戦できないようにする 例外処理
+      return this.hit_blow(model);
+    }
+    // 以降 ログインIDとクリック時のIDは異なる
+
     model.addAttribute("name", name);// Thymeleafで値をHTMLに渡す
-    model.addAttribute("message", message);// Thymeleafで値をHTMLに渡す
-    model.addAttribute("mysecret", "????");// 自分の秘密の数字は最初????のため
-    model.addAttribute("rivalsecret", "????");// 相手の秘密の数字は????のため
-    this.battleid = userid;// ここは一度しか経由しないから
-    return "match.html";
+    return "wait.html";
+  }
+
+  @PostMapping("/wait")
+  public String wait(@RequestParam Integer line1, @RequestParam Integer line2, @RequestParam Integer line3,
+      @RequestParam Integer line4, ModelMap model, Principal prin) {
+    // SSE通信を行う。
+    final SseEmitter SseEmitter = new SseEmitter();
+    this.HitAndBlow.asyncHitAndBlow(SseEmitter);
+    return "wait.html";
+  }
+
+  @PostMapping("/hogehoge")
+  public void hogehoge() {
+    // SSE通信の実装
+    final SseEmitter SseEmitter = new SseEmitter();
+    this.HitAndBlow.asyncHitAndBlow(SseEmitter);
+    // return "sseEmitter";
   }
 
   @PostMapping("/play") // ここで対戦の処理をする
