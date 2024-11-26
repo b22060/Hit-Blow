@@ -40,8 +40,9 @@ public class AuthConfiguration {
         .password("{bcrypt}$2y$05$gTjyU0Cy8WLahOVTsRYPx.zzsVpbOcQfTLwiuQO6Su9FsNYzlXKn2").roles("USER").build();
     UserDetails user2 = User.withUsername("User2")
         .password("{bcrypt}$2y$05$gTjyU0Cy8WLahOVTsRYPx.zzsVpbOcQfTLwiuQO6Su9FsNYzlXKn2").roles("USER").build();
-
-    return new InMemoryUserDetailsManager(user1, user2);
+    UserDetails Spectator = User.withUsername("Spectator")
+        .password("{bcrypt}$2y$05$gTjyU0Cy8WLahOVTsRYPx.zzsVpbOcQfTLwiuQO6Su9FsNYzlXKn2").roles("SPECTATORS").build();
+    return new InMemoryUserDetailsManager(user1, user2, Spectator);
   }
 
 }
