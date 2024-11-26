@@ -7,22 +7,25 @@ public class Match {
   String usernum1; //自分の答え
   String usernum2; //相手の答え
   String judge; //勝敗
+  boolean isActive;//試合状態
 
-  public Match(int userid1, int userid2, String myanswer, String rivalanswer, String judge) {//コンストラクタ
+  public Match(int userid1, int userid2, String myanswer, String rivalanswer, String judge, boolean isActive) {//試合前のコンストラクタ
     this.userid1 = userid1;
     this.userid2 = userid2;
     this.usernum1 = myanswer;
     this.usernum2 = rivalanswer;
     this.judge = judge;
+    this.isActive = isActive;
   }
 
-  public Match(int matchid, int userid1, int userid2, String myanswer, String rivalanswer, String judge) {// コンストラクタ
+  public Match(int matchid, int userid1, int userid2, String myanswer, String rivalanswer, String judge,boolean isActive) {// 試合後のコンストラクタ
     this.matchid = matchid;
     this.userid1 = userid1;
     this.userid2 = userid2;
     this.usernum1 = myanswer;
     this.usernum2 = rivalanswer;
     this.judge = judge;
+    this.isActive = isActive;
   }
 
   public int getMatchid() {
@@ -73,6 +76,11 @@ public class Match {
     this.judge = judge;
   }
 
+  public boolean isActive() {
+    return isActive;
+  }
 
-
+  public void setActive(boolean isActive) {
+    this.isActive = isActive;
+  }
 }

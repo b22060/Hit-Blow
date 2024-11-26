@@ -29,9 +29,12 @@ public interface MatchMapper {
   // useridからmatchidを入手
   int selectMatchIdByuserId(int userid1, int userid2);
 
-  @Insert("INSERT INTO matches (userid1,userid2,usernum1,usernum2,judge) VALUES (#{userid1},#{userid2},#{usernum1},#{usernum2},#{judge});")
+  @Insert("INSERT INTO matches (userid1,userid2,usernum1,usernum2,judge,isActive) VALUES (#{userid1},#{userid2},#{usernum1},#{usernum2},#{judge},#{isActive});")
   void insertMatch(Match match);// optionsは消したおそらくmatchidとかにしたら行けるはず
 
   @Update("UPDATE matches SET judge=#{judge} WHERE matchid = #{matchid}")
   void updateById(Match match);
+
+  @Update("UPDATE matches SET isActive = FALSE where isActive = TRUE") // FALSEにする
+  boolean updateActive(Match match);
 }
