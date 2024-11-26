@@ -157,6 +157,7 @@ public class HitAndBlowController {
 
   @PostMapping("/hogehoge")
   public void hogehoge() {
+    // SSE通信の実装
     final SseEmitter SseEmitter = new SseEmitter();
     this.HitAndBlow.asyncHitAndBlow(SseEmitter);
     // return "sseEmitter";
