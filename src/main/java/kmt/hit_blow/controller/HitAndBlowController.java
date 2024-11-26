@@ -119,8 +119,8 @@ public class HitAndBlowController {
     model.addAttribute("matchInfo", matchInfo);
     model.addAttribute("battleid", opponentsid);
     model.addAttribute("loginid", myid);
-    model.addAttribute("myname",myname);
-    model.addAttribute("opponentsname",opponentsname);
+    model.addAttribute("myname", myname);
+    model.addAttribute("opponentsname", opponentsname);
     return "history.html";
   }
 
@@ -181,7 +181,7 @@ public class HitAndBlowController {
       this.rivalanswer = cheak.generateNumber();// 相手の答えを生成する
       this.Rivalanswers = cheak.translateString(this.rivalanswer); // ここで相手の答えを4桁の文字列にする
 
-      Match match = new Match(loginUser_id, battleid, this.Myanswers, this.Rivalanswers, "");// 自分のid,相手のid,自分の答え,相手の答えを格納
+      Match match = new Match(loginUser_id, battleid, this.Myanswers, this.Rivalanswers, "", true);// 自分のid,相手のid,自分の答え,相手の答えを格納
       matchMapper.insertMatch(match);// 1試合追加(勝敗は不明)
       this.flag = 1; // 生成は1回のみだから
 
@@ -200,7 +200,7 @@ public class HitAndBlowController {
     myBlow = Hit_Blow[1];
 
     String myguess = cheak.translateString(in); // ここで自分の予想を4桁の文字列にする
-    MatchInfo mymatchInfo = new MatchInfo(matchid, loginUser_id, myguess, myHit, myBlow); // 情報を格納する
+    MatchInfo mymatchInfo = new MatchInfo(matchid, loginUser_id, myguess, myHit, myBlow, true); // 情報を格納する
     matchInfoMapper.insertMatchInfo(mymatchInfo);
 
     if (myHit == 4) { // Hitが4だと正解にする
@@ -209,8 +209,11 @@ public class HitAndBlowController {
       message = loginUser + "の勝利です。";
 
       rivalsecret = this.Rivalanswers;// 相手の？？？？を開示
-      Match match = new Match(matchid, loginUser_id, battleid, this.Myanswers, this.Rivalanswers, loginUser + "の勝利!");// 勝敗を更新
+      Match match = new Match(matchid, loginUser_id, battleid, this.Myanswers, this.Rivalanswers, loginUser + "の勝利!",
+          false);// 勝敗を更新
       matchMapper.updateById(match);
+      matchMapper.updateActive(match);
+      matchInfoMapper.updateActive(mymatchInfo);
     } else if (battleid == 3) {// battleid =3はCPUである。CPU戦の場合の処理をelse ifで記述している
       // プレイヤーが勝利していないためcpuの手を決める
 
@@ -223,7 +226,7 @@ public class HitAndBlowController {
       rivalBlow = Hit_Blow[1];
 
       String rivalguesshand = cheak.translateString(rivalguess);// ここで相手の予想を4桁の文字列にする
-      MatchInfo rivalmatchInfo = new MatchInfo(matchid, battleid, rivalguesshand, rivalHit, rivalBlow); // 情報を格納する
+      MatchInfo rivalmatchInfo = new MatchInfo(matchid, battleid, rivalguesshand, rivalHit, rivalBlow, true); // 情報を格納する
       matchInfoMapper.insertMatchInfo(rivalmatchInfo);
     }
 
@@ -231,8 +234,10 @@ public class HitAndBlowController {
       goakflag = 1;
       this.flag = 0;
       message = name + "の勝利です。";
-      Match match = new Match(matchid, loginUser_id, battleid, this.Myanswers, this.Rivalanswers, name + "の勝利!");// 勝敗を更新
+      Match match = new Match(matchid, loginUser_id, battleid, this.Myanswers, this.Rivalanswers, name + "の勝利!", false);// 勝敗を更新
       matchMapper.updateById(match);
+      matchMapper.updateActive(match);
+      matchInfoMapper.updateActive(mymatchInfo);
     }
 
     ArrayList<MatchInfo> matchInfo = matchInfoMapper.selectByMatchId(matchid);

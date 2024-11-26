@@ -7,13 +7,15 @@ public class MatchInfo {
   String guess;
   int hit;
   int blow;
+  boolean isActive;
 
-  public MatchInfo(int matchid, int userid, String guess, int hit, int blow) {//コンストラクタ
+  public MatchInfo(int matchid, int userid, String guess, int hit, int blow, boolean isActive) {//コンストラクタ
     this.matchid = matchid;
     this.userid = userid;
     this.guess = guess;
     this.hit = hit;
     this.blow = blow;
+    this.isActive = isActive;
   }
 
   public int getMatchinfoid() {
@@ -62,6 +64,14 @@ public class MatchInfo {
 
   public void setBlow(int blow) {
     this.blow = blow;
+  }
+
+  public boolean isActive() {
+    return isActive;
+  }
+
+  public void setActive(boolean isActive) {
+    this.isActive = isActive;
   }
 
 }
