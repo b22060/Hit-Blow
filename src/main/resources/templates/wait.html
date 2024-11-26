@@ -5,7 +5,11 @@
   <meta charset="utf-8">
   <title>待機中</title>
   <script>
-
+    window.onload = function () {
+      var sse = new EventSource('/hogehoge');
+      sse.onmessage = function (event) {
+      }
+    }
   </script>
 
 </head>

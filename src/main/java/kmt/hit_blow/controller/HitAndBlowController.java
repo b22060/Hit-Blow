@@ -37,7 +37,7 @@ public class HitAndBlowController {
   private final Logger logger = LoggerFactory.getLogger(HitAndBlowController.class);
 
   @Autowired
-  private AsyncHitAndBlow HaB;
+  private AsyncHitAndBlow HitAndBlow;
 
   int flag = 0;
   int[] playeranswer = new int[4];// 自分の回答
@@ -63,7 +63,7 @@ public class HitAndBlowController {
 
     try {
       String role = "USER";
-      this.HaB.count(emitter, role);
+      this.HitAndBlow.count(emitter, role);
     } catch (IOException e) {
       // 例外の名前とメッセージだけ表示する
       logger.warn("Exception:" + e.getClass().getName() + ":" + e.getMessage());
@@ -88,7 +88,7 @@ public class HitAndBlowController {
   public String sample(ModelMap model) {
     String a = "成功";
     model.addAttribute("success", a);
-    HaB.samplechange();
+    HitAndBlow.samplechange();
     return "sample.html";
   }
 
@@ -97,7 +97,7 @@ public class HitAndBlowController {
     final SseEmitter sseEmitter = new SseEmitter();
     try {
 
-      this.HaB.sample(sseEmitter);
+      this.HitAndBlow.sample(sseEmitter);
 
     } catch (Exception e) {
       System.out.println("エラー発生！！");
@@ -150,7 +150,16 @@ public class HitAndBlowController {
   public String wait(@RequestParam Integer line1, @RequestParam Integer line2, @RequestParam Integer line3,
       @RequestParam Integer line4, ModelMap model, Principal prin) {
     // SSE通信を行う。
+    final SseEmitter SseEmitter = new SseEmitter();
+    this.HitAndBlow.asyncHitAndBlow(SseEmitter);
     return "wait.html";
+  }
+
+  @PostMapping("/hogehoge")
+  public void hogehoge() {
+    final SseEmitter SseEmitter = new SseEmitter();
+    this.HitAndBlow.asyncHitAndBlow(SseEmitter);
+    // return "sseEmitter";
   }
 
   @PostMapping("/play") // ここで対戦の処理をする

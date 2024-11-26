@@ -20,6 +20,11 @@ public class AsyncHitAndBlow {
   private int hogehoge = 0;// ０→1→0と遷移する
 
   @Async
+  public void asyncHitAndBlow(SseEmitter emitter) {
+
+  }
+
+  @Async
   public void count(SseEmitter emitter, String role) throws IOException {
     logger.info("AsyncCount58.count");
     try {
