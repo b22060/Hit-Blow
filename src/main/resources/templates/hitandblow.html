@@ -28,7 +28,7 @@
     <h2>マッチング中</h2>
     <li th:each="activematch:${activematcheslist}">
 
-      <a th:href="@{/spect(matchid=${activematce.match.matchid})}">
+      <a th:href="@{/spect(matchid=${activematch.match.matchid})}">
         [[${activematch.username1}]] VS [[${activematch.username2}]]
         [[${activematch.username1}]]の値:[[${activematch.match.usernum1}]]
         [[${activematch.username2}]]の値:[[${activematch.match.usernum2}]]</a>

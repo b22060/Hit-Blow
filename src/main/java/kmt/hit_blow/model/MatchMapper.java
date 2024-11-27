@@ -39,6 +39,6 @@ public interface MatchMapper {
   @Update("UPDATE matches SET judge=#{judge} WHERE matchid = #{matchid}")
   void updateById(Match match);
 
-  @Update("UPDATE matches SET isActive = FALSE where isActive = TRUE") // FALSEにする
+  @Update("UPDATE matches SET isActive = FALSE where isActive = TRUE and matchid=#{matchid}") // FALSEにする
   boolean updateActive(Match match);
 }
