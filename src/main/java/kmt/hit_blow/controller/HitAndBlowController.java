@@ -15,6 +15,7 @@ import kmt.hit_blow.model.MatchMapper;
 import kmt.hit_blow.model.Match;
 import kmt.hit_blow.model.MatchInfo;
 import kmt.hit_blow.model.MatchInfoMapper;
+import kmt.hit_blow.model.MatchUser;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,11 +77,29 @@ public class HitAndBlowController {
   public String hit_blow(ModelMap model) {
     // 表示に必要なデータをMapperで格納する
     ArrayList<User> users = userMapper.selectAllByUsers();
-    ArrayList<Match> matches = matchMapper.selectAllBymatches();
+    ArrayList<Match> notactivematches = matchMapper.selectAllNotActiveByMatches();// 非アクティブの試合を渡す
+    ArrayList<MatchUser> notactivematcheslist = new ArrayList<MatchUser>();// アクティブな試合結果を渡す
+    for (int i = 0; i < notactivematches.size(); i++) { // Userid1と2に対応する名前を格納する
+      String username1 = userMapper.selectNameByUsers(notactivematches.get(i).getUserid1());
+      String username2 = userMapper.selectNameByUsers(notactivematches.get(i).getUserid2());
+      notactivematcheslist.add(new MatchUser(notactivematches.get(i), username1, username2));
+    }
+
+    ArrayList<Match> activematches = matchMapper.selectAllActiveByMatches();// アクティブな試合を取得（観戦者ロール用）
+    ArrayList<MatchUser> activematcheslist = new ArrayList<MatchUser>();// アクティブな試合結果を渡す
+    for (int i = 0; i < activematches.size(); i++) { // Userid1と2に対応する名前を格納する
+      String username1 = userMapper.selectNameByUsers(activematches.get(i).getUserid1());
+      String username2 = userMapper.selectNameByUsers(activematches.get(i).getUserid2());
+      activematcheslist.add(new MatchUser(activematches.get(i), username1, username2));
+    }
+    // 次の行にユーザロール用のマッチング待ちのMapper処理を書く
+    // ArrayList<Match> waitmatches = matchMapper.hogehoge();//hogehogeを変更する
 
     // 表示に必要なデータをmodelに渡す
     model.addAttribute("users", users);
-    model.addAttribute("matches", matches);
+    model.addAttribute("notactivematcheslist", notactivematcheslist);
+    model.addAttribute("activematcheslist", activematcheslist);
+    // model.addAttribute("waitmatches", waitmatches); //ここにマッチング待ち処理を渡す
     return "hitandblow.html";
   }
 
@@ -127,10 +146,11 @@ public class HitAndBlowController {
   @GetMapping("/match") // 対戦相手を決定する
   public String match(@RequestParam Integer userid, ModelMap model, Principal prin) {
     String loginUser = prin.getName(); // ログイン名を取得
-    String name = userMapper.selectNameByUsers(userid);// 対戦相手の名前を取得する変数
+    String rivalname = userMapper.selectNameByUsers(userid);// 対戦相手の名前を取得する変数
     if (userid == 3) {// CPU戦のとき
       String message = loginUser + "の秘密の数字入力を待っています。";// システムメッセージを格納する変数
-      model.addAttribute("name", name);// Thymeleafで値をHTMLに渡す
+      model.addAttribute("name", loginUser);
+      model.addAttribute("rivalname", rivalname);// Thymeleafで値をHTMLに渡す
       model.addAttribute("message", message);// Thymeleafで値をHTMLに渡す
       model.addAttribute("mysecret", "????");// 自分の秘密の数字は最初????のため
       model.addAttribute("rivalsecret", "????");// 相手の秘密の数字は????のため
@@ -142,7 +162,7 @@ public class HitAndBlowController {
     }
     // 以降 ログインIDとクリック時のIDは異なる
 
-    model.addAttribute("name", name);// Thymeleafで値をHTMLに渡す
+    model.addAttribute("rivalname", rivalname);// Thymeleafで値をHTMLに渡す
     return "wait.html";
   }
 
@@ -174,7 +194,7 @@ public class HitAndBlowController {
     String rivalsecret = "????";// 相手の？？？？と表示されている秘密の数字を格納する変数
     int rivalHit = 0; // 相手のHitを数える変数
     int rivalBlow = 0; // 相手のBlowを数える変数
-    String name = userMapper.selectNameByUsers(battleid);// 対戦相手の名前を取得する変数
+    String rivalname = userMapper.selectNameByUsers(battleid);// 対戦相手の名前を取得する変数
     int[] Hit_Blow; // HitとBlowの値を格納する配列
     int goakflag = 0; // 正解かどうかの判定
 
@@ -193,7 +213,8 @@ public class HitAndBlowController {
       }
       model.addAttribute("mysecret", mysecret);
       model.addAttribute("rivalsecret", rivalsecret);
-      model.addAttribute("name", name);
+      model.addAttribute("rivalname", rivalname);
+      model.addAttribute("name", loginUser);
       return "match.html";
     }
 
@@ -214,7 +235,8 @@ public class HitAndBlowController {
       model.addAttribute("message", message);// Thymeleafで値をHTMLに渡す
       model.addAttribute("mysecret", mysecret);
       model.addAttribute("rivalsecret", rivalsecret);
-      model.addAttribute("name", name);
+      model.addAttribute("rivalname", rivalname);
+      model.addAttribute("name", loginUser);
       return "match.html";
     }
     // 以降はflag=1。つまり、秘密の数字決定後の処理を行う
@@ -259,8 +281,9 @@ public class HitAndBlowController {
     if (rivalHit == 4) {// Hitが4だと正解にする
       goakflag = 1;
       this.flag = 0;
-      message = name + "の勝利です。";
-      Match match = new Match(matchid, loginUser_id, battleid, this.Myanswers, this.Rivalanswers, name + "の勝利!", false);// 勝敗を更新
+      message = rivalname + "の勝利です。";
+      Match match = new Match(matchid, loginUser_id, battleid, this.Myanswers, this.Rivalanswers, rivalname + "の勝利!",
+          false);// 勝敗を更新
       matchMapper.updateById(match);
       matchMapper.updateActive(match);
       matchInfoMapper.updateActive(mymatchInfo);
@@ -273,12 +296,30 @@ public class HitAndBlowController {
     model.addAttribute("goalflag", goakflag);// ゲーム終了時用のフラグ
     model.addAttribute("debuganswer", this.rivalanswer);// デバッグ用製品版で削除すること。
 
+    model.addAttribute("name", loginUser);// 自身の名前を表示するために用いる
     model.addAttribute("mysecret", mysecret);// 自身の秘密の数字部分を表示する
     model.addAttribute("loginid", loginUser_id);// matchInfoで自身の試合情報を表示するために用いる
 
-    model.addAttribute("name", name);// 相手の名前を表示するために用いる
+    model.addAttribute("rivalname", rivalname);// 相手の名前を表示するために用いる
     model.addAttribute("rivalsecret", rivalsecret);// 相手の秘密の数字部分を表示する
     model.addAttribute("battleid", battleid);// matchInfoで相手の試合情報を表示するために用いる
+
+    return "match.html";
+  }
+
+  @GetMapping("/spect") // 対戦相手を決定する
+  public String spect(@RequestParam Integer matchid, ModelMap model, Principal prin) {
+    String message = "観戦用まだ未実装だよ";// SSE通信で共有？
+    int user1id = matchMapper.selectUserId1ByMatchId(matchid);// user1のidを取得
+    int user2id = matchMapper.selectUserId2ByMatchId(matchid);// user2のidを取得
+    String user1name = userMapper.selectNameByUsers(user1id);// user1の名前を取得
+    String user2name = userMapper.selectNameByUsers(user2id);// user2の名前を取得
+    // ArrayList<MatchInfo> hogehoge; //SSE通信でリアルタイム試合状況を共有
+
+    model.addAttribute("message", message);
+    model.addAttribute("name", user1name);
+    model.addAttribute("rivalname", user2name);// Thymeleafで値をHTMLに渡す
+    model.addAttribute("message", message);// Thymeleafで値をHTMLに渡す
 
     return "match.html";
   }

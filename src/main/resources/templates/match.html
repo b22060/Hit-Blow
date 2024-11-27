@@ -100,7 +100,7 @@
   <div class="messageandformarea">
     <h1>Hit&Blow</h1>
 
-    <div class="messagearea"> <!-- 入力フォームエリア -->
+    <div class="messagearea" sec:authorize="hasRole('ROLE_USER')"> <!-- 入力フォームエリア -->
 
       <h3>数字を入力してください(数字は重複しないでください)</h3> <!--入力を促す-->
       <form th:action="@{/play}" method="post">
@@ -123,13 +123,13 @@
   <div class="userarea">
     <div class="user">
       <div class="username">
-        <nobr sec:authentication="name"></nobr>
+        [[${name}]]
       </div>
       <div class="usersecret">[[${mysecret}]]</div> <!--ここが????で秘密の数字部分-->
       <ul>
         <li th:each="matchInfo : ${matchInfo}" th:if="${matchInfo.userid == loginid}">
           <p>
-            <nobr sec:authentication="name"></nobr>の推理: [[${matchInfo.guess}]],
+            [[${name}]]の推理: [[${matchInfo.guess}]],
             Hit: [[${matchInfo.hit}]],
             Blow: [[${matchInfo.blow}]]
           </p>
@@ -137,12 +137,12 @@
       </ul>
     </div>
     <div class="user">
-      <div class="username">[[${name}]]</div>
+      <div class="username">[[${rivalname}]]</div>
       <div class="usersecret">[[${rivalsecret}]]</div> <!--ここが????で秘密の数字部分-->
       <ul>
         <li th:each="matchInfo : ${matchInfo}" th:if="${matchInfo.userid == battleid}">
           <p>
-            [[${name}]]の推理: [[${matchInfo.guess}]],
+            [[${rivalname}]]の推理: [[${matchInfo.guess}]],
             Hit: [[${matchInfo.hit}]],
             Blow: [[${matchInfo.blow}]]
           </p>
