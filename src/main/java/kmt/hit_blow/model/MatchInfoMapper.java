@@ -14,7 +14,8 @@ public interface MatchInfoMapper {
   ArrayList<MatchInfo> selectByMatchId(int matchid);
 
   @Insert("INSERT INTO MatchInfo (matchid,userid,guess,hit,blow,isActive) VALUES (#{matchid},#{userid},#{guess},#{hit},#{blow},#{isActive});") // ここで1手ずつ格納する
-  //@Options(useGeneratedKeys = true, keyColumn = "id", keyProperty = "id")matchinfoidやといけるはず
+  // @Options(useGeneratedKeys = true, keyColumn = "id", keyProperty =
+  // "id")matchinfoidやといけるはず
   void insertMatchInfo(MatchInfo matchinfo);
 
   @Update("UPDATE matchinfo SET isActive = FALSE where isActive = TRUE") // FALSEにする
