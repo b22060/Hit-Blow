@@ -13,6 +13,9 @@ public interface MatchMapper {
   @Select("SELECT * from matches where isActive=FALSE")
   ArrayList<Match> selectAllNotActiveByMatches();
 
+  @Select("SELECT * from matches where isActive=TRUE")
+  ArrayList<Match> selectAllActiveByMatches();
+
   @Select("SELECT * FROM matches WHERE matchid = #{matchid}")
   Match selectMatchById(int matchid);
 

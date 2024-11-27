@@ -100,7 +100,7 @@
   <div class="messageandformarea">
     <h1>Hit&Blow</h1>
 
-    <div class="messagearea"> <!-- 入力フォームエリア -->
+    <div class="messagearea" sec:authorize="hasRole('ROLE_USER')"> <!-- 入力フォームエリア -->
 
       <h3>数字を入力してください(数字は重複しないでください)</h3> <!--入力を促す-->
       <form th:action="@{/play}" method="post">

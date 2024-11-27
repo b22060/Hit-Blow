@@ -12,25 +12,37 @@
   <h3>
     Hi <nobr sec:authentication="name"></nobr>
   </h3>
-
-  <div th:if="${users}"> <!-- 対戦相手を選択する -->
+  <div th:if="${users}" sec:authorize="hasRole('ROLE_USER')"> <!-- 対戦相手を選択する -->
     <h2>対戦相手</h2>
     <li th:each="user:${users}"><a th:href="@{/match(userid=${user.userid})}"> [[${user.name}]]</a></li>
     <!-- （例：・User1 のようにuserテーブル内の全てが出力される) -->
   </div>
 
-  <div th:if="${waitmatchs}"><!-- マッチング待ちのリストがあれば表示される -->
+  <div th:if="${waitmatches}" sec:authorize="hasRole('ROLE_USER')"><!-- マッチング待ちのリストがあれば表示される -->
     <h2>マッチング待ち</h2>
     <!-- マッチングの処理を記入する -->
   </div>
 
-  <div th:if="matches"><!-- 確認したい試合結果の履歴を選択する -->
+  <div th:if="${activematcheslist}" sec:authorize="hasRole('ROLE_SPECTATORS')">
+    <!-- マッチング中のリストがあれば観戦者ロール持ちに表示させる -->
+    <h2>マッチング中</h2>
+    <li th:each="activematch:${activematcheslist}">
+
+      <a th:href="@{/spect(matchid=${activematce.match.matchid})}">
+        [[${activematch.username1}]] VS [[${activematch.username2}]]
+        [[${activematch.username1}]]の値:[[${activematch.match.usernum1}]]
+        [[${activematch.username2}]]の値:[[${activematch.match.usernum2}]]</a>
+    </li>
+  </div>
+
+  <div th:if="notactivematcheslist"><!-- 確認したい試合結果の履歴を選択する -->
     <h2>試合結果</h2>
-    <li th:each="match:${matches}">
-      <a th:href="@{/history(matchid=${match.matchid})}">
+    <li th:each="notactivematch:${notactivematcheslist}">
+      <a th:href="@{/history(matchid=${notactivematch.match.matchid})}">
         <!-- ↓useridのまま表示されてしまう場合の記述方法 -->
-        id:[[${match.matchid}]] userid1:[[${match.userid1}]] userid2:[[${match.userid2}]]
-        userid1の値:[[${match.usernum1}]] userid2の値:[[${match.usernum2}]] 勝敗:[[${match.judge}]]
+        [[${notactivematch.username1}]]VS[[${notactivematch.username2}]]
+        [[${notactivematch.username1}]]の値:[[${notactivematch.match.usernum1}]]
+        [[${notactivematch.username2}]]の値:[[${notactivematch.match.usernum2}]]勝敗:[[${notactivematch.match.judge}]]
       </a>
     </li>
   </div>

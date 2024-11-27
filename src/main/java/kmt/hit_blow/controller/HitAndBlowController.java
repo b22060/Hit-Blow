@@ -15,6 +15,7 @@ import kmt.hit_blow.model.MatchMapper;
 import kmt.hit_blow.model.Match;
 import kmt.hit_blow.model.MatchInfo;
 import kmt.hit_blow.model.MatchInfoMapper;
+import kmt.hit_blow.model.MatchUser;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,11 +77,29 @@ public class HitAndBlowController {
   public String hit_blow(ModelMap model) {
     // 表示に必要なデータをMapperで格納する
     ArrayList<User> users = userMapper.selectAllByUsers();
-    ArrayList<Match> matches = matchMapper.selectAllNotActiveByMatches();//
+    ArrayList<Match> notactivematches = matchMapper.selectAllNotActiveByMatches();// 非アクティブの試合を渡す
+    ArrayList<MatchUser> notactivematcheslist = new ArrayList<MatchUser>();// アクティブな試合結果を渡す
+    for (int i = 0; i < notactivematches.size(); i++) { // Userid1と2に対応する名前を格納する
+      String username1 = userMapper.selectNameByUsers(notactivematches.get(i).getUserid1());
+      String username2 = userMapper.selectNameByUsers(notactivematches.get(i).getUserid2());
+      notactivematcheslist.add(new MatchUser(notactivematches.get(i), username1, username2));
+    }
+
+    ArrayList<Match> activematches = matchMapper.selectAllActiveByMatches();// アクティブな試合を取得（観戦者ロール用）
+    ArrayList<MatchUser> activematcheslist = new ArrayList<MatchUser>();// アクティブな試合結果を渡す
+    for (int i = 0; i < activematches.size(); i++) { // Userid1と2に対応する名前を格納する
+      String username1 = userMapper.selectNameByUsers(activematches.get(i).getUserid1());
+      String username2 = userMapper.selectNameByUsers(activematches.get(i).getUserid2());
+      activematcheslist.add(new MatchUser(activematches.get(i), username1, username2));
+    }
+    // 次の行にユーザロール用のマッチング待ちのMapper処理を書く
+    // ArrayList<Match> waitmatches = matchMapper.hogehoge();//hogehogeを変更する
 
     // 表示に必要なデータをmodelに渡す
     model.addAttribute("users", users);
-    model.addAttribute("matches", matches);
+    model.addAttribute("notactivematcheslist", notactivematcheslist);
+    model.addAttribute("activematcheslist", activematcheslist);
+    // model.addAttribute("waitmatches", waitmatches); //ここにマッチング待ち処理を渡す
     return "hitandblow.html";
   }
 
@@ -280,6 +299,13 @@ public class HitAndBlowController {
     model.addAttribute("rivalsecret", rivalsecret);// 相手の秘密の数字部分を表示する
     model.addAttribute("battleid", battleid);// matchInfoで相手の試合情報を表示するために用いる
 
+    return "match.html";
+  }
+
+  @GetMapping("/spect") // 対戦相手を決定する
+  public String spect(@RequestParam Integer matchid, ModelMap model, Principal prin) {
+    String message = "観戦用まだ未実装だよ";
+    model.addAttribute("message", message);
     return "match.html";
   }
 }
