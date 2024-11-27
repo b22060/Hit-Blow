@@ -76,7 +76,7 @@ public class HitAndBlowController {
   public String hit_blow(ModelMap model) {
     // 表示に必要なデータをMapperで格納する
     ArrayList<User> users = userMapper.selectAllByUsers();
-    ArrayList<Match> matches = matchMapper.selectAllBymatches();
+    ArrayList<Match> matches = matchMapper.selectAllNotActiveByMatches();//
 
     // 表示に必要なデータをmodelに渡す
     model.addAttribute("users", users);
