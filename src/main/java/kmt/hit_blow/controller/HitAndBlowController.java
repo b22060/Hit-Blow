@@ -86,19 +86,23 @@ public class HitAndBlowController {
     }
     // 次の行にユーザロール用のマッチング待ちのMapper処理を書く
     String loginUser = prin.getName(); // ログイン名を取得
-    int myid = this.HitAndBlow.asyncSelectIdByName(loginUser);
-    ArrayList<Integer> waitmatchesid = this.HitAndBlow.asyncSelectMatchIdByIsActive(myid);// 変更箇所
-    ArrayList<String> waitmatchesname = new ArrayList<String>();
-    ArrayList<User> waitusers = new ArrayList<User>();
-    for (int i = 0; i < waitmatchesid.size(); i++) {
-      waitmatchesname.add(this.HitAndBlow.asyncSelectNameByUsers(waitmatchesid.get(i)));
-      waitusers.add(new User(waitmatchesid.get(i), waitmatchesname.get(i)));
+
+    if (loginUser != "Spectator") {// 観戦者でない場合
+      int myid = this.HitAndBlow.asyncSelectIdByName(loginUser);
+      ArrayList<Integer> waitmatchesid = this.HitAndBlow.asyncSelectMatchIdByIsActive(myid);
+      ArrayList<String> waitmatchesname = new ArrayList<String>();
+      ArrayList<User> waitusers = new ArrayList<User>();
+      for (int i = 0; i < waitmatchesid.size(); i++) {
+        waitmatchesname.add(this.HitAndBlow.asyncSelectNameByUsers(waitmatchesid.get(i)));
+        waitusers.add(new User(waitmatchesid.get(i), waitmatchesname.get(i)));
+      }
+      model.addAttribute("waitmatches", waitusers); // ここにマッチング待ち処理を渡す
     }
+
     // 表示に必要なデータをmodelに渡す
     model.addAttribute("users", users);
     model.addAttribute("notactivematcheslist", notactivematcheslist);
     model.addAttribute("activematcheslist", activematcheslist);
-    model.addAttribute("waitmatches", waitusers); // ここにマッチング待ち処理を渡す
     return "hitandblow.html";
   }
 
