@@ -41,4 +41,7 @@ public interface MatchMapper {
 
   @Update("UPDATE matches SET isActive = FALSE where isActive = TRUE and matchid=#{matchid}") // FALSEにする
   boolean updateActive(Match match);
+
+  @Select("SELECT userid1 FROM matches WHERE userid2 =#{userid2} and usernum2 =''and isActive=TRUE")
+  ArrayList<Integer> selectMatchIdByIsActive(int user2id);
 }

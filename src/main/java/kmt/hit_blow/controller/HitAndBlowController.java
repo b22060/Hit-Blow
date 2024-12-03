@@ -74,7 +74,7 @@ public class HitAndBlowController {
   }
 
   @GetMapping("/hit-blow") // hit-blow.htmlに遷移する
-  public String hit_blow(ModelMap model) {
+  public String hit_blow(ModelMap model, Principal prin) {
     // 表示に必要なデータをMapperで格納する
     ArrayList<User> users = userMapper.selectAllByUsers();
     ArrayList<Match> notactivematches = matchMapper.selectAllNotActiveByMatches();// 非アクティブの試合を渡す
@@ -93,13 +93,20 @@ public class HitAndBlowController {
       activematcheslist.add(new MatchUser(activematches.get(i), username1, username2));
     }
     // 次の行にユーザロール用のマッチング待ちのMapper処理を書く
-    // ArrayList<Match> waitmatches = matchMapper.hogehoge();//hogehogeを変更する
-
+    String loginUser = prin.getName(); // ログイン名を取得
+    int myid = userMapper.selectIdByName(loginUser);
+    ArrayList<Integer> waitmatchesid = matchMapper.selectMatchIdByIsActive(myid);// 変更箇所
+    ArrayList<String> waitmatchesname = new ArrayList<String>();
+    ArrayList<User> waitusers = new ArrayList<User>();
+    for (int i = 0; i < waitmatchesid.size(); i++) {
+      waitmatchesname.add(userMapper.selectNameByUsers(waitmatchesid.get(i)));
+      waitusers.add(new User(waitmatchesid.get(i), waitmatchesname.get(i)));
+    }
     // 表示に必要なデータをmodelに渡す
     model.addAttribute("users", users);
     model.addAttribute("notactivematcheslist", notactivematcheslist);
     model.addAttribute("activematcheslist", activematcheslist);
-    // model.addAttribute("waitmatches", waitmatches); //ここにマッチング待ち処理を渡す
+    model.addAttribute("waitmatches", waitusers); // ここにマッチング待ち処理を渡す
     return "hitandblow.html";
   }
 
@@ -158,26 +165,38 @@ public class HitAndBlowController {
       return "match.html";
     }
     if (userid == userMapper.selectIdByName(loginUser)) {// User1がUser1と対戦できないようにする 例外処理
-      return this.hit_blow(model);
+      return this.hit_blow(model, prin);
     }
     // 以降 ログインIDとクリック時のIDは異なる
     int loginid = userMapper.selectIdByName(loginUser);
+    int formboolean = 1;
     model.addAttribute("rivalname", rivalname);// Thymeleafで値をHTMLに渡す
-    model.addAttribute("myid", loginid);//自分のid
+    model.addAttribute("myid", loginid);// 自分のid
     model.addAttribute("rivalid", userid);// 相手のid
+    model.addAttribute("formboolean", formboolean);// フォーム表示用のboolean
     return "wait.html";
   }
 
   @PostMapping("/wait")
   public String wait(@RequestParam Integer line1, @RequestParam Integer line2, @RequestParam Integer line3,
       @RequestParam Integer line4, @RequestParam Integer myid,
-      @RequestParam Integer rivalid,ModelMap model, Principal prin) {
-    int[] in = {line1,line2,line3,line4};
-    // SSE通信を行う。
+      @RequestParam Integer rivalid, ModelMap model, Principal prin) {
+    int[] in = { line1, line2, line3, line4 };
     HitAndBlow check = new HitAndBlow();
+    // SSE通信を行う。
+    if (check.numFormat(in) != true) { // 数値の重複があった場合
+      String rivalname = userMapper.selectNameByUsers(rivalid);
+      int formboolean = 1;
+      model.addAttribute("rivalname", rivalname);// Thymeleafで値をHTMLに渡す
+      model.addAttribute("myid", myid);// 自分のid
+      model.addAttribute("rivalid", rivalid);// 相手のid
+      model.addAttribute("formboolean", formboolean);// フォーム表示用のboolean
+      return "wait.html";
+    }
+
     String rivalname = userMapper.selectNameByUsers(rivalid);
     String Myanswers = check.translateString(in);
-    Match match = new Match(myid, rivalid,Myanswers, "","", true);
+    Match match = new Match(myid, rivalid, Myanswers, "", "", true);
     matchMapper.insertMatch(match);
     final SseEmitter SseEmitter = new SseEmitter();
     this.HitAndBlow.asyncHitAndBlow(SseEmitter);

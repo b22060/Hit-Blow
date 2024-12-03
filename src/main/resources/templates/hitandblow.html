@@ -21,6 +21,11 @@
   <div th:if="${waitmatches}" sec:authorize="hasRole('ROLE_USER')"><!-- マッチング待ちのリストがあれば表示される -->
     <h2>マッチング待ち</h2>
     <!-- マッチングの処理を記入する -->
+    <li th:each="waitmatche:${waitmatches}">
+      <a th:href="@{/match(userid=${waitmatche.userid})}">
+        [[${waitmatche.name}]]と対戦
+      </a>
+    </li>
   </div>
 
   <div th:if="${activematcheslist}" sec:authorize="hasRole('ROLE_SPECTATORS')">
