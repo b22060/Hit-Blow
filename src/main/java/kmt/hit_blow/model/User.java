@@ -4,6 +4,11 @@ public class User {
   int userid;
   String name;
 
+  public User(int userid, String name) {
+    this.userid = userid;
+    this.name = name;
+  }
+
   public int getUserid() {
     return userid;
   }
