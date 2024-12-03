@@ -161,17 +161,29 @@ public class HitAndBlowController {
       return this.hit_blow(model);
     }
     // 以降 ログインIDとクリック時のIDは異なる
-
+    int loginid = userMapper.selectIdByName(loginUser);
     model.addAttribute("rivalname", rivalname);// Thymeleafで値をHTMLに渡す
+    model.addAttribute("myid", loginid);//自分のid
+    model.addAttribute("rivalid", userid);// 相手のid
     return "wait.html";
   }
 
   @PostMapping("/wait")
   public String wait(@RequestParam Integer line1, @RequestParam Integer line2, @RequestParam Integer line3,
-      @RequestParam Integer line4, ModelMap model, Principal prin) {
+      @RequestParam Integer line4, @RequestParam Integer myid,
+      @RequestParam Integer rivalid,ModelMap model, Principal prin) {
+    int[] in = {line1,line2,line3,line4};
     // SSE通信を行う。
+    HitAndBlow check = new HitAndBlow();
+    String rivalname = userMapper.selectNameByUsers(rivalid);
+    String Myanswers = check.translateString(in);
+    Match match = new Match(myid, rivalid,Myanswers, "","", true);
+    matchMapper.insertMatch(match);
     final SseEmitter SseEmitter = new SseEmitter();
     this.HitAndBlow.asyncHitAndBlow(SseEmitter);
+    model.addAttribute("rivalname", rivalname);// 相手のid
+    model.addAttribute("myid", myid);// 自分のid
+    model.addAttribute("rivalid", rivalid);// 相手のid
     return "wait.html";
   }
 
