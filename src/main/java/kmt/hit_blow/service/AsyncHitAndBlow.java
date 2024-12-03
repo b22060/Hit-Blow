@@ -5,10 +5,14 @@ import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+
+import kmt.hit_blow.model.MatchInfoMapper;
+import kmt.hit_blow.model.MatchMapper;
+import kmt.hit_blow.model.UserMapper;
 
 @Service
 public class AsyncHitAndBlow {
@@ -18,6 +22,17 @@ public class AsyncHitAndBlow {
   private final Logger logger = LoggerFactory.getLogger(AsyncHitAndBlow.class);
 
   private int hogehoge = 0;// ０→1→0と遷移する
+
+  @Autowired
+  MatchInfoMapper MIMapper; // MatchInfoMapper使用
+
+  @Autowired
+  MatchMapper MMapper; // MatchInfoMapper使用
+
+  @Autowired
+  UserMapper UMapper; // MatchInfoMapper使用
+
+  
 
   @Async
   public void asyncHitAndBlow(SseEmitter emitter) {
