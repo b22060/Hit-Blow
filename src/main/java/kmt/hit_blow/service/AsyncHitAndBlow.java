@@ -25,7 +25,9 @@ public class AsyncHitAndBlow {
   private int sellerCount = 1;// sellerロール用カウンター
   private final Logger logger = LoggerFactory.getLogger(AsyncHitAndBlow.class);
 
-  private int hogehoge = 0;// ０→1→0と遷移する
+  private int hogehoge = 0;// ０→1→0と遷移する サンプル用
+
+  private boolean updateflag = false;
 
   @Autowired
   private UserMapper userMapper;
@@ -35,20 +37,20 @@ public class AsyncHitAndBlow {
   private MatchInfoMapper matchInfoMapper;
 
   /* UserMapperを使った処理一覧 */
-  public ArrayList<User> asyncSelectAllByUsers() {//userのすべて
+  public ArrayList<User> asyncSelectAllByUsers() {// userのすべて
     return this.userMapper.selectAllByUsers();
   }
 
-  public String asyncSelectNameByUsers(int userid) {//userIdでnameを取得
+  public String asyncSelectNameByUsers(int userid) {// userIdでnameを取得
     return this.userMapper.selectNameByUsers(userid);
   }
 
-  public int asyncSelectIdByName(String userName) {//usernameでuserIdを取得
+  public int asyncSelectIdByName(String userName) {// usernameでuserIdを取得
     return this.userMapper.selectIdByName(userName);
   }
 
   /* MatchMapperを使った処理一覧 */
-  public ArrayList<Match> asyncSelectAllNotActiveByMatches() {//isActiveがfalseの試合
+  public ArrayList<Match> asyncSelectAllNotActiveByMatches() {// isActiveがfalseの試合
     return this.matchMapper.selectAllNotActiveByMatches();
   }
 
@@ -76,10 +78,17 @@ public class AsyncHitAndBlow {
     return this.matchMapper.selectIsActiveByuserId(userid1, userid2);
   }
 
-  public String asyncSelectUser1HandByMatchId(int matchid) {// isActiveがfalseの試合
-    return this.matchMapper.selectUser1HandByMatchId(matchid);
+  public boolean asyncUpdateUsernum2ByMatchId(int matchid, String usernum2) {// user2の秘密の数字をUpdateする
+    // ここで非同期処理のグローバル変数が更新される。
+    this.updateflag = true;
+
+    return this.matchMapper.updateUsernum2ByMatchId(matchid, usernum2);
   }
 
+  // public String asyncSelectUser1HandByMatchId(int matchid) {//
+  // isActiveがfalseの試合
+  // return this.matchMapper.selectUser1HandByMatchId(matchid);
+  // }
 
   public void asyncInsertMatch(Match match) {// isActiveがfalseの試合
     this.matchMapper.insertMatch(match);
@@ -113,6 +122,23 @@ public class AsyncHitAndBlow {
 
   @Async
   public void asyncHitAndBlow(SseEmitter emitter) {
+    logger.info("wait.htmlの処理開始");
+    try {
+      while (true) {
+        System.out.println("アップデートフラグ:" + this.updateflag);
+        if (this.updateflag == false) {// 変化なし
+          TimeUnit.MILLISECONDS.sleep(100);
+          continue;
+        }
+        // updateflag がtrueのとき以下の処理が実行
+        TimeUnit.MILLISECONDS.sleep(300);
+        System.out.println("成功！！！！！！！！！！");
+        updateflag = false;
+      }
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+
   }
 
   @Async
