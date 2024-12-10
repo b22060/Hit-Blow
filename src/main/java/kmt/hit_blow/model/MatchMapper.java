@@ -33,7 +33,7 @@ public interface MatchMapper {
   // useridからmatchidを入手
   int selectMatchIdByuserId(int userid1, int userid2);
 
-  @Select("SELECT isActive FROM matches WHERE userid1 = #{userid1} and userid2 = #{userid2} and isActive = TRUE")
+  @Select("SELECT isActive FROM matches WHERE userid1 = #{userid1} and userid2 = #{userid2} and usernum2='' and isActive = TRUE")
   // useridからmatchidを入手
   String selectIsActiveByuserId(int userid1, int userid2);
 

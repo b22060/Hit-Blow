@@ -85,11 +85,6 @@ public class AsyncHitAndBlow {
     return this.matchMapper.updateUsernum2ByMatchId(matchid, usernum2);
   }
 
-  // public String asyncSelectUser1HandByMatchId(int matchid) {//
-  // isActiveがfalseの試合
-  // return this.matchMapper.selectUser1HandByMatchId(matchid);
-  // }
-
   public void asyncInsertMatch(Match match) {// isActiveがfalseの試合
     this.matchMapper.insertMatch(match);
   }
@@ -121,28 +116,34 @@ public class AsyncHitAndBlow {
   }
 
   @Async
-  public void asyncHitAndBlow(SseEmitter emitter) {
+  public void asyncHitAndBlowWait(SseEmitter emitter) {// Wait.htmlにおけるSSE通信部分
     logger.info("wait.htmlの処理開始");
     try {
       while (true) {
-        System.out.println("アップデートフラグ:" + this.updateflag);
+
         if (this.updateflag == false) {// 変化なし
-          TimeUnit.MILLISECONDS.sleep(10000);
+          TimeUnit.MILLISECONDS.sleep(50);
           continue;
         }
         // updateflag がtrueのとき以下の処理が実行
-        TimeUnit.MILLISECONDS.sleep(30000);
-        System.out.println("成功！！！！！！！！！！");
+        TimeUnit.MILLISECONDS.sleep(50);
+
         Match match = this.asyncSelectMatchById(this.matchid);
+
         emitter.send(match);
-        TimeUnit.MILLISECONDS.sleep(10000);
+        logger.info("成功！！");
+        TimeUnit.MILLISECONDS.sleep(5);
         updateflag = false;
-        TimeUnit.MILLISECONDS.sleep(10000);
+
+        TimeUnit.MILLISECONDS.sleep(1);
       }
     } catch (Exception e) {
       e.printStackTrace();
+      System.out.println("エラー：" + e);
+    } finally {
+      emitter.complete();
     }
-
+    System.out.println("asyncHitAndBlow complete");
   }
 
   @Async
