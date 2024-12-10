@@ -190,6 +190,18 @@ public class HitAndBlowController {
       return "wait.html";
     }
 
+    if (HitAndBlow.asyncSelectIsActiveById(myid, rivalid) == "TRUE") {// 自分と相手のidでactiveの試合があるか？
+      int matchid = HitAndBlow.asyncSelectMatchIdByuserId(myid, rivalid); // 相手の情報があるレコードを取り出す
+      String opponenthand = HitAndBlow.asyncSelectUser1HandByMatchId(matchid);// 相手の手を取り出す
+      Match match = new Match(loginUser_id, id, hand, opponenthand, true);// 試合の情報を格納
+      String fight = janken.judge(hand, opponenthand);
+      match.setResult(fight);
+      DBInfo.syncInsertMatch(match);
+      DBInfo.syncUpdateActive(matching);
+    } else {
+      matchinfomappser.insertAllMatchInfo(info);
+    }
+
     String rivalname = this.HitAndBlow.asyncSelectNameByUsers(rivalid);
     String Myanswers = check.translateString(in);
     Match match = new Match(myid, rivalid, Myanswers, "", "", true);

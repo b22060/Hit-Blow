@@ -33,6 +33,14 @@ public interface MatchMapper {
   // useridからmatchidを入手
   int selectMatchIdByuserId(int userid1, int userid2);
 
+  @Select("SELECT isActive FROM matches WHERE userid1 = #{userid1} and userid2 = #{userid2} and isActive = TRUE")
+  // useridからmatchidを入手
+  String selectIsActiveByuserId(int userid1, int userid2);
+
+  @Select("SELECT user1Hand FROM matches WHERE matchid = #{matchid}")
+  // useridからmatchidを入手
+  String selectUser1HandByMatchId(int matchid);
+
   @Insert("INSERT INTO matches (userid1,userid2,usernum1,usernum2,judge,isActive) VALUES (#{userid1},#{userid2},#{usernum1},#{usernum2},#{judge},#{isActive});")
   void insertMatch(Match match);// optionsは消したおそらくmatchidとかにしたら行けるはず
 
