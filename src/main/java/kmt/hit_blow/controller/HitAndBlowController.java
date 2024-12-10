@@ -195,7 +195,10 @@ public class HitAndBlowController {
 
       String mysecret = check.translateString(in);// int ⇒Stringへ
       this.HitAndBlow.asyncUpdateUsernum2ByMatchId(matchid, mysecret);// matchidに対してUpdate処理
-
+      String rivalname = this.HitAndBlow.asyncSelectNameByUsers(rivalid);
+      model.addAttribute("rivalname", rivalname);// 相手のid
+      model.addAttribute("myid", myid);// 自分のid
+      model.addAttribute("rivalid", rivalid);// 相手のid
     } else {// 自分と相手のidでactiveの試合がない場合
       String rivalname = this.HitAndBlow.asyncSelectNameByUsers(rivalid);
       String Myanswers = check.translateString(in);
@@ -210,7 +213,7 @@ public class HitAndBlowController {
     return "wait.html";
   }
 
-  @PostMapping("/hogehoge")
+  @GetMapping("/hogehoge")
   public SseEmitter hogehoge() {
     // SSE通信の実装
     final SseEmitter SseEmitter = new SseEmitter();

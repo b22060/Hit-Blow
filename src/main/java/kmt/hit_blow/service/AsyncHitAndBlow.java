@@ -127,15 +127,17 @@ public class AsyncHitAndBlow {
       while (true) {
         System.out.println("アップデートフラグ:" + this.updateflag);
         if (this.updateflag == false) {// 変化なし
-          TimeUnit.MILLISECONDS.sleep(100);
+          TimeUnit.MILLISECONDS.sleep(10000);
           continue;
         }
         // updateflag がtrueのとき以下の処理が実行
-        TimeUnit.MILLISECONDS.sleep(300);
+        TimeUnit.MILLISECONDS.sleep(30000);
         System.out.println("成功！！！！！！！！！！");
         Match match = this.asyncSelectMatchById(this.matchid);
         emitter.send(match);
+        TimeUnit.MILLISECONDS.sleep(10000);
         updateflag = false;
+        TimeUnit.MILLISECONDS.sleep(10000);
       }
     } catch (Exception e) {
       e.printStackTrace();
