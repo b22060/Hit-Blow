@@ -8,6 +8,13 @@
     window.onload = function () {
       var sse = new EventSource('/hogehoge');
       sse.onmessage = function (event) {
+        console.log("sse.onmessage")
+        console.log(event.data);
+        var match = JSON.aprse(event.data);//matchの全dataを取得
+        var kekka = <a th:href ="@{/play(matchid=${match.matchid})}">もどる </a>;//matchのmatchidを取得
+        console.log(kekka);
+        var tbody = document.getElementById("kekka");//更新場所
+        tbody.innerHTML = kekka;//kekkaを反映
       }
     }
   </script>
@@ -15,7 +22,7 @@
 </head>
 
 <body>
-  <div> <!-- 入力フォームエリア -->
+  <div id="kekka"> <!-- 入力フォームエリア -->
     [[${rivalname}]]を待っています。
 
     <div th:if="${formboolean}">

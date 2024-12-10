@@ -211,11 +211,12 @@ public class HitAndBlowController {
   }
 
   @PostMapping("/hogehoge")
-  public void hogehoge() {
+  public SseEmitter hogehoge() {
     // SSE通信の実装
     final SseEmitter SseEmitter = new SseEmitter();
     this.HitAndBlow.asyncHitAndBlow(SseEmitter);
-    // return "sseEmitter";
+
+    return SseEmitter;
   }
 
   @PostMapping("/play") // ここで対戦の処理をする

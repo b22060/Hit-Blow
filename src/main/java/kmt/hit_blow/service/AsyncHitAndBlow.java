@@ -26,7 +26,7 @@ public class AsyncHitAndBlow {
   private final Logger logger = LoggerFactory.getLogger(AsyncHitAndBlow.class);
 
   private int hogehoge = 0;// ０→1→0と遷移する サンプル用
-
+  private int matchid;
   private boolean updateflag = false;
 
   @Autowired
@@ -81,7 +81,7 @@ public class AsyncHitAndBlow {
   public boolean asyncUpdateUsernum2ByMatchId(int matchid, String usernum2) {// user2の秘密の数字をUpdateする
     // ここで非同期処理のグローバル変数が更新される。
     this.updateflag = true;
-
+    this.matchid = matchid;
     return this.matchMapper.updateUsernum2ByMatchId(matchid, usernum2);
   }
 
@@ -133,9 +133,11 @@ public class AsyncHitAndBlow {
         // updateflag がtrueのとき以下の処理が実行
         TimeUnit.MILLISECONDS.sleep(300);
         System.out.println("成功！！！！！！！！！！");
+        Match match = this.asyncSelectMatchById(this.matchid);
+        emitter.send(match);
         updateflag = false;
       }
-    } catch (InterruptedException e) {
+    } catch (Exception e) {
       e.printStackTrace();
     }
 
