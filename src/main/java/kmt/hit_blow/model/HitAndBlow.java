@@ -71,7 +71,7 @@ public class HitAndBlow {
       case 1:
         message = user1.getName() + "の数字入力を待っています。";
         break;
-      case 2:
+      case 0:
         message = user2.getName() + "の数字入力を待っています。";
         break;
 
@@ -89,6 +89,16 @@ public class HitAndBlow {
     return mysecret;
   }
 
+  public int getRivalId(GameData user1, GameData user2, String myname) {
+    int rivalid = -1;
+    if (myname.equals(user1.getName())) {
+      rivalid = user2.getId();
+    } else {
+      rivalid = user1.getId();
+    }
+    return rivalid;
+  }
+
   public String getRivalName(GameData user1, GameData user2, String myname) {
     String rivalname = "";
     if (myname.equals(user1.getName())) {
@@ -97,6 +107,16 @@ public class HitAndBlow {
       rivalname = user1.getName();
     }
     return rivalname;
+  }
+
+  public String getRivalSecret(GameData user1, GameData user2, String myname) {
+    String rivalsecret = "";
+    if (myname.equals(user1.getName())) {
+      rivalsecret = user2.getSecret();
+    } else {
+      rivalsecret = user1.getSecret();
+    }
+    return rivalsecret;
   }
 
   public boolean checkTypist(GameData user1, GameData user2, String myname, int turn) {
@@ -112,4 +132,12 @@ public class HitAndBlow {
     }
     return check;
   }
+
+  public int[] translateInt(String in) {// int配列の値を文字列に変換する
+    int[] inarray = in.chars() // 各文字をストリームに変換
+        .map(Character::getNumericValue) // 数値として解釈
+        .toArray();
+    return inarray;
+  }
+
 }

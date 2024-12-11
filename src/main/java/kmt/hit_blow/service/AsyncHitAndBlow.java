@@ -14,6 +14,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import kmt.hit_blow.model.MatchInfoMapper;
 import kmt.hit_blow.model.MatchInfo;
 import kmt.hit_blow.model.MatchMapper;
+import kmt.hit_blow.model.SSEMatch;
 import kmt.hit_blow.model.Match;
 import kmt.hit_blow.model.UserMapper;
 import kmt.hit_blow.model.User;
@@ -23,11 +24,16 @@ public class AsyncHitAndBlow {
 
   private int customerCount = 1;// customerロール用カウンター
   private int sellerCount = 1;// sellerロール用カウンター
+  private int hogehoge = 0;// ０→1→0と遷移する サンプル用
+
   private final Logger logger = LoggerFactory.getLogger(AsyncHitAndBlow.class);
 
-  private int hogehoge = 0;// ０→1→0と遷移する サンプル用
   private int matchid;
   private boolean updateflag = false;
+
+  private int insertedid;
+  private String message;
+  private int goalflag;
 
   @Autowired
   private UserMapper userMapper;
@@ -107,12 +113,20 @@ public class AsyncHitAndBlow {
     return this.matchInfoMapper.selectByMatchId(matchid);
   }
 
-  public void asyncInsertMatchInfo(MatchInfo matchinfo) {// isActiveがfalseの試合
+  public void asyncInsertMatchInfo(MatchInfo matchinfo) {// 新たなmatchinfo行を挿入する
     this.matchInfoMapper.insertMatchInfo(matchinfo);
   }
 
   public boolean asyncUpdateActive(MatchInfo matchinfo) {// isActiveがfalseの試合
     return this.matchInfoMapper.updateActive(matchinfo);
+  }
+
+  public void asyncInsertMatchInfoFor2pc(MatchInfo matchinfo, int insertedid, String message, int goalflag) {// 新たなmatchinfo行を挿入する
+    this.updateflag = true;// 2PC戦のための更新
+    this.insertedid = insertedid;// 挿入したuseridを格納する
+    this.message = message;
+    this.goalflag = goalflag;
+    this.asyncInsertMatchInfo(matchinfo);
   }
 
   @Async
@@ -160,8 +174,9 @@ public class AsyncHitAndBlow {
         TimeUnit.MILLISECONDS.sleep(50);
 
         ArrayList<MatchInfo> matchInfo = this.asyncSelectByMatchId(matchid);
+        SSEMatch info = new SSEMatch(matchInfo, this.insertedid, this.message, this.goalflag);
 
-        emitter.send(matchInfo);
+        emitter.send(info);
         logger.info("成功！！");
         TimeUnit.MILLISECONDS.sleep(5);
         updateflag = false;

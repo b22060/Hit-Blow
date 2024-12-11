@@ -101,13 +101,39 @@
         console.log("sse.onmessage");
         console.log("実行結果");
         console.log(event.data);
-        var match = JSON.parse(event.data);//matchの全dataを取得
-        // var matchid = match.matchid;
-        // var kekka = "<h1>" + "マッチングしました" + "</h1><br>";
-        // kekka = kekka + " <a href ='/play2pc?matchid=" + matchid + " '> " + "対戦を始める" + "</a>";//matchのmatchidを取得
-        // console.log(kekka);
-        // var tbody = document.getElementById("kekka");//更新場所
-        // tbody.innerHTML = kekka;//kekkaを反映
+        var SSEmatch = JSON.parse(event.data);//全dataを取得
+
+        var message = SSEmatch.message;//SSE通信でメッセージを更新する
+        var messagebody = document.getElementById("message");
+        messagebody.innerHTML = message;
+
+        var rivalarea = "<li>";//SSE通信で更新されたデータを表示する
+        var matchInfo = SSEmatch.matchInfo;
+        for (let i = 0; i < matchInfo.length; i++) {
+
+          if (SSEmatch.insertedid !== matchInfo[i].userid) {
+            var guess = matchInfo[i].guess;
+            var hit = matchInfo[i].hit;
+            var blow = matchInfo[i].blow;
+            rivalarea = rivalarea + "<p>";
+            rivalarea = rivalarea + "[[${rivalname}]]の推理:" + guess + ",Hit:" + hit + ",Blow:" + blow;
+            rivalarea = rivalarea + "</p>";
+          }
+        }
+        rivalarea = rivalarea + "</li>";
+        var rivalareabody = document.getElementById("rivalarea");
+        rivalareabody.innerHTML = rivalarea;
+
+        var goalflag = SSEmatch.goalflag;//もどるをSSE通信で表示させる
+        if (goalflag == 1) {
+          var ret = " <a href='/'>もどる</a>";
+          var retbody = document.getElementById("return");
+          retbody.innerHTML = ret;
+        }
+
+        // var test = "ほげほげ";
+        // var retbody = document.getElementById("rivalarea");
+        // retbody.innerHTML = test;
       }
     }
   </script>
@@ -135,7 +161,7 @@
 
   </div>
 
-  <h2>[[${message}]]</h2>
+  <h2 id="message">[[${message}]]</h2>
   <div th:if="${goalflag}">
     <h2>おめでとうございます</h2>
   </div>
@@ -147,7 +173,7 @@
         [[${name}]]
       </div>
       <div class="usersecret">[[${mysecret}]]</div> <!--ここが????で秘密の数字部分-->
-      <ul>
+      <ul id="myarea">
         <li th:each="matchInfo : ${matchInfo}" th:if="${matchInfo.userid == loginid}">
           <p>
             [[${name}]]の推理: [[${matchInfo.guess}]],
@@ -160,7 +186,7 @@
     <div class="user">
       <div class="username">[[${rivalname}]]</div>
       <div class="usersecret">[[${rivalsecret}]]</div> <!--ここが????で秘密の数字部分-->
-      <ul>
+      <ul id="rivalarea">
         <li th:each="matchInfo : ${matchInfo}" th:if="${matchInfo.userid == battleid}">
           <p>
             [[${rivalname}]]の推理: [[${matchInfo.guess}]],
@@ -176,10 +202,8 @@
     <li th:each="answer : ${debuganswer}" th:text="${answer}"></li>
   </div>
 
-  <div th:if="${goalflag}" class="back">
-    <a href="/">もどる</a>
-  </div>
-
+  <div id="return" class="back"></div>
+  <!-- ↑戻るが表示される -->
 </body>
 
 </html>
