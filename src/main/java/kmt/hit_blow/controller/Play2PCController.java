@@ -91,13 +91,14 @@ public class Play2PCController {
     String mysecret = "";
     String rivalname = "";
     String rivalsecret = "????";
-    if (myname == this.user1.getName()) {
+    if (myname.equals(this.user1.getName())) {
       mysecret = this.user1.getSecret();
       rivalname = this.user2.getName();
     } else {
       mysecret = this.user2.getSecret();
       rivalname = this.user1.getName();
     }
+
     model.addAttribute("name", myname);// 自分の名前
     model.addAttribute("rivalname", rivalname);// 相手の名前
     model.addAttribute("message", message);// Thymeleafで値をHTMLに渡す
