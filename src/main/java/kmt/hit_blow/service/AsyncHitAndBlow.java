@@ -147,6 +147,37 @@ public class AsyncHitAndBlow {
   }
 
   @Async
+  public void asyncHitAndBlowPlay(SseEmitter emitter) {// Wait.htmlにおけるSSE通信部分
+    logger.info("match2pc.htmlの処理開始");
+    try {
+      while (true) {
+
+        if (this.updateflag == false) {// 変化なし
+          TimeUnit.MILLISECONDS.sleep(50);
+          continue;
+        }
+        // updateflag がtrueのとき以下の処理が実行
+        TimeUnit.MILLISECONDS.sleep(50);
+
+        ArrayList<MatchInfo> matchInfo = this.asyncSelectByMatchId(matchid);
+
+        emitter.send(matchInfo);
+        logger.info("成功！！");
+        TimeUnit.MILLISECONDS.sleep(5);
+        updateflag = false;
+
+        TimeUnit.MILLISECONDS.sleep(1);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      System.out.println("エラー：" + e);
+    } finally {
+      emitter.complete();
+    }
+    System.out.println("asyncHitAndBlow complete");
+  }
+
+  @Async
   public void count(SseEmitter emitter, String role) throws IOException {
     logger.info("AsyncCount58.count");
     try {

@@ -79,4 +79,37 @@ public class HitAndBlow {
     return message;
   }
 
+  public String getMySecret(GameData user1, GameData user2, String myname) {
+    String mysecret = "";
+    if (myname.equals(user1.getName())) {
+      mysecret = user1.getSecret();
+    } else {
+      mysecret = user2.getSecret();
+    }
+    return mysecret;
+  }
+
+  public String getRivalName(GameData user1, GameData user2, String myname) {
+    String rivalname = "";
+    if (myname.equals(user1.getName())) {
+      rivalname = user2.getName();
+    } else {
+      rivalname = user1.getName();
+    }
+    return rivalname;
+  }
+
+  public boolean checkTypist(GameData user1, GameData user2, String myname, int turn) {
+    boolean check = false;
+    if (myname.equals(user1.getName())) {
+      if (turn % 2 == 1) {// user1が入力するべきとき
+        check = true;
+      }
+    } else {
+      if (turn % 2 == 0) {// user2が入力するべきとき
+        check = true;
+      }
+    }
+    return check;
+  }
 }
