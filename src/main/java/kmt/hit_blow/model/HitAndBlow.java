@@ -64,4 +64,19 @@ public class HitAndBlow {
     }
     return generatenumbers;
   }
+
+  public String generateWaitMessage(GameData user1, GameData user2, int turn) {
+    String message = "";
+    switch (turn % 2) {
+      case 1:
+        message = user1.getName() + "の数字入力を待っています。";
+        break;
+      case 2:
+        message = user2.getName() + "の数字入力を待っています。";
+        break;
+
+    }
+    return message;
+  }
+
 }
