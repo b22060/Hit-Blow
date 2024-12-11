@@ -33,15 +33,26 @@ public interface MatchMapper {
   // useridからmatchidを入手
   int selectMatchIdByuserId(int userid1, int userid2);
 
+  @Select("SELECT isActive FROM matches WHERE userid1 = #{userid1} and userid2 = #{userid2} and usernum2='' and isActive = TRUE")
+  // useridからmatchidを入手
+  String selectIsActiveByuserId(int userid1, int userid2);
+
+  // @Select("SELECT user1Hand FROM matches WHERE matchid = #{matchid}")
+  // // useridからmatchidを入手
+  // String selectUser1HandByMatchId(int matchid);
+
   @Insert("INSERT INTO matches (userid1,userid2,usernum1,usernum2,judge,isActive) VALUES (#{userid1},#{userid2},#{usernum1},#{usernum2},#{judge},#{isActive});")
   void insertMatch(Match match);// optionsは消したおそらくmatchidとかにしたら行けるはず
 
   @Update("UPDATE matches SET judge=#{judge} WHERE matchid = #{matchid}")
   void updateById(Match match);
 
-  @Update("UPDATE matches SET isActive = FALSE where isActive = TRUE and matchid=#{matchid}") // FALSEにする
-  boolean updateActive(Match match);
+  @Update("UPDATE matches SET usernum2 = #{usernum2} where isActive = TRUE and matchid=#{matchid}") // user2の秘密の数字をUpdateする
+  boolean updateUsernum2ByMatchId(int matchid, String usernum2);
 
   @Select("SELECT userid1 FROM matches WHERE userid2 =#{userid2} and usernum2 =''and isActive=TRUE")
   ArrayList<Integer> selectMatchIdByIsActive(int user2id);
+
+  @Update("UPDATE matches SET isActive = FALSE where isActive = TRUE and matchid=#{matchid}") // FALSEにする
+  boolean updateActive(Match match);
 }

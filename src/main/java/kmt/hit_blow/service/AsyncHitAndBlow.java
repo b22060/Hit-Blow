@@ -25,7 +25,9 @@ public class AsyncHitAndBlow {
   private int sellerCount = 1;// sellerロール用カウンター
   private final Logger logger = LoggerFactory.getLogger(AsyncHitAndBlow.class);
 
-  private int hogehoge = 0;// ０→1→0と遷移する
+  private int hogehoge = 0;// ０→1→0と遷移する サンプル用
+  private int matchid;
+  private boolean updateflag = false;
 
   @Autowired
   private UserMapper userMapper;
@@ -35,76 +37,113 @@ public class AsyncHitAndBlow {
   private MatchInfoMapper matchInfoMapper;
 
   /* UserMapperを使った処理一覧 */
-  public ArrayList<User> asyncSelectAllByUsers() {
+  public ArrayList<User> asyncSelectAllByUsers() {// userのすべて
     return this.userMapper.selectAllByUsers();
   }
 
-  public String asyncSelectNameByUsers(int userid) {
+  public String asyncSelectNameByUsers(int userid) {// userIdでnameを取得
     return this.userMapper.selectNameByUsers(userid);
   }
 
-  public int asyncSelectIdByName(String userName) {
+  public int asyncSelectIdByName(String userName) {// usernameでuserIdを取得
     return this.userMapper.selectIdByName(userName);
   }
 
   /* MatchMapperを使った処理一覧 */
-  public ArrayList<Match> asyncSelectAllNotActiveByMatches() {
+  public ArrayList<Match> asyncSelectAllNotActiveByMatches() {// isActiveがfalseの試合
     return this.matchMapper.selectAllNotActiveByMatches();
   }
 
-  public ArrayList<Match> asyncSelectAllActiveByMatches() {
+  public ArrayList<Match> asyncSelectAllActiveByMatches() {// isActiveがtrueの試合
     return this.matchMapper.selectAllActiveByMatches();
   }
 
-  public Match asyncSelectMatchById(int matchid) {
+  public Match asyncSelectMatchById(int matchid) {// isActiveがfalseの試合
     return this.matchMapper.selectMatchById(matchid);
   }
 
-  public int asyncSelectUserId1ByMatchId(int matchid) {
+  public int asyncSelectUserId1ByMatchId(int matchid) {// isActiveがfalseの試合
     return this.matchMapper.selectUserId1ByMatchId(matchid);
   }
 
-  public int asyncSelectUserId2ByMatchId(int matchid) {
+  public int asyncSelectUserId2ByMatchId(int matchid) {// isActiveがfalseの試合
     return this.matchMapper.selectUserId2ByMatchId(matchid);
   }
 
-  public int asyncSelectMatchIdByuserId(int userid1, int userid2) {
+  public int asyncSelectMatchIdByuserId(int userid1, int userid2) {// isActiveがfalseの試合
     return this.matchMapper.selectMatchIdByuserId(userid1, userid2);
   }
 
-  public void asyncInsertMatch(Match match) {
+  public String asyncSelectIsActiveById(int userid1, int userid2) {// isActiveがfalseの試合
+    return this.matchMapper.selectIsActiveByuserId(userid1, userid2);
+  }
+
+  public boolean asyncUpdateUsernum2ByMatchId(int matchid, String usernum2) {// user2の秘密の数字をUpdateする
+    // ここで非同期処理のグローバル変数が更新される。
+    this.updateflag = true;
+    this.matchid = matchid;
+    return this.matchMapper.updateUsernum2ByMatchId(matchid, usernum2);
+  }
+
+  public void asyncInsertMatch(Match match) {// isActiveがfalseの試合
     this.matchMapper.insertMatch(match);
   }
 
-  public void asyncUpdateById(Match match) {
+  public void asyncUpdateById(Match match) {// isActiveがfalseの試合
     this.matchMapper.updateById(match);
   }
 
-  public boolean asyncUpdateActive(Match match) {
+  public boolean asyncUpdateActive(Match match) {// isActiveがfalseの試合
     return this.matchMapper.updateActive(match);
   }
 
-  public ArrayList<Integer> asyncSelectMatchIdByIsActive(int user2id) {
+  public ArrayList<Integer> asyncSelectMatchIdByIsActive(int user2id) {// isActiveがfalseの試合
     return this.matchMapper.selectMatchIdByIsActive(user2id);
   }
 
   /* MatchInfoMapperを使った処理一覧 */
 
-  public ArrayList<MatchInfo> asyncSelectByMatchId(int matchid) {
+  public ArrayList<MatchInfo> asyncSelectByMatchId(int matchid) {// isActiveがfalseの試合
     return this.matchInfoMapper.selectByMatchId(matchid);
   }
 
-  public void asyncInsertMatchInfo(MatchInfo matchinfo) {
+  public void asyncInsertMatchInfo(MatchInfo matchinfo) {// isActiveがfalseの試合
     this.matchInfoMapper.insertMatchInfo(matchinfo);
   }
 
-  public boolean asyncUpdateActive(MatchInfo matchinfo) {
+  public boolean asyncUpdateActive(MatchInfo matchinfo) {// isActiveがfalseの試合
     return this.matchInfoMapper.updateActive(matchinfo);
   }
 
   @Async
-  public void asyncHitAndBlow(SseEmitter emitter) {
+  public void asyncHitAndBlowWait(SseEmitter emitter) {// Wait.htmlにおけるSSE通信部分
+    logger.info("wait.htmlの処理開始");
+    try {
+      while (true) {
 
+        if (this.updateflag == false) {// 変化なし
+          TimeUnit.MILLISECONDS.sleep(50);
+          continue;
+        }
+        // updateflag がtrueのとき以下の処理が実行
+        TimeUnit.MILLISECONDS.sleep(50);
+
+        Match match = this.asyncSelectMatchById(this.matchid);
+
+        emitter.send(match);
+        logger.info("成功！！");
+        TimeUnit.MILLISECONDS.sleep(5);
+        updateflag = false;
+
+        TimeUnit.MILLISECONDS.sleep(1);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      System.out.println("エラー：" + e);
+    } finally {
+      emitter.complete();
+    }
+    System.out.println("asyncHitAndBlow complete");
   }
 
   @Async

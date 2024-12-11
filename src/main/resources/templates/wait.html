@@ -6,8 +6,19 @@
   <title>待機中</title>
   <script>
     window.onload = function () {
-      var sse = new EventSource('/hogehoge');
+      console.log("ファンクション開始");
+      var sse = new EventSource('/waitSSE');
       sse.onmessage = function (event) {
+        console.log("sse.onmessage");
+        console.log("実行結果");
+        console.log(event.data);
+        var match = JSON.parse(event.data);//matchの全dataを取得
+        var matchid = match.matchid;
+        var kekka = "<h1>" + "マッチングしました" + "</h1><br>";
+        kekka = kekka + " <a href ='/play2pc?matchid=" + matchid + " '> " + "対戦を始める" + "</a>";//matchのmatchidを取得
+        console.log(kekka);
+        var tbody = document.getElementById("kekka");//更新場所
+        tbody.innerHTML = kekka;//kekkaを反映
       }
     }
   </script>
@@ -15,7 +26,7 @@
 </head>
 
 <body>
-  <div> <!-- 入力フォームエリア -->
+  <div id="kekka"> <!-- 入力フォームエリア -->
     [[${rivalname}]]を待っています。
 
     <div th:if="${formboolean}">

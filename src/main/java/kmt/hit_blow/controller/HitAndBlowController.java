@@ -175,11 +175,11 @@ public class HitAndBlowController {
 
   @PostMapping("/wait")
   public String wait(@RequestParam Integer line1, @RequestParam Integer line2, @RequestParam Integer line3,
-      @RequestParam Integer line4, @RequestParam Integer myid,
-      @RequestParam Integer rivalid, ModelMap model, Principal prin) {
+      @RequestParam Integer line4, @RequestParam Integer myid, @RequestParam Integer rivalid, ModelMap model,
+      Principal prin) {
     int[] in = { line1, line2, line3, line4 };
     HitAndBlow check = new HitAndBlow();
-    // SSE通信を行う。
+
     if (check.numFormat(in) != true) { // 数値の重複があった場合
       String rivalname = this.HitAndBlow.asyncSelectNameByUsers(rivalid);
       int formboolean = 1;
@@ -190,29 +190,45 @@ public class HitAndBlowController {
       return "wait.html";
     }
 
-    String rivalname = this.HitAndBlow.asyncSelectNameByUsers(rivalid);
-    String Myanswers = check.translateString(in);
-    Match match = new Match(myid, rivalid, Myanswers, "", "", true);
-    this.HitAndBlow.asyncInsertMatch(match);
-    final SseEmitter SseEmitter = new SseEmitter();
-    this.HitAndBlow.asyncHitAndBlow(SseEmitter);
-    model.addAttribute("rivalname", rivalname);// 相手のid
-    model.addAttribute("myid", myid);// 自分のid
-    model.addAttribute("rivalid", rivalid);// 相手のid
+    if (HitAndBlow.asyncSelectIsActiveById(rivalid, myid) == "TRUE") {// 自分と相手のidでactiveの試合があるか？
+      int matchid = HitAndBlow.asyncSelectMatchIdByuserId(rivalid, myid); // 相手の情報があるレコードを取り出す
+
+      String mysecret = check.translateString(in);// int ⇒Stringへ
+      this.HitAndBlow.asyncUpdateUsernum2ByMatchId(matchid, mysecret);// matchidに対してUpdate処理
+      String rivalname = this.HitAndBlow.asyncSelectNameByUsers(rivalid);
+      model.addAttribute("rivalname", rivalname);// 相手のid
+      model.addAttribute("myid", myid);// 自分のid
+      model.addAttribute("rivalid", rivalid);// 相手のid
+    } else {// 自分と相手のidでactiveの試合がない場合
+      String rivalname = this.HitAndBlow.asyncSelectNameByUsers(rivalid);
+      String Myanswers = check.translateString(in);
+      Match match = new Match(myid, rivalid, Myanswers, "", "", true);
+      this.HitAndBlow.asyncInsertMatch(match);
+      // final SseEmitter SseEmitter = new SseEmitter();
+      // this.HitAndBlow.asyncHitAndBlow(SseEmitter);
+      model.addAttribute("rivalname", rivalname);// 相手のid
+      model.addAttribute("myid", myid);// 自分のid
+      model.addAttribute("rivalid", rivalid);// 相手のid
+    }
     return "wait.html";
   }
 
-  @PostMapping("/hogehoge")
-  public void hogehoge() {
+  @GetMapping("/waitSSE")
+  public SseEmitter waitSSE() {
     // SSE通信の実装
     final SseEmitter SseEmitter = new SseEmitter();
-    this.HitAndBlow.asyncHitAndBlow(SseEmitter);
-    // return "sseEmitter";
+    try {
+      this.HitAndBlow.asyncHitAndBlowWait(SseEmitter);
+    } catch (Exception e) {
+      System.out.println("エラー発生！！");
+      System.out.println(e);
+    }
+    return SseEmitter;
   }
 
   @PostMapping("/play") // ここで対戦の処理をする
   public String play(@RequestParam Integer line1, @RequestParam Integer line2, @RequestParam Integer line3,
-      @RequestParam Integer line4, ModelMap model, Principal prin) {
+      @RequestParam Integer line4, ModelMap model, Principal prin) {// CPU戦時
 
     int[] in = { line1, line2, line3, line4 }; // 入力を配列に格納する
     String mysecret = this.Myanswers;// 自分の？？？？と表示されている秘密の数字を格納する変数
@@ -331,6 +347,11 @@ public class HitAndBlowController {
     model.addAttribute("rivalsecret", rivalsecret);// 相手の秘密の数字部分を表示する
     model.addAttribute("battleid", battleid);// matchInfoで相手の試合情報を表示するために用いる
 
+    return "match.html";
+  }
+
+  @GetMapping("/play2pc") // ここで対戦の処理をする
+  public String play2pc(@RequestParam Integer matchid) {
     return "match.html";
   }
 
