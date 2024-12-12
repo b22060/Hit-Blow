@@ -64,4 +64,80 @@ public class HitAndBlow {
     }
     return generatenumbers;
   }
+
+  public String generateWaitMessage(GameData user1, GameData user2, int turn) {
+    String message = "";
+    switch (turn % 2) {
+      case 1:
+        message = user1.getName() + "の数字入力を待っています。";
+        break;
+      case 0:
+        message = user2.getName() + "の数字入力を待っています。";
+        break;
+
+    }
+    return message;
+  }
+
+  public String getMySecret(GameData user1, GameData user2, String myname) {
+    String mysecret = "";
+    if (myname.equals(user1.getName())) {
+      mysecret = user1.getSecret();
+    } else {
+      mysecret = user2.getSecret();
+    }
+    return mysecret;
+  }
+
+  public int getRivalId(GameData user1, GameData user2, String myname) {
+    int rivalid = -1;
+    if (myname.equals(user1.getName())) {
+      rivalid = user2.getId();
+    } else {
+      rivalid = user1.getId();
+    }
+    return rivalid;
+  }
+
+  public String getRivalName(GameData user1, GameData user2, String myname) {
+    String rivalname = "";
+    if (myname.equals(user1.getName())) {
+      rivalname = user2.getName();
+    } else {
+      rivalname = user1.getName();
+    }
+    return rivalname;
+  }
+
+  public String getRivalSecret(GameData user1, GameData user2, String myname) {
+    String rivalsecret = "";
+    if (myname.equals(user1.getName())) {
+      rivalsecret = user2.getSecret();
+    } else {
+      rivalsecret = user1.getSecret();
+    }
+    return rivalsecret;
+  }
+
+  public boolean checkTypist(GameData user1, GameData user2, String myname, int turn) {
+    boolean check = false;
+    if (myname.equals(user1.getName())) {
+      if (turn % 2 == 1) {// user1が入力するべきとき
+        check = true;
+      }
+    } else {
+      if (turn % 2 == 0) {// user2が入力するべきとき
+        check = true;
+      }
+    }
+    return check;
+  }
+
+  public int[] translateInt(String in) {// int配列の値を文字列に変換する
+    int[] inarray = in.chars() // 各文字をストリームに変換
+        .map(Character::getNumericValue) // 数値として解釈
+        .toArray();
+    return inarray;
+  }
+
 }

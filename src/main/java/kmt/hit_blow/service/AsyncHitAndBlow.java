@@ -14,6 +14,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import kmt.hit_blow.model.MatchInfoMapper;
 import kmt.hit_blow.model.MatchInfo;
 import kmt.hit_blow.model.MatchMapper;
+import kmt.hit_blow.model.SSEMatch;
 import kmt.hit_blow.model.Match;
 import kmt.hit_blow.model.UserMapper;
 import kmt.hit_blow.model.User;
@@ -23,11 +24,15 @@ public class AsyncHitAndBlow {
 
   private int customerCount = 1;// customerロール用カウンター
   private int sellerCount = 1;// sellerロール用カウンター
+  private int hogehoge = 0;// ０→1→0と遷移する サンプル用
+
   private final Logger logger = LoggerFactory.getLogger(AsyncHitAndBlow.class);
 
-  private int hogehoge = 0;// ０→1→0と遷移する サンプル用
   private int matchid;
   private boolean updateflag = false;
+
+  private String message;
+  private int goalflag;
 
   @Autowired
   private UserMapper userMapper;
@@ -107,12 +112,20 @@ public class AsyncHitAndBlow {
     return this.matchInfoMapper.selectByMatchId(matchid);
   }
 
-  public void asyncInsertMatchInfo(MatchInfo matchinfo) {// isActiveがfalseの試合
+  public void asyncInsertMatchInfo(MatchInfo matchinfo) {// 新たなmatchinfo行を挿入する
     this.matchInfoMapper.insertMatchInfo(matchinfo);
   }
 
   public boolean asyncUpdateActive(MatchInfo matchinfo) {// isActiveがfalseの試合
     return this.matchInfoMapper.updateActive(matchinfo);
+  }
+
+  public void asyncInsertMatchInfoFor2pc(MatchInfo matchinfo, String message, int goalflag) {// 新たなmatchinfo行を挿入する
+    this.updateflag = true;// 2PC戦のための更新
+
+    this.message = message;
+    this.goalflag = goalflag;
+    this.asyncInsertMatchInfo(matchinfo);
   }
 
   @Async
@@ -136,6 +149,38 @@ public class AsyncHitAndBlow {
         updateflag = false;
 
         TimeUnit.MILLISECONDS.sleep(1);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      System.out.println("エラー：" + e);
+    } finally {
+      emitter.complete();
+    }
+    System.out.println("asyncHitAndBlow complete");
+  }
+
+  @Async
+  public void asyncHitAndBlowPlay(SseEmitter emitter) {// Wait.htmlにおけるSSE通信部分
+    logger.info("match2pc.htmlの処理開始");
+    try {
+      while (true) {
+
+        if (this.updateflag == false) {// 変化なし
+          TimeUnit.MILLISECONDS.sleep(50);
+          continue;
+        }
+        // updateflag がtrueのとき以下の処理が実行
+        TimeUnit.MILLISECONDS.sleep(50);
+
+        ArrayList<MatchInfo> matchInfo = this.asyncSelectByMatchId(matchid);
+        SSEMatch info = new SSEMatch(matchInfo, this.message, this.goalflag);
+
+        emitter.send(info);
+        logger.info("成功！！");
+        TimeUnit.MILLISECONDS.sleep(5);
+        updateflag = false;
+
+        TimeUnit.MILLISECONDS.sleep(100);
       }
     } catch (Exception e) {
       e.printStackTrace();

@@ -15,7 +15,7 @@
         var match = JSON.parse(event.data);//matchの全dataを取得
         var matchid = match.matchid;
         var kekka = "<h1>" + "マッチングしました" + "</h1><br>";
-        kekka = kekka + " <a href ='/play2pc?matchid=" + matchid + " '> " + "対戦を始める" + "</a>";//matchのmatchidを取得
+        kekka = kekka + " <a href ='/match2pc?matchid=" + matchid + " '> " + "対戦を始める" + "</a>";//matchのmatchidを取得
         console.log(kekka);
         var tbody = document.getElementById("kekka");//更新場所
         tbody.innerHTML = kekka;//kekkaを反映
