@@ -31,7 +31,6 @@ public class AsyncHitAndBlow {
   private int matchid;
   private boolean updateflag = false;
 
-  private int insertedid;
   private String message;
   private int goalflag;
 
@@ -121,9 +120,9 @@ public class AsyncHitAndBlow {
     return this.matchInfoMapper.updateActive(matchinfo);
   }
 
-  public void asyncInsertMatchInfoFor2pc(MatchInfo matchinfo, int insertedid, String message, int goalflag) {// 新たなmatchinfo行を挿入する
+  public void asyncInsertMatchInfoFor2pc(MatchInfo matchinfo, String message, int goalflag) {// 新たなmatchinfo行を挿入する
     this.updateflag = true;// 2PC戦のための更新
-    this.insertedid = insertedid;// 挿入したuseridを格納する
+
     this.message = message;
     this.goalflag = goalflag;
     this.asyncInsertMatchInfo(matchinfo);
@@ -174,14 +173,14 @@ public class AsyncHitAndBlow {
         TimeUnit.MILLISECONDS.sleep(50);
 
         ArrayList<MatchInfo> matchInfo = this.asyncSelectByMatchId(matchid);
-        SSEMatch info = new SSEMatch(matchInfo, this.insertedid, this.message, this.goalflag);
+        SSEMatch info = new SSEMatch(matchInfo, this.message, this.goalflag);
 
         emitter.send(info);
         logger.info("成功！！");
         TimeUnit.MILLISECONDS.sleep(5);
         updateflag = false;
 
-        TimeUnit.MILLISECONDS.sleep(1);
+        TimeUnit.MILLISECONDS.sleep(100);
       }
     } catch (Exception e) {
       e.printStackTrace();

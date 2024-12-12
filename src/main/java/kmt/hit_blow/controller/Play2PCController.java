@@ -90,11 +90,13 @@ public class Play2PCController {
 
     String message = cheak.generateWaitMessage(user1, user2, this.turn);// 数字入力を待っていますメッセージを生成する
     String myname = prin.getName();
+    int myid = HitAndBlow.asyncSelectIdByName(myname);
     String mysecret = cheak.getMySecret(user1, user2, myname);
     String rivalname = cheak.getRivalName(user1, user2, myname);
     String rivalsecret = "????";
 
     model.addAttribute("name", myname);// 自分の名前
+    model.addAttribute("loginid", myid);// SSE通信後の処理で用いる
     model.addAttribute("rivalname", rivalname);// 相手の名前
     model.addAttribute("message", message);// Thymeleafで値をHTMLに渡す
     model.addAttribute("mysecret", mysecret);// 自分の秘密の数字（表示用）
@@ -123,14 +125,14 @@ public class Play2PCController {
     int[] in = { line1, line2, line3, line4 }; // 入力を配列に格納する
 
     HitAndBlow cheak = new HitAndBlow(); // Hit_Blowクラスのメソッドを呼び出す
-    int matchid = this.user1.getMatchid();
+    int matchid = this.user1.getMatchid();// 試合で使うidを取得
     String message = cheak.generateWaitMessage(user1, user2, this.turn);// 数字入力を待っていますメッセージを生成する
-    String myname = prin.getName();
-    int myid = HitAndBlow.asyncSelectIdByName(myname);
-    String mysecret = cheak.getMySecret(user1, user2, myname);
-    int rivalid = cheak.getRivalId(user1, user2, myname);
-    String rivalname = cheak.getRivalName(user1, user2, myname);
-    String rivalsecret = "????";
+    String myname = prin.getName();// 自分の名前を取得する
+    int myid = HitAndBlow.asyncSelectIdByName(myname);// 自分のidを取得する
+    String mysecret = cheak.getMySecret(user1, user2, myname);// 自分の秘密の数字がuser1、user2どちらに格納されているか判定し取り出す
+    int rivalid = cheak.getRivalId(user1, user2, myname);// 相手のidがuser1、user2どちらに格納されているか判定し取り出す
+    String rivalname = cheak.getRivalName(user1, user2, myname);// 相手の名前がuser1、user2どちらに格納されているか判定し取り出す
+    String rivalsecret = "????";// 相手の秘密は分からないため？？？？である
     int[] Hit_Blow; // HitとBlowの値を格納する配列
     int hit; // Hit数を格納
     int blow; // Blow数を格納
@@ -174,7 +176,7 @@ public class Play2PCController {
 
     // 以降から数字判定処理を行う
 
-    Hit_Blow = cheak.chackHit_Blow(in, cheak.translateInt(cheak.getRivalSecret(user1, user2, myname)));
+    Hit_Blow = cheak.chackHit_Blow(in, cheak.translateInt(cheak.getRivalSecret(user1, user2, myname)));// Hit数,Blow数を判定
     hit = Hit_Blow[0];
     blow = Hit_Blow[1];
     String myguess = cheak.translateString(in); // ここで自分の予想を4桁の文字列にする
@@ -183,8 +185,8 @@ public class Play2PCController {
     if (hit == 4) { // Hitが4だと正解にする
       goakflag = 1;
       this.turn = 1;// 初期のターンに戻す
-      message = myname + "の勝利です。"; // 後で直すToDO
-      this.HitAndBlow.asyncInsertMatchInfoFor2pc(mymatchInfo, myid, message, goakflag); // MatchInfoの格納及びゲーム内変数を引数で渡す
+      message = myname + "の勝利です。";
+      this.HitAndBlow.asyncInsertMatchInfoFor2pc(mymatchInfo, message, goakflag); // MatchInfoの格納及びゲーム内変数を引数で渡す
 
       rivalsecret = cheak.getRivalSecret(user1, user2, myname);// 相手の？？？？を開示
       Match match = new Match(user1.getMatchid(), myid, rivalid, mysecret, rivalsecret,
@@ -213,10 +215,10 @@ public class Play2PCController {
 
     }
 
-    this.turn++;// 相手の数字入力にする必要があるためインクリメントする
-    message = cheak.generateWaitMessage(user1, user2, goakflag);// メッセージ文を更新
+    this.turn++;// 相手のターンになるため、turnをインクリメントする
+    message = cheak.generateWaitMessage(user1, user2, this.turn);// メッセージ文を更新
 
-    this.HitAndBlow.asyncInsertMatchInfoFor2pc(mymatchInfo, myid, message, goakflag); // MatchInfoの格納及びゲーム内変数を引数で渡す
+    this.HitAndBlow.asyncInsertMatchInfoFor2pc(mymatchInfo, message, goakflag); // MatchInfoの格納及びゲーム内変数を引数で渡す
 
     ArrayList<MatchInfo> matchInfo = this.HitAndBlow.asyncSelectByMatchId(matchid);
 

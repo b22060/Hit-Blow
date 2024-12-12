@@ -107,33 +107,32 @@
         var messagebody = document.getElementById("message");
         messagebody.innerHTML = message;
 
-        var rivalarea = "<li>";//SSE通信で更新されたデータを表示する
+        var rivalarea = "";//SSE通信で更新されたデータを表示する
         var matchInfo = SSEmatch.matchInfo;
+        var loginid = document.getElementById('loginIdDiv').dataset.loginid;//html内のidがloginIdDivのdata-loginidに格納されているデータを取り出している
         for (let i = 0; i < matchInfo.length; i++) {
-
-          if (SSEmatch.insertedid !== matchInfo[i].userid) {
+          var userid = matchInfo[i].userid;
+          if (loginid != userid) {//ログインidとユーザidが異なる場合画面右にデータを表示する
+            rivalarea = rivalarea + "<li>";
             var guess = matchInfo[i].guess;
             var hit = matchInfo[i].hit;
             var blow = matchInfo[i].blow;
             rivalarea = rivalarea + "<p>";
-            rivalarea = rivalarea + "[[${rivalname}]]の推理:" + guess + ",Hit:" + hit + ",Blow:" + blow;
+            rivalarea = rivalarea + "[[${rivalname}]]の推理:" + guess + ",Hit:" + hit + ",Blow:" + blow;//ポイント：変数名直書きで動く
             rivalarea = rivalarea + "</p>";
+            rivalarea = rivalarea + "</li>";
           }
         }
-        rivalarea = rivalarea + "</li>";
         var rivalareabody = document.getElementById("rivalarea");
         rivalareabody.innerHTML = rivalarea;
 
         var goalflag = SSEmatch.goalflag;//もどるをSSE通信で表示させる
         if (goalflag == 1) {
-          var ret = " <a href='/'>もどる</a>";
+          var ret = " <a href='/'>もどる</a>";//デバッグ時ここの処理が起こらない場合があった（再現性なし）
           var retbody = document.getElementById("return");
           retbody.innerHTML = ret;
         }
 
-        // var test = "ほげほげ";
-        // var retbody = document.getElementById("rivalarea");
-        // retbody.innerHTML = test;
       }
     }
   </script>
@@ -202,8 +201,17 @@
     <li th:each="answer : ${debuganswer}" th:text="${answer}"></li>
   </div>
 
-  <div id="return" class="back"></div>
-  <!-- ↑戻るが表示される -->
+  <div id="return" class="back">
+  </div>
+  <!-- ↑もどるが表示される -->
+
+  <div th:if="${goalflag}" class="back">
+    <a href="/">もどる</a>
+  </div>
+  <!-- ↑もどるが2つ表示される可能性がある -->
+
+  <div id="loginIdDiv" th:attr="data-loginid=${loginid}"></div>
+  <!-- ログインIdをJavaScriptに渡すためだけに使う -->
 </body>
 
 </html>
