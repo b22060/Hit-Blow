@@ -43,6 +43,7 @@ public class HitAndBlowController {
   String Myanswers; // 自分の回答（文字列）
   String Rivalanswers;// 相手の回答（文字列）
   int battleid = 0; // 対戦相手のidを格納する
+  int itemflag = 1;
 
   @GetMapping("step1") // テスト用
   public SseEmitter pushCount() {
@@ -175,7 +176,7 @@ public class HitAndBlowController {
 
   @PostMapping("/play") // ここで対戦の処理をする
   public String play(@RequestParam Integer line1, @RequestParam Integer line2, @RequestParam Integer line3,
-      @RequestParam Integer line4, ModelMap model, Principal prin) {// CPU戦時
+      @RequestParam Integer line4, ModelMap model, Principal prin) {
 
     int[] in = { line1, line2, line3, line4 }; // 入力を配列に格納する
     String mysecret = this.Myanswers;// 自分の？？？？と表示されている秘密の数字を格納する変数
@@ -227,6 +228,9 @@ public class HitAndBlowController {
       model.addAttribute("rivalsecret", rivalsecret);
       model.addAttribute("rivalname", rivalname);
       model.addAttribute("name", loginUser);
+      int getanswer = 0;
+      model.addAttribute("getanswer", getanswer);//
+      model.addAttribute("itemflag", itemflag);
       return "match.html";
     }
     // 以降はflag=1。つまり、秘密の数字決定後の処理を行う
@@ -294,6 +298,10 @@ public class HitAndBlowController {
     model.addAttribute("rivalsecret", rivalsecret);// 相手の秘密の数字部分を表示する
     model.addAttribute("battleid", battleid);// matchInfoで相手の試合情報を表示するために用いる
 
+    int getanswer = 0;
+    model.addAttribute("getanswer", getanswer);//
+    model.addAttribute("itemflag", itemflag);
+
     return "match.html";
   }
 
@@ -313,4 +321,35 @@ public class HitAndBlowController {
 
     return "match.html";
   }
+
+  @PostMapping("/item") // 対戦相手を決定する
+  public String item(@RequestParam Integer useitem, ModelMap model, Principal prin) {
+    this.itemflag = 0;
+    int getanswer = this.rivalanswer[useitem - 1];
+    String loginUser = prin.getName(); // ログイン名を取得
+    String message = loginUser + "の数字入力を待っています。";// システムメッセージを格納する変数
+    int loginUser_id = this.HitAndBlow.asyncSelectIdByName(loginUser);// 自分のID取得
+    int matchid = this.HitAndBlow.asyncSelectMatchIdByuserId(loginUser_id, battleid);
+    String mysecret = this.Myanswers;// 自分の？？？？と表示されている秘密の数字を格納する変数
+    String rivalname = this.HitAndBlow.asyncSelectNameByUsers(battleid);// 対戦相手の名前を取得する変数
+    String rivalsecret = "????";// 相手の？？？？と表示されている秘密の数字を格納する変数
+    ArrayList<MatchInfo> matchInfo = this.HitAndBlow.asyncSelectByMatchId(matchid);
+
+    model.addAttribute("getanswer", getanswer);// 相手の答え
+    model.addAttribute("itemflag", itemflag);// アイテムを使用したか
+    model.addAttribute("index", useitem);// 何番目の数字か
+    model.addAttribute("matchInfo", matchInfo);// Thymeleafで試合情報をHTMLに渡す
+    model.addAttribute("message", message);// システムメッセージを表示するために用いる
+
+    model.addAttribute("name", loginUser);// 自身の名前を表示するために用いる
+    model.addAttribute("mysecret", mysecret);// 自身の秘密の数字部分を表示する
+    model.addAttribute("loginid", loginUser_id);// matchInfoで自身の試合情報を表示するために用いる
+
+    model.addAttribute("rivalname", rivalname);// 相手の名前を表示するために用いる
+    model.addAttribute("rivalsecret", rivalsecret);// 相手の秘密の数字部分を表示する
+    model.addAttribute("battleid", battleid);// matchInfoで相手の試合情報を表示するために用いる
+
+    return "match.html";
+  }
+
 }
