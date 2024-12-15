@@ -4,15 +4,120 @@
 <head>
   <meta charset="utf-8">
   <title>hit-blow</title>
+
+  <style>
+    body {
+      background-image: url('/assets/壁.png');
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    img {
+      position: absolute;
+      top: -100%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      height: auto;
+
+      animation: slide-in 4.5s ease-out forwards;
+    }
+
+    @keyframes slide-in {
+      from {
+        top: -100%;
+      }
+
+      to {
+        top: 40%;
+        transform: translate(-50%, -50%);
+      }
+    }
+
+    a {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: white;
+      position: absolute;
+      top: 70%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .info {
+      text-align: center;
+      font-size: 1rem;
+      letter-spacing: 2px;
+      line-height: 1.6;
+      margin-top: 40px;
+
+      position: absolute;
+      top: 80%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .info p {
+      margin: 2px 0;
+    }
+
+    button {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: white;
+      background-color: rgba(0, 0, 0, 0.7);
+      border: 2px solid white;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 5px;
+      position: absolute;
+      top: 60%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    button:hover {
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+  </style>
+
 </head>
 
 <body>
-  <a href="/hit-blow">Hit&Blowへ</a>
+  <img src="/assets/タイトル.png" onanimationstart="playMusic()">
+  <a href="/hit-blow">Hit&Blowをはじめる</a>
 
-  <p>観戦者情報</p>
-  <p>ユーザ名:Spectator</p>
-  <p>パスワード:hogehoge</p>
+  <div class="info">
+    <p>観戦者情報</p>
+    <p>ユーザ名:Spectator</p>
+    <p>パスワード:hogehoge</p>
+  </div>
 
+  <!-- ボタン -->
+  <button id="playButton">BGMを再生</button>
+
+  <!-- 音声 -->
+  <audio id="bgm" src="/assets/bgm.mp3" loop></audio>
+
+  <script>
+    document.getElementById('playButton').addEventListener('click', () => {
+      const audio = document.getElementById('bgm');
+      audio.play()
+        .then(() => {
+          console.log('BGM 再生中');
+        })
+        .catch(error => {
+          console.log('再生エラー:', error);
+        });
+    });
+  </script>
 </body>
 
 </html>
