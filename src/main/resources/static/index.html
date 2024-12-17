@@ -92,9 +92,9 @@
 
 <body>
   <img src="/assets/タイトル.png" onanimationstart="playMusic()">
-  <a href="/hit-blow">Hit&Blowをはじめる</a>
+  <a href="/hit-blow" onclick="playClickSound()">Hit&Blowをはじめる</a>
 
-  <div class="info">
+  <div class=" info">
     <p>観戦者情報</p>
     <p>ユーザ名:Spectator</p>
     <p>パスワード:hogehoge</p>
@@ -105,6 +105,7 @@
 
   <!-- 音声 -->
   <audio id="bgm" src="/assets/bgm.mp3" loop></audio>
+  <audio id="click" src="/assets/maou.mp3"></audio>
 
   <script>
     document.getElementById('playButton').addEventListener('click', () => {
@@ -118,6 +119,20 @@
         });
     });
   </script>
+  <script>
+    // クリック音を再生する関数
+    function playClickSound() {
+      const clickSound = document.getElementById('click');
+      clickSound.play()
+        .then(() => {
+          console.log('クリック音再生中');
+        })
+        .catch(error => {
+          console.log('クリック音再生エラー:', error);
+        });
+    }
+  </script>
+
 </body>
 
 </html>
