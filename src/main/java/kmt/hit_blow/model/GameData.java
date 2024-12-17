@@ -5,12 +5,14 @@ public class GameData {
   int id;// Userテーブルのidを格納
   String name;// Userテーブルのnameを格納
   String secret;// 秘密の数字を格納
+  int itemflag;// アイテムフラグを格納
 
   public GameData(int matchid, int id, String name, String secret) {
     this.matchid = matchid;
     this.id = id;
     this.name = name;
     this.secret = secret;
+    this.itemflag = 1;
   }
 
   public int getMatchid() {
@@ -43,6 +45,14 @@ public class GameData {
 
   public void setSecret(String secret) {
     this.secret = secret;
+  }
+
+  public int getItemflag() {
+    return itemflag;
+  }
+
+  public void setItemflag(int itemflag) {
+    this.itemflag = itemflag;
   }
 
 }

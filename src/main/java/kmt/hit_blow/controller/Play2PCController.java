@@ -92,10 +92,12 @@ public class Play2PCController {
     String myname = prin.getName();
     int myid = HitAndBlow.asyncSelectIdByName(myname);
     String mysecret = cheak.getMySecret(user1, user2, myname);
+    int myitemflag = cheak.getMyItemFlag(user1, user2, myname);
     String rivalname = cheak.getRivalName(user1, user2, myname);
     String rivalsecret = "????";
 
     model.addAttribute("name", myname);// 自分の名前
+    model.addAttribute("itemflag", myitemflag);// アイテムを使用したか
     model.addAttribute("loginid", myid);// SSE通信後の処理で用いる
     model.addAttribute("rivalname", rivalname);// 相手の名前
     model.addAttribute("message", message);// Thymeleafで値をHTMLに渡す
@@ -130,6 +132,7 @@ public class Play2PCController {
     String myname = prin.getName();// 自分の名前を取得する
     int myid = HitAndBlow.asyncSelectIdByName(myname);// 自分のidを取得する
     String mysecret = cheak.getMySecret(user1, user2, myname);// 自分の秘密の数字がuser1、user2どちらに格納されているか判定し取り出す
+    int myitemflag = cheak.getMyItemFlag(user1, user2, myname);
     int rivalid = cheak.getRivalId(user1, user2, myname);// 相手のidがuser1、user2どちらに格納されているか判定し取り出す
     String rivalname = cheak.getRivalName(user1, user2, myname);// 相手の名前がuser1、user2どちらに格納されているか判定し取り出す
     String rivalsecret = "????";// 相手の秘密は分からないため？？？？である
@@ -150,6 +153,7 @@ public class Play2PCController {
       model.addAttribute("name", myname);// 自身の名前を表示するために用いる
       model.addAttribute("mysecret", mysecret);// 自身の秘密の数字部分を表示する
       model.addAttribute("loginid", myid);// matchInfoで自身の試合情報を表示するために用いる
+      model.addAttribute("itemflag", myitemflag);// アイテムを使用したか
 
       model.addAttribute("rivalname", rivalname);// 相手の名前を表示するために用いる
       model.addAttribute("rivalsecret", rivalsecret);// 相手の秘密の数字部分を表示する
@@ -167,6 +171,7 @@ public class Play2PCController {
       model.addAttribute("name", myname);// 自身の名前を表示するために用いる
       model.addAttribute("mysecret", mysecret);// 自身の秘密の数字部分を表示する
       model.addAttribute("loginid", myid);// matchInfoで自身の試合情報を表示するために用いる
+      model.addAttribute("itemflag", myitemflag);// アイテムを使用したか
 
       model.addAttribute("rivalname", rivalname);// 相手の名前を表示するために用いる
       model.addAttribute("rivalsecret", rivalsecret);// 相手の秘密の数字部分を表示する
@@ -206,6 +211,7 @@ public class Play2PCController {
       model.addAttribute("name", myname);// 自身の名前を表示するために用いる
       model.addAttribute("mysecret", mysecret);// 自身の秘密の数字部分を表示する
       model.addAttribute("loginid", myid);// matchInfoで自身の試合情報を表示するために用いる
+      model.addAttribute("itemflag", myitemflag);// アイテムを使用したか
 
       model.addAttribute("rivalname", rivalname);// 相手の名前を表示するために用いる
       model.addAttribute("rivalsecret", rivalsecret);// 相手の秘密の数字部分を表示する
@@ -230,10 +236,68 @@ public class Play2PCController {
     model.addAttribute("name", myname);// 自身の名前を表示するために用いる
     model.addAttribute("mysecret", mysecret);// 自身の秘密の数字部分を表示する
     model.addAttribute("loginid", myid);// matchInfoで自身の試合情報を表示するために用いる
+    model.addAttribute("itemflag", myitemflag);// アイテムを使用したか
 
     model.addAttribute("rivalname", rivalname);// 相手の名前を表示するために用いる
     model.addAttribute("rivalsecret", rivalsecret);// 相手の秘密の数字部分を表示する
     model.addAttribute("battleid", rivalid);// matchInfoで相手の試合情報を表示するために用いる
+
+    return "match2PC.html";
+  }
+
+  @PostMapping("/item2PC") // 対戦相手を決定する 2PCでも使用する。
+  public String item(@RequestParam Integer useitem, ModelMap model, Principal prin) {
+
+    HitAndBlow cheak = new HitAndBlow(); // Hit_Blowクラスのメソッドを呼び出す
+    int matchid = this.user1.getMatchid();// 試合で使うidを取得
+    String message = cheak.generateWaitMessage(user1, user2, this.turn);// 数字入力を待っていますメッセージを生成する
+    String myname = prin.getName();// 自分の名前を取得する
+    int myid = HitAndBlow.asyncSelectIdByName(myname);// 自分のidを取得する
+    String mysecret = cheak.getMySecret(user1, user2, myname);// 自分の秘密の数字がuser1、user2どちらに格納されているか判定し取り出す
+    int rivalid = cheak.getRivalId(user1, user2, myname);// 相手のidがuser1、user2どちらに格納されているか判定し取り出す
+    String rivalname = cheak.getRivalName(user1, user2, myname);// 相手の名前がuser1、user2どちらに格納されているか判定し取り出す
+    String rivalsecret = "????";// 相手の秘密は分からないため？？？？である
+    String itemeffect = cheak.getRivalSecret(user1, user2, myname);// ラーの鏡の効果用
+    String getanswer = itemeffect.substring(useitem - 1, useitem);// 相手の秘密の数字の１文字が分かる
+    int myitemflag = cheak.getMyItemFlag(user1, user2, myname);
+
+    ArrayList<MatchInfo> matchInfo = this.HitAndBlow.asyncSelectByMatchId(matchid);
+
+    if (cheak.checkTypist(user1, user2, myname, this.turn) != true) {// 想定外のプレイヤーから入力があった場合
+      message = message + "エラー：相手のターンでアイテムを使用しないでください。";
+
+      model.addAttribute("matchInfo", matchInfo);// Thymeleafで試合情報をHTMLに渡す
+      model.addAttribute("message", message);// システムメッセージを表示するために用いる
+      model.addAttribute("debuganswer", cheak.translateInt(cheak.getRivalSecret(user1, user2, myname)));// デバッグ用製品版で削除すること。
+
+      model.addAttribute("name", myname);// 自身の名前を表示するために用いる
+      model.addAttribute("mysecret", mysecret);// 自身の秘密の数字部分を表示する
+      model.addAttribute("loginid", myid);// matchInfoで自身の試合情報を表示するために用いる
+
+      model.addAttribute("rivalname", rivalname);// 相手の名前を表示するために用いる
+      model.addAttribute("rivalsecret", rivalsecret);// 相手の秘密の数字部分を表示する
+      model.addAttribute("battleid", rivalid);// matchInfoで相手の試合情報を表示するために用いる
+      model.addAttribute("itemflag", myitemflag);// アイテムを使用したか
+      return "match2PC.html";
+    }
+    // 正常な動作であった場合
+    cheak.setMyItemFlag(user1, user2, myname, 0);// 使用したため変更する
+    myitemflag = cheak.getMyItemFlag(user1, user2, myname);// ０に値を更新
+
+    model.addAttribute("matchInfo", matchInfo);// Thymeleafで試合情報をHTMLに渡す
+    model.addAttribute("message", message);// システムメッセージを表示するために用いる
+    model.addAttribute("debuganswer", cheak.translateInt(cheak.getRivalSecret(user1, user2, myname)));// デバッグ用製品版で削除すること。
+
+    model.addAttribute("name", myname);// 自身の名前を表示するために用いる
+    model.addAttribute("mysecret", mysecret);// 自身の秘密の数字部分を表示する
+    model.addAttribute("loginid", myid);// matchInfoで自身の試合情報を表示するために用いる
+
+    model.addAttribute("rivalname", rivalname);// 相手の名前を表示するために用いる
+    model.addAttribute("rivalsecret", rivalsecret);// 相手の秘密の数字部分を表示する
+    model.addAttribute("battleid", rivalid);// matchInfoで相手の試合情報を表示するために用いる
+    model.addAttribute("itemflag", myitemflag);// アイテムを使用したか
+    model.addAttribute("index", useitem);// 該当場所の番号
+    model.addAttribute("getanswer", getanswer);// 該当箇所を渡す
 
     return "match2PC.html";
   }

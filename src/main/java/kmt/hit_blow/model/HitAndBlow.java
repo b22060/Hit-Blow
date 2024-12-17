@@ -140,4 +140,24 @@ public class HitAndBlow {
     return inarray;
   }
 
+  public int getMyItemFlag(GameData user1, GameData user2, String myname) {
+    int item = 0;
+    if (myname.equals(user1.getName())) {
+      item = user1.getItemflag();
+    } else {
+      item = user2.getItemflag();
+    }
+    return item;
+  }
+
+  public void setMyItemFlag(GameData user1, GameData user2, String myname, int num) {
+
+    if (myname.equals(user1.getName())) {
+      user1.setItemflag(num);
+    } else {
+      user2.setItemflag(num);
+    }
+
+  }
+
 }
