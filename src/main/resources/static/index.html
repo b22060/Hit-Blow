@@ -92,9 +92,9 @@
 
 <body>
   <img src="/assets/タイトル.png" onanimationstart="playMusic()">
-  <a href="/hit-blow" onclick="playClickSound()">Hit&Blowをはじめる</a>
+  <a id="startLink" href="/hit-blow">Hit&Blowをはじめる</a>
 
-  <div class=" info">
+  <div class="info">
     <p>観戦者情報</p>
     <p>ユーザ名:Spectator</p>
     <p>パスワード:hogehoge</p>
@@ -109,8 +109,8 @@
 
   <script>
     document.getElementById('playButton').addEventListener('click', () => {
-      const audio = document.getElementById('bgm');
-      audio.play()
+      const bgmAudio = document.getElementById('bgm');
+      bgmAudio.play()
         .then(() => {
           console.log('BGM 再生中');
         })
@@ -118,19 +118,23 @@
           console.log('再生エラー:', error);
         });
     });
-  </script>
-  <script>
-    // クリック音を再生する関数
-    function playClickSound() {
-      const clickSound = document.getElementById('click');
-      clickSound.play()
+
+    document.getElementById('startLink').addEventListener('click', (event) => {
+      const clickAudio = document.getElementById('click');
+      clickAudio.play()
         .then(() => {
-          console.log('クリック音再生中');
+          console.log('クリック音再生');
         })
         .catch(error => {
-          console.log('クリック音再生エラー:', error);
+          console.log('再生エラー:', error);
         });
-    }
+
+      // 少し遅れてリンク遷移
+      setTimeout(() => {
+        window.location.href = event.target.href;
+      }, 500); // 再生に合わせて遅延調整
+      event.preventDefault(); // 既定のリンク動作を停止
+    });
   </script>
 
 </body>
