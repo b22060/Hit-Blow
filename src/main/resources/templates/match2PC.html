@@ -160,6 +160,18 @@
 
   </div>
 
+  <div th:if="${getanswer}">
+    相手の[[${index}]]番目の数字は[[${getanswer}]]
+  </div>
+
+  <div th:if="${itemflag}">
+    <h2>アイテム:ラーの鏡</h2>
+    <form th:action="@{/item2PC}" method="post">
+      <input type="number" min="1" max="4" name="useitem" />
+      <input type="submit" value="使用"><input type="reset" value="リセット">
+    </form>
+  </div>
+
   <h2 id="message">[[${message}]]</h2>
   <div th:if="${goalflag}">
     <h2>おめでとうございます</h2>

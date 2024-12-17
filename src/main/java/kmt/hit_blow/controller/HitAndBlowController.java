@@ -322,7 +322,7 @@ public class HitAndBlowController {
     return "match.html";
   }
 
-  @PostMapping("/item") // 対戦相手を決定する
+  @PostMapping("/item") // 対戦相手を決定する 2PCでも使用する。
   public String item(@RequestParam Integer useitem, ModelMap model, Principal prin) {
     this.itemflag = 0;
     int getanswer = this.rivalanswer[useitem - 1];
