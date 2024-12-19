@@ -3,3 +3,8 @@ assetsファイルに格納
 音楽:フリーBGM MOMIZizm MUSiC
 https://music.storyinvention.com/jo-jokyoku/
 背景:https://plicy.net/GuidebookObject/7898
+
+history.html
+音楽：フリーBGM MOMIZizm MUSiC
+https://music.storyinvention.com/8bit-tabidachi-junbi/
+背景：https://www.sozailab.jp/sozai/detail/59572/
