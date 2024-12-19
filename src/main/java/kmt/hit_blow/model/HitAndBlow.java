@@ -160,4 +160,89 @@ public class HitAndBlow {
 
   }
 
+  // 入力が有効か確認
+  public boolean isValidInput(String input) {
+    if (input.length() != 4)
+      return false;
+    boolean[] digits = new boolean[10];
+    for (char c : input.toCharArray()) {
+      if (!Character.isDigit(c))
+        return false;
+      int digit = c - '0';
+      if (digits[digit])
+        return false; // 重複チェック
+      digits[digit] = true;
+    }
+    return true;
+  }
+
+  // すべての候補を生成
+  public List<String> generateAllCandidates() {
+    List<String> candidates = new ArrayList<>();
+    for (int i = 0; i <= 9999; i++) {
+      String number = String.format("%04d", i);
+      if (isValidInput(number)) {
+        candidates.add(number);
+      }
+    }
+    return candidates;
+  }
+
+  // 候補を絞り込む
+  public List<String> filterCandidates(List<String> candidates, String guess, int hits, int blows) {
+    List<String> filtered = new ArrayList<>();
+    for (String candidate : candidates) {
+      if (evaluate(guess, candidate, hits, blows)) {
+        filtered.add(candidate);
+      }
+    }
+    return filtered;
+  }
+
+  // ヒットとブローを評価
+  public boolean evaluate(String guess, String candidate, int hits, int blows) {
+    int actualHits = 0;
+    int actualBlows = 0;
+
+    boolean[] usedInGuess = new boolean[4];
+    boolean[] usedInCandidate = new boolean[4];
+
+    // ヒットをチェック
+    for (int i = 0; i < 4; i++) {
+      if (guess.charAt(i) == candidate.charAt(i)) {
+        actualHits++;
+        usedInGuess[i] = true;
+        usedInCandidate[i] = true;
+      }
+    }
+
+    // ブローをチェック
+    for (int i = 0; i < 4; i++) {
+      if (usedInGuess[i])
+        continue;
+      for (int j = 0; j < 4; j++) {
+        if (usedInCandidate[j])
+          continue;
+        if (guess.charAt(i) == candidate.charAt(j)) {
+          actualBlows++;
+          usedInCandidate[j] = true;
+          break;
+        }
+      }
+    }
+
+    return actualHits == hits && actualBlows == blows;
+  }
+
+  public int[] changeint(String guess) {
+    // 1. Stringを1文字ずつ分割してchar配列に変換
+    char[] charArray = guess.toCharArray();
+
+    // 2. char配列をint配列に変換
+    int[] intArray = new int[charArray.length];
+    for (int i = 0; i < charArray.length; i++) {
+      intArray[i] = Character.getNumericValue(charArray[i]);
+    }
+    return intArray;
+  }
 }
