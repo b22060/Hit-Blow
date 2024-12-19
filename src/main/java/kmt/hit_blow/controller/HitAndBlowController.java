@@ -1,5 +1,6 @@
 package kmt.hit_blow.controller;
 
+import java.util.Random;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.ArrayList;
@@ -262,8 +263,10 @@ public class HitAndBlowController {
       this.HitAndBlow.asyncUpdateActive(mymatchInfo);
     } else if (battleid == 3) {// battleid =3はCPUである。CPU戦の場合の処理をelse ifで記述している
       // プレイヤーが勝利していないためcpuの手を決める
-//
-      String guess = candidates.get(0);
+      //
+      Random rnd = new Random();
+      int rand = rnd.nextInt(9999);
+      String guess = candidates.get(rand % this.candidates.size());
       int[] rivalguess = cheak.changeint(guess);
       Hit_Blow = cheak.chackHit_Blow(rivalguess, this.playeranswer);// HitとBlowの数を計算
       rivalHit = Hit_Blow[0];

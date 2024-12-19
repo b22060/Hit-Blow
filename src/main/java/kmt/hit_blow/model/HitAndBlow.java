@@ -218,7 +218,7 @@ public class HitAndBlow {
 
     // ブローをチェック
     for (int i = 0; i < 4; i++) {
-      if (usedInGuess[i])
+      if (usedInGuess[i])// 既にヒットとして処理された予想の位置はスキップ。
         continue;
       for (int j = 0; j < 4; j++) {
         if (usedInCandidate[j])
