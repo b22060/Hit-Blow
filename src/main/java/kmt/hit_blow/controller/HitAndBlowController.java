@@ -1,5 +1,6 @@
 package kmt.hit_blow.controller;
 
+import java.util.Random;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.ArrayList;
@@ -7,6 +8,7 @@ import java.util.ArrayList;
 // import java.util.List;
 //import java.util.ArrayList;
 // import java.util.concurrent.TimeUnit;
+import java.util.List;
 
 import kmt.hit_blow.model.HitAndBlow;
 import kmt.hit_blow.service.AsyncHitAndBlow;
@@ -45,6 +47,8 @@ public class HitAndBlowController {
   String Rivalanswers;// 相手の回答（文字列）
   int battleid = 0; // 対戦相手のidを格納する
   int itemflag = 1;
+  List<String> candidates;
+  boolean solved = false;
 
   @GetMapping("step1") // テスト用
   public SseEmitter pushCount() {
@@ -211,7 +215,6 @@ public class HitAndBlowController {
     }
 
     if (this.flag == 0) { // 初回はここに入る
-
       this.Myanswers = cheak.translateString(in);// ここで自分の答えを4桁の文字列にする
       this.playeranswer = in;// 自分の答えを格納する
       mysecret = this.Myanswers;// 自分の秘密の数字が確定したため更新
@@ -219,6 +222,7 @@ public class HitAndBlowController {
       // ここからは相手の答えを生成する
       this.rivalanswer = cheak.generateNumber();// 相手の答えを生成する
       this.Rivalanswers = cheak.translateString(this.rivalanswer); // ここで相手の答えを4桁の文字列にする
+      this.candidates = cheak.generateAllCandidates();
 
       Match match = new Match(loginUser_id, battleid, this.Myanswers, this.Rivalanswers, "", true);// 自分のid,相手のid,自分の答え,相手の答えを格納
       this.HitAndBlow.asyncInsertMatch(match);// 1試合追加(勝敗は不明)
@@ -259,18 +263,22 @@ public class HitAndBlowController {
       this.HitAndBlow.asyncUpdateActive(mymatchInfo);
     } else if (battleid == 3) {// battleid =3はCPUである。CPU戦の場合の処理をelse ifで記述している
       // プレイヤーが勝利していないためcpuの手を決める
-
-      int[] rivalguess = new int[4];// ここでcpuの推測を格納する
-
-      rivalguess = cheak.generateNumber();// cpuの推測（現状は完全ランダムに生成するためgenerateNumberを用いている）
-
+      //
+      Random rnd = new Random();
+      int rand = rnd.nextInt(9999);
+      String guess = candidates.get(rand % this.candidates.size());
+      int[] rivalguess = cheak.changeint(guess);
       Hit_Blow = cheak.chackHit_Blow(rivalguess, this.playeranswer);// HitとBlowの数を計算
       rivalHit = Hit_Blow[0];
       rivalBlow = Hit_Blow[1];
 
+      //強化学習
+      this.candidates = cheak.filterCandidates(this.candidates, guess, rivalHit, rivalBlow);
+
       String rivalguesshand = cheak.translateString(rivalguess);// ここで相手の予想を4桁の文字列にする
       MatchInfo rivalmatchInfo = new MatchInfo(matchid, battleid, rivalguesshand, rivalHit, rivalBlow, true); // 情報を格納する
       this.HitAndBlow.asyncInsertMatchInfo(rivalmatchInfo);
+//
     }
 
     if (rivalHit == 4) {// Hitが4だと正解にする
