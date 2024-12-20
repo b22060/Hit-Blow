@@ -6,20 +6,25 @@
   <title>hit-blow</title>
 </head>
 
-<body>
-  <a href="/logout">ログアウト</a>
-  <h1>Hit&Blow</h1>
-  <h3>
+<!-- style="background-color:black"でbodyを黒に -->
+<!-- style="color:white"で文字を白に -->
+
+<body style="background-color:black">
+  <a style="color:white" href="/logout">ログアウト</a>
+  <h1 style="color:white">Hit&Blow</h1>
+  <h3 style="color:white">
     Hi <nobr sec:authentication="name"></nobr>
   </h3>
   <div th:if="${users}" sec:authorize="hasRole('ROLE_USER')"> <!-- 対戦相手を選択する -->
-    <h2>対戦相手</h2>
-    <li th:each="user:${users}"><a th:href="@{/match(userid=${user.userid})}"> [[${user.name}]]</a></li>
+    <h2 style="color:white">対戦相手</h2>
+    <li style="color:white" th:each="user:${users}"><a style="color:white" th:href="@{/match(userid=${user.userid})}">
+        [[${user.name}]]</a>
+    </li>
     <!-- （例：・User1 のようにuserテーブル内の全てが出力される) -->
   </div>
 
   <div th:if="${waitmatches}" sec:authorize="hasRole('ROLE_USER')"><!-- マッチング待ちのリストがあれば表示される -->
-    <h2>マッチング待ち</h2>
+    <h2 style="color:white">マッチング待ち</h2>
     <!-- マッチングの処理を記入する -->
     <li th:each="waitmatche:${waitmatches}">
       <a th:href="@{/match(userid=${waitmatche.userid})}">
@@ -41,9 +46,9 @@
   </div>
 
   <div th:if="notactivematcheslist"><!-- 確認したい試合結果の履歴を選択する -->
-    <h2>試合結果</h2>
+    <h2 style="color:white">試合結果</h2>
     <li th:each="notactivematch:${notactivematcheslist}">
-      <a th:href="@{/history(matchid=${notactivematch.match.matchid})}">
+      <a style="color:white" th:href="@{/history(matchid=${notactivematch.match.matchid})}">
         <!-- ↓useridのまま表示されてしまう場合の記述方法 -->
         [[${notactivematch.username1}]]VS[[${notactivematch.username2}]]
         [[${notactivematch.username1}]]の値:[[${notactivematch.match.usernum1}]]
@@ -51,7 +56,7 @@
       </a>
     </li>
   </div>
-  <a href="/sample">サンプルへ</a>
+  <a style="color:white" href="/sample">サンプルへ</a>
 
 
   <!--<a href=" /sample">練習へ</a>
