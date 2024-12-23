@@ -8,3 +8,7 @@ history.html
 音楽：フリーBGM MOMIZizm MUSiC
 https://music.storyinvention.com/8bit-tabidachi-junbi/
 背景：https://www.sozailab.jp/sozai/detail/59572/
+
+hitandblow.html
+音楽: フリーBGM MOMIZizm MUSiC
+https://music.storyinvention.com/korezo-machi/
