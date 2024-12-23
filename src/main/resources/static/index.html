@@ -100,15 +100,10 @@
     <p>パスワード:hogehoge</p>
   </div>
 
-  <!-- ボタン -->
-  <button id="playButton">BGMを再生</button>
-
   <!-- 音声 -->
   <audio id="bgm" src="/assets/bgm.mp3" loop></audio>
-  <audio id="click" src="/assets/maou.mp3"></audio>
-
   <script>
-    document.getElementById('playButton').addEventListener('click', () => {
+    window.onload = function () {
       const bgmAudio = document.getElementById('bgm');
       bgmAudio.play()
         .then(() => {
@@ -117,8 +112,11 @@
         .catch(error => {
           console.log('再生エラー:', error);
         });
-    });
+    }
+  </script>
 
+  <audio id="click" src="/assets/maou.mp3"></audio>
+  <script>
     document.getElementById('startLink').addEventListener('click', (event) => {
       const clickAudio = document.getElementById('click');
       clickAudio.play()
