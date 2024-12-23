@@ -3,14 +3,52 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>History</title>
+  <title>戦いのきろく</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=DotGothic16&display=swap');
+
+    body {
+      font-size: 30px;
+      margin: 0;
+      padding: 0;
+      background-image: url('/assets/historybackgraund.png');
+      background-color: black;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      font-family: 'DotGothic16', sans-serif;
+      /* ドット風フォントを指定 */
+      color: black;
+      /* テキスト色 */
+    }
+
+    /* コンテンツ全体のレイアウト */
+    .container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      /* 画面全体を占有 */
+    }
+
+    /* タイトル */
+    .title {
+      font-size: 2em;
+      font-weight: bold;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+
     a {
-      text-align: left;
+      display: grid;
+      place-items: center;
+      /* 水平・垂直方向で中央寄せ */
+      transform: translateX(-45%);
+      /* 中央から左に移動 */
     }
 
     .matches-details {
-      text-align: left;
+      text-align: center;
     }
 
     .area {
@@ -23,53 +61,72 @@
 
     .list {
       text-align: center;
-      font-size: 24px;
+      /* font-size: 24px; */
     }
   </style>
 </head>
 
 <body>
+  <br>
   <a href="/hit-blow">戻る</a>
-
-  <!-- idを取得し、結果を表示 -->
+  <div class="title">
+    戦いのきろく
+  </div>
   <div th:if="matches" class="matches-details">
     id:[[${match.matchid}]] userid1:[[${match.userid1}]] userid2:[[${match.userid2}]]
-    userid1の値:[[${match.usernum1}]] userid2の値:[[${match.usernum2}]]　の詳細
+    userid1の値:[[${match.usernum1}]] userid2の値:[[${match.usernum2}]]
+  </div>
+  <div class="container">
+    <!-- idを取得し、結果を表示 -->
+
+    <div class="area">
+      <div class="list">
+        <p>[[${myname}]]</p>
+        <div th:if="matches">
+          [[${match.usernum1}]]
+        </div>
+        <ul>
+          <li th:each="matchInfo : ${matchInfo}" th:if="${matchInfo.userid == loginid}">
+            <p>
+              [[${myname}]]の推理: [[${matchInfo.guess}]],
+              Hit: [[${matchInfo.hit}]],
+              Blow: [[${matchInfo.blow}]]
+            </p>
+          </li>
+        </ul>
+      </div>
+
+      <div class="list">
+        <p>[[${opponentsname}]]</p>
+        <div th:if="matches">
+          [[${match.usernum2}]]
+        </div>
+        <ul>
+          <li th:each="matchInfo : ${matchInfo}" th:if="${matchInfo.userid == battleid}">
+            <p>
+              [[${opponentsname}]]の推理: [[${matchInfo.guess}]],
+              Hit: [[${matchInfo.hit}]],
+              Blow: [[${matchInfo.blow}]]
+            </p>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
 
-  <div class="area">
-    <div class="list">
-      <p>[[${myname}]]</p>
-      <div th:if="matches" class="user1-score">
-        [[${match.usernum1}]]
-      </div>
-      <ul>
-        <li th:each="matchInfo : ${matchInfo}" th:if="${matchInfo.userid == loginid}">
-          <p>
-            [[${myname}]]の推理: [[${matchInfo.guess}]],
-            Hit: [[${matchInfo.hit}]],
-            Blow: [[${matchInfo.blow}]]
-          </p>
-        </li>
-      </ul>
-    </div>
-
-    <div class="list">
-      <p>[[${opponentsname}]]</p>
-      <div th:if="matches" class="user2-score">
-        [[${match.usernum2}]]
-      </div>
-      <ul>
-        <li th:each="matchInfo : ${matchInfo}" th:if="${matchInfo.userid == battleid}">
-          <p>
-            [[${opponentsname}]]の推理: [[${matchInfo.guess}]],
-            Hit: [[${matchInfo.hit}]],
-            Blow: [[${matchInfo.blow}]]
-          </p>
-        </li>
-      </ul>
-    </div>
-  </div>
+  <audio id="bgm" src="/assets/historybgm.ogg" loop></audio>
+  <script>
+    window.onload = function () {
+      const bgmAudio = document.getElementById('bgm');
+      bgmAudio.play()
+        .then(() => {
+          console.log('BGM 再生中');
+        })
+        .catch(error => {
+          console.log('再生エラー:', error);
+        });
+    }
+  </script>
 
 </body>
 

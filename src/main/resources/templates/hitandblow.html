@@ -4,94 +4,339 @@
 <head>
   <meta charset="utf-8">
   <title>hit-blow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DotGothic16&display=swap');
+
+    body {
+      font-family: 'DotGothic16', sans-serif;
+    }
+
+    .loginUser {
+      /* 位置指定 */
+      position: absolute;
+      top: 5%;
+      left: 82%;
+      /* 文字色 */
+      color: white;
+      font-size: 30px;
+      text-align: center;
+      /* 枠の設定 */
+      border: 2px solid white;
+      padding: 13px;
+      display: inline-block;
+      border-radius: 7px;
+      background-color: black;
+    }
+
+    .selectmode {
+      /* 位置指定 */
+      position: absolute;
+      top: 5%;
+      left: 10%;
+      /* 文字色 */
+      color: white;
+      font-size: 30px;
+      /* 枠の設定 */
+      border: 2px solid white;
+      padding: 1px;
+      display: inline-block;
+      border-radius: 13px;
+      background-color: black;
+      width: 370px;
+      height: 270px;
+    }
+
+    .selectmode a {
+      display: block;
+      color: white;
+      padding: 10px 15px;
+      position: relative;
+      text-decoration: none;
+    }
+
+    .selectmode a:before {
+      content: "＞";
+      position: absolute;
+      left: 0;
+      opacity: 0;
+    }
+
+    .selectmode a:hover:before,
+    .selectmode a:focus:before {
+      opacity: 1;
+    }
+
+    .selectmode .title {
+      padding: 10px 15px;
+      color: white;
+      /* クリックを無効化 */
+      pointer-events: none;
+      /* マウスカーソルを通常表示に */
+      cursor: default;
+    }
+
+    .opponent {
+      /* 位置指定 */
+      position: absolute;
+      top: 5%;
+      left: 30%;
+      /* 文字色 */
+      color: white;
+      font-size: 30px;
+      /* 枠の設定 */
+      border: 2px solid white;
+      padding: 10px;
+      /* 初期状態は非表示 */
+      display: none;
+      border-radius: 13px;
+      background-color: black;
+      width: 650px;
+      height: 400px;
+    }
+
+    .opponent-describe {
+      /* 位置指定 */
+      position: absolute;
+      top: 77%;
+      left: 30%;
+      /* 文字色 */
+      color: white;
+      font-size: 30px;
+      /* 枠の設定 */
+      border: 2px solid white;
+      padding: 10px;
+      /* 初期状態は非表示 */
+      display: none;
+      border-radius: 13px;
+      background-color: black;
+      width: 750px;
+      height: 130px;
+    }
+
+    .opponent-explanation {
+      /* 位置指定 */
+      position: absolute;
+      top: 34%;
+      left: 10%;
+      /* 文字色 */
+      color: white;
+      font-size: 30px;
+      /* 枠の設定 */
+      border: 2px solid white;
+      padding: 10px;
+      /* 初期状態は非表示 */
+      display: none;
+      border-radius: 13px;
+      background-color: black;
+      width: 350px;
+    }
+
+    .opponent-explanation a {
+      display: block;
+    }
+
+    .result {
+      /* 位置指定 */
+      position: absolute;
+      top: 5%;
+      left: 30%;
+      /* 文字色 */
+      color: white;
+      font-size: 30px;
+      /* 枠の設定 */
+      border: 2px solid white;
+      padding: 10px;
+      /* 初期状態は非表示 */
+      display: none;
+      border-radius: 13px;
+      background-color: black;
+      width: 650px;
+    }
+
+    .result-describe {
+      /* 位置指定 */
+      position: absolute;
+      top: 77%;
+      left: 30%;
+      /* 文字色 */
+      color: white;
+      font-size: 30px;
+      /* 枠の設定 */
+      border: 2px solid white;
+      padding: 10px;
+      /* 初期状態は非表示 */
+      display: none;
+      border-radius: 13px;
+      background-color: black;
+      width: 750px;
+      height: 130px;
+    }
+
+    .result-explanation {
+      /* 位置指定 */
+      position: absolute;
+      top: 34%;
+      left: 10%;
+      /* 文字色 */
+      color: white;
+      font-size: 30px;
+      /* 枠の設定 */
+      border: 2px solid white;
+      padding: 10px;
+      /* 初期状態は非表示 */
+      display: none;
+      border-radius: 13px;
+      background-color: black;
+      width: 350px;
+    }
+
+    .result-explanation a {
+      display: block;
+    }
+
+    .title {
+      display: block;
+      padding: 10px 0;
+      color: white;
+      text-decoration: none;
+    }
+
+    .column {
+      display: block;
+      padding: 10px 0;
+      color: white;
+      text-decoration: none;
+      border-top: 1.5px solid white;
+    }
+  </style>
 </head>
 
-<body>
-  <a href="/logout">ログアウト</a>
-  <h1>Hit&Blow</h1>
-  <h3>
-    Hi <nobr sec:authentication="name"></nobr>
-  </h3>
-  <div th:if="${users}" sec:authorize="hasRole('ROLE_USER')"> <!-- 対戦相手を選択する -->
-    <h2>対戦相手</h2>
-    <li th:each="user:${users}"><a th:href="@{/match(userid=${user.userid})}"> [[${user.name}]]</a></li>
+<body style="background-color:black">
+
+  <!-- モード選択欄 -->
+  <div class="selectmode">
+    <a class="title"> 　Hit & Blow</a>
+    <a class="column" id="startBattle">　対戦を始める</a>
+    <a id="resultBattle">　試合状況</a>
+    <a style="color:white" href="/logout">　ログアウトする</a>
+  </div>
+
+  <!-- loginUser表示 -->
+  <a class="loginUser">
+    Login: <nobr sec:authentication="name"></nobr>
+  </a>
+
+  <!-- 対戦相手を選択する -->
+  <div class="opponent" id="opponentSection" th:if="${users}" sec:authorize="hasRole('ROLE_USER')">
+    <a class="title">　対戦する相手</a>
+    <div class="column">
+      <a>　マッチングする</a>
+      <li th:each="user:${users}">
+        <a style="color:white" th:href="@{/match(userid=${user.userid})}">
+          [[${user.name}]]</a>
+      </li>
+    </div>
     <!-- （例：・User1 のようにuserテーブル内の全てが出力される) -->
+    <div th:if="${waitmatches}" sec:authorize="hasRole('ROLE_USER')"><!-- マッチング待ちのリストがあれば表示される -->
+      <a>　マッチング待ち</a>
+      <!-- マッチングの処理を記入する -->
+      <li th:each="waitmatche:${waitmatches}">
+        <a style="color:white" th:href="@{/match(userid=${waitmatche.userid})}">
+          [[${waitmatche.name}]]と対戦
+        </a>
+      </li>
+    </div>
   </div>
 
-  <div th:if="${waitmatches}" sec:authorize="hasRole('ROLE_USER')"><!-- マッチング待ちのリストがあれば表示される -->
-    <h2>マッチング待ち</h2>
-    <!-- マッチングの処理を記入する -->
-    <li th:each="waitmatche:${waitmatches}">
-      <a th:href="@{/match(userid=${waitmatche.userid})}">
-        [[${waitmatche.name}]]と対戦
-      </a>
-    </li>
+  <!-- 対戦相手の説明 -->
+  <div class="opponent-describe" id="opponentDescribe">
+    <a>　対戦する相手　を選択してください</a>
   </div>
 
-  <div th:if="${activematcheslist}" sec:authorize="hasRole('ROLE_SPECTATORS')">
-    <!-- マッチング中のリストがあれば観戦者ロール持ちに表示させる -->
-    <h2>マッチング中</h2>
-    <li th:each="activematch:${activematcheslist}">
-
-      <a th:href="@{/spect(matchid=${activematch.match.matchid})}">
-        [[${activematch.username1}]] VS [[${activematch.username2}]]
-        [[${activematch.username1}]]の値:[[${activematch.match.usernum1}]]
-        [[${activematch.username2}]]の値:[[${activematch.match.usernum2}]]</a>
-    </li>
+  <!-- 対戦相手の解説 -->
+  <div class="opponent-explanation" id="opponentExplanation">
+    <a>　選択した相手と</a>
+    <a>　Hit & Blowを</a>
+    <a>　対戦します。</a>
   </div>
 
-  <div th:if="notactivematcheslist"><!-- 確認したい試合結果の履歴を選択する -->
-    <h2>試合結果</h2>
-    <li th:each="notactivematch:${notactivematcheslist}">
-      <a th:href="@{/history(matchid=${notactivematch.match.matchid})}">
-        <!-- ↓useridのまま表示されてしまう場合の記述方法 -->
-        [[${notactivematch.username1}]]VS[[${notactivematch.username2}]]
-        [[${notactivematch.username1}]]の値:[[${notactivematch.match.usernum1}]]
-        [[${notactivematch.username2}]]の値:[[${notactivematch.match.usernum2}]]勝敗:[[${notactivematch.match.judge}]]
-      </a>
-    </li>
+  <!-- 対戦結果 -->
+  <div class="result" id="resultSection" th:if="notactivematcheslist"><!-- 確認したい試合結果の履歴を選択する -->
+    <a class="title">　試合状況</a>
+    <div class="column">
+      <a>　試合結果</a>
+      <li th:each="notactivematch:${notactivematcheslist}">
+        <a style="color:white" th:href="@{/history(matchid=${notactivematch.match.matchid})}">
+          <!-- ↓useridのまま表示されてしまう場合の記述方法 -->
+          [[${notactivematch.username1}]]VS[[${notactivematch.username2}]]
+          [[${notactivematch.username1}]]の値:[[${notactivematch.match.usernum1}]]
+          [[${notactivematch.username2}]]の値:[[${notactivematch.match.usernum2}]]勝敗:[[${notactivematch.match.judge}]]
+        </a>
+      </li>
+      <a>　試合中</a>
+      <div th:if="${activematcheslist}" sec:authorize="hasRole('ROLE_SPECTATORS')">
+        <!-- マッチング中のリストがあれば観戦者ロール持ちに表示させる -->
+        <li th:each="activematch:${activematcheslist}">
+          <a style="color:white" th:href="@{/spect(matchid=${activematch.match.matchid})}">
+            [[${activematch.username1}]] VS [[${activematch.username2}]]
+            [[${activematch.username1}]]の値:[[${activematch.match.usernum1}]]
+            [[${activematch.username2}]]の値:[[${activematch.match.usernum2}]]</a>
+        </li>
+      </div>
+    </div>
   </div>
-  <a href="/sample">サンプルへ</a>
 
-
-  <!--<a href=" /sample">練習へ</a>
-      <div th:if="${success}">
-        <p>[[${success}]]</p>
-      </div>-->
-
-  <!-- <h3>数字を入力してください(数字は重複しないでください)</h3> --> <!--入力を促す-->
-  <!-- <form th:action="@{/play}" method="post">
-    <input type="number" name="line1" />
-    <input type="number" name="line2" />
-    <input type="number" name="line3" />
-    <input type="number" name="line4" />
-    <input type="submit" value="送信"><input type="reset" value="リセット">
-  </form> -->
-
-  <!-- <div th:switch="${Formatcheak}"> --><!--入力が正しいか-->
-  <!-- <div th:case="1"> --><!--正しければこっち-->
-  <!--<div th:if="${answers}">
-      <li th:each="answer : ${answers}" th:text="${answer}"></li>
-    </div>-->
-  <!-- <div th:if="${Hit}">
-    Hit:[[${Hit}]]
+  <!-- 対戦状況の選択 -->
+  <div class="result-describe" id="resultDescribe">
+    <a>　試合状況　を選択してください</a>
   </div>
-  <div th:if="${Blow}">
-    Blow:[[${Blow}]]
-  </div>
-  <div th:if="${goalflag}">
-    <p>おめでとうございます</p>
-    <li th:each="answer : ${answers}" th:text="${answer}"></li>
-    <a href="/">もどる</a>
-  </div>
-  </div> -->
-  <!-- <div th:case="2"> --><!--正しくないとこっち-->
-  <!-- <p>入力が不正ですもう一度入力してください</p>
-  </div>
-  </div> -->
 
-  <!-- <a href="/history">試合結果</a>
-  <a href="/match">CPU</a> -->
+  <!-- 対戦状況の概要 -->
+  <div class="result-explanation" id="resultExplanation">
+    <a>　対戦結果と</a>
+    <a>　対戦中の試合を</a>
+    <a>　観察します。</a>
+  </div>
+
+  <!-- BGMの音声 -->
+  <audio id="bgm" src="/assets/korezo-machi_2.mp3" loop></audio>
+  <script>
+    window.onload = function () {
+      const bgmAudio = document.getElementById('bgm');
+      bgmAudio.play()
+        .then(() => {
+          console.log('BGM 再生中');
+        })
+        .catch(error => {
+          console.log('再生エラー:', error);
+        });
+    }
+  </script>
+
+  <!-- 表示のon,off -->
+  <script>
+    document.getElementById('startBattle').addEventListener('click', function () {
+      // 対戦相手セクションを表示
+      document.getElementById('opponentSection').style.display = 'block';
+      document.getElementById('opponentDescribe').style.display = 'block';
+      document.getElementById('opponentExplanation').style.display = 'block';
+      // 他を非表示
+      document.getElementById('resultSection').style.display = 'none';
+      document.getElementById('resultDescribe').style.display = 'none';
+      document.getElementById('resultExplanation').style.display = 'none';
+    });
+    document.getElementById('resultBattle').addEventListener('click', function () {
+      // 対戦相手セクションを表示
+      document.getElementById('resultSection').style.display = 'block';
+      document.getElementById('resultDescribe').style.display = 'block';
+      document.getElementById('resultExplanation').style.display = 'block';
+      // 他を非表示
+      document.getElementById('opponentSection').style.display = 'none';
+      document.getElementById('opponentDescribe').style.display = 'none';
+      document.getElementById('opponentExplanation').style.display = 'none';
+    });
+  </script>
+
 </body>
 
 </html>
