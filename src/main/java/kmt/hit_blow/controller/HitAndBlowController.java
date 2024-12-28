@@ -321,14 +321,21 @@ public class HitAndBlowController {
     int user2id = this.HitAndBlow.asyncSelectUserId2ByMatchId(matchid);// user2のidを取得
     String user1name = this.HitAndBlow.asyncSelectNameByUsers(user1id);// user1の名前を取得
     String user2name = this.HitAndBlow.asyncSelectNameByUsers(user2id);// user2の名前を取得
+    String user1num = this.HitAndBlow.asyncSelectUserNum1ByMatchId(matchid);// user1の秘密の数字
+    String user2num = this.HitAndBlow.asyncSelectUserNum2ByMatchId(matchid);// user2の秘密の数字
+    ArrayList<MatchInfo> matchinfo = this.HitAndBlow.asyncSelectByMatchId(matchid);//matchinfoの情報を全て取得
     // ArrayList<MatchInfo> hogehoge; //SSE通信でリアルタイム試合状況を共有
 
     model.addAttribute("message", message);
+    model.addAttribute("user1id", user1id);
+    model.addAttribute("user2id", user2id);
     model.addAttribute("name", user1name);
-    model.addAttribute("rivalname", user2name);// Thymeleafで値をHTMLに渡す
-    model.addAttribute("message", message);// Thymeleafで値をHTMLに渡す
+    model.addAttribute("rivalname", user2name);
+    model.addAttribute("user1num", user1num);
+    model.addAttribute("user2num", user2num);
+    model.addAttribute("matchInfo", matchinfo);
 
-    return "match.html";
+    return "spectators.html";
   }
 
   @PostMapping("/item") // 対戦相手を決定する 2PCでも使用する。

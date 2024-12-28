@@ -106,9 +106,17 @@ public class AsyncHitAndBlow {
     return this.matchMapper.selectMatchIdByIsActive(user2id);
   }
 
+  public String asyncSelectUserNum1ByMatchId(int matchid) {
+    return this.matchMapper.selectUserNum1ByMatchId(matchid);
+  }
+
+  public String asyncSelectUserNum2ByMatchId(int matchid) {
+    return this.matchMapper.selectUserNum2ByMatchId(matchid);
+  }
+
   /* MatchInfoMapperを使った処理一覧 */
 
-  public ArrayList<MatchInfo> asyncSelectByMatchId(int matchid) {// isActiveがfalseの試合
+  public ArrayList<MatchInfo> asyncSelectByMatchId(int matchid) {//
     return this.matchInfoMapper.selectByMatchId(matchid);
   }
 
