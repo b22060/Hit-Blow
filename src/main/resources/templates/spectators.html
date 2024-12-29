@@ -99,36 +99,6 @@
 
   <div class="messageandformarea">
     <h1>Hit&Blow</h1>
-
-    <div class="messagearea" sec:authorize="hasRole('ROLE_USER')"> <!-- 入力フォームエリア -->
-
-      <h3>数字を入力してください(数字は重複しないでください)</h3> <!--入力を促す-->
-      <form th:action="@{/play}" method="post">
-        <input type="number" min="0" max="9" name="line1" />
-        <input type="number" min="0" max="9" name="line2" />
-        <input type="number" min="0" max="9" name="line3" />
-        <input type="number" min="0" max="9" name="line4" />
-        <input type="submit" value="送信"><input type="reset" value="リセット">
-      </form>
-    </div>
-  </div>
-
-  <div th:if="${getanswer}">
-    相手の[[${index}]]番目の数字は[[${getanswer}]]
-  </div>
-
-  <div th:if="${itemflag}">
-    <h2>アイテム:ラーの鏡</h2>
-    <form th:action="@{/item}" method="post">
-      <input type="number" min="1" max="4" name="useitem" />
-      <input type="submit" value="使用"><input type="reset" value="リセット">
-    </form>
-  </div>
-
-  <h2>[[${message}]]</h2>
-
-  <div th:if="${goalflag}">
-    <h2>おめでとうございます</h2>
   </div>
 
   <!--ユーザーエリア-->
@@ -137,9 +107,9 @@
       <div class="username">
         [[${name}]]
       </div>
-      <div class="usersecret">[[${mysecret}]]</div> <!--ここが????で秘密の数字部分-->
+      <div class="usersecret">[[${user1num}]]</div> <!--ここが????で秘密の数字部分-->
       <ul>
-        <li th:each="matchInfo : ${matchInfo}" th:if="${matchInfo.userid == loginid}">
+        <li th:each="matchInfo : ${matchInfo}" th:if="${matchInfo.userid == user1id}">
           <p>
             [[${name}]]の推理: [[${matchInfo.guess}]],
             Hit: [[${matchInfo.hit}]],
@@ -150,9 +120,9 @@
     </div>
     <div class="user">
       <div class="username">[[${rivalname}]]</div>
-      <div class="usersecret">[[${rivalsecret}]]</div> <!--ここが????で秘密の数字部分-->
+      <div class="usersecret">[[${user2num}]]</div> <!--ここが????で秘密の数字部分-->
       <ul>
-        <li th:each="matchInfo : ${matchInfo}" th:if="${matchInfo.userid == battleid}">
+        <li th:each="matchInfo : ${matchInfo}" th:if="${matchInfo.userid == user2id}">
           <p>
             [[${rivalname}]]の推理: [[${matchInfo.guess}]],
             Hit: [[${matchInfo.hit}]],
@@ -163,14 +133,14 @@
     </div>
   </div>
 
-  <!-- <div>
-    <li th:each="answer : ${debuganswer}" th:text="${answer}"></li>
-  </div> -->
-
-  <div th:if="${goalflag}" class="back">
-    <a href="/">もどる</a>
-  </div>
+  <a href="/">もどる</a>
 
 </body>
+
+<script>
+  setTimeout(function () {
+    location.reload();
+  }, 2000);
+</script>
 
 </html>

@@ -55,4 +55,10 @@ public interface MatchMapper {
 
   @Update("UPDATE matches SET isActive = FALSE where isActive = TRUE and matchid=#{matchid}") // FALSEにする
   boolean updateActive(Match match);
+
+  @Select("SELECT usernum1 FROM matches WHERE matchid = #{matchid}")
+  String selectUserNum1ByMatchId(int matchid);
+
+  @Select("SELECT usernum2 FROM matches WHERE matchid = #{matchid}")
+  String selectUserNum2ByMatchId(int matchid);
 }
