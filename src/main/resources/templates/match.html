@@ -234,6 +234,60 @@
       width: 400px;
     }
 
+    /* どうぐ */
+
+    .answer {
+      /* 位置指定 */
+      position: absolute;
+      top: 8%;
+      left: 42%;
+      /* 文字色 */
+      color: white;
+      font-size: 30px;
+      /* 枠の設定 */
+      border: 2px solid white;
+      padding: 10px;
+      border-radius: 13px;
+      background-color: black;
+      width: 335px;
+    }
+
+    .useitem {
+      /* 位置指定 */
+      position: absolute;
+      top: 8%;
+      left: 42%;
+      /* 文字色 */
+      color: white;
+      font-size: 30px;
+      text-align: center;
+      font-family: 'DotGothic16', sans-serif;
+      /* 枠の設定 */
+      border: 2px solid white;
+      padding: 10px;
+      border-radius: 13px;
+      background-color: black;
+      display: none;
+      width: 335px;
+    }
+
+    .itemexplanation {
+      /* 位置指定 */
+      position: absolute;
+      top: 34%;
+      left: 5%;
+      /* 文字色 */
+      color: white;
+      font-size: 30px;
+      /* 枠の設定 */
+      border: 2px solid white;
+      padding: 10px;
+      border-radius: 13px;
+      background-color: black;
+      display: none;
+      width: 335px;
+    }
+
     /* 間線 */
 
     .title {
@@ -254,93 +308,116 @@
 </head>
 
 <body style="background-color:black">
-
-  <div class="selectmode">
-    <a calss="title">　Hit&Blow</a>
-    <a class="column">・どうぐ</a>
-    <div th:if="${itemflag}">
-      <a id="item">　ラーのかがみ</a>
-    </div>
-    <div th:if="${goalflag}" class="back">
-      <a href="/">　もどる</a>
-    </div>
-  </div>
-
-  <div class="explanation">
-    <a>[[${message}]]</a>
-    <div th:if="${goalflag}">
-      <h2>おめでとうございます</h2>
-    </div>
-  </div>
-
-  <!-- どうぐ -->
-
-  <div>
-    <div th:if="${getanswer}">
-      相手の[[${index}]]番目の数字は[[${getanswer}]]
+  <div class="container">
+    <div class="selectmode">
+      <a calss="title">　Hit&Blow</a>
+      <a class="column">・どうぐ</a>
+      <div th:if="${itemflag}">
+        <a id="item">　ラーのかがみ</a>
+      </div>
+      <div th:if="${goalflag}" class="back">
+        <a href="/">　もどる</a>
+      </div>
     </div>
 
-    <div th:if="${itemflag}">
-      <form th:action="@{/item}" method="post">
-        <input type="number" min="1" max="4" name="useitem" />
-        <input type="submit" value="使用"><input type="reset" value="リセット">
+    <div class="explanation">
+      <a>[[${message}]]</a>
+      <div th:if="${goalflag}">
+        <a>おめでとうございます</a>
+      </div>
+    </div>
+
+    <!-- どうぐ -->
+
+    <div>
+      <div class="answer" th:if="${getanswer}">
+        相手の[[${index}]]番目の数字は[[${getanswer}]]
+      </div>
+
+      <div class="itemexplanation" id="Item-Explanation">
+        <a>正体を見破りたい</a>
+        <a>列を</a>
+        <a>入力してください</a>
+      </div>
+
+      <div class="useitem" id="Use-Item">
+        <form th:action="@{/item}" method="post">
+          <input type="number" min="1" max="4" name="useitem" />
+          <input type="submit" value="つかう"><input type="reset" value="もどる">
+        </form>
+      </div>
+    </div>
+
+    <!-- 入力form -->
+
+    <div class="messagearea" sec:authorize="hasRole('ROLE_USER')">
+      <a class="title">数字の入力(重複✖)</a>
+      <form class="column" th:action=" @{/play}" method="post">
+        <input type="number" min="0" max="9" name="line1" />
+        <input type="number" min="0" max="9" name="line2" />
+        <input type="number" min="0" max="9" name="line3" />
+        <input type="number" min="0" max="9" name="line4" />
+        <input type="submit" value="けってい"><input type="reset" value="もどる">
       </form>
     </div>
-  </div>
 
-  <!-- 入力form -->
+    <!--Userエリア-->
 
-  <div class="messagearea" sec:authorize="hasRole('ROLE_USER')">
-    <a class="title">数字の入力(重複✖)</a>
-    <form class="column" th:action=" @{/play}" method="post">
-      <input type="number" min="0" max="9" name="line1" />
-      <input type="number" min="0" max="9" name="line2" />
-      <input type="number" min="0" max="9" name="line3" />
-      <input type="number" min="0" max="9" name="line4" />
-      <input type="submit" value="けってい"><input type="reset" value="もどる">
-    </form>
-  </div>
-
-  <!--Userエリア-->
-
-  <!-- User1の表示 -->
-  <div>
-    <div class="user1name">
-      [[${name}]]
-    </div>
-    <div class="user1secret">[[${mysecret}]]</div> <!--ここが????で秘密の数字部分-->
-    <ul class="user1column">
-      <p class="title">[[${name}]]の推理　Hit　Blow</p>
-      <div class="column">
-        <li th:each="matchInfo : ${matchInfo}" th:if="${matchInfo.userid == loginid}">
-          <p>
-            　[[${matchInfo.guess}]]<!--推理-->
-            　　　[[${matchInfo.hit}]]<!--Hit-->
-            　　[[${matchInfo.blow}]]<!--Blow-->
-          </p>
-        </li>
+    <!-- User1の表示 -->
+    <div>
+      <div class="user1name">
+        [[${name}]]
       </div>
-    </ul>
-  </div>
-
-  <!-- User2の表示 -->
-  <div class="user">
-    <div class="user2name">
-      [[${rivalname}]]
+      <div class="user1secret">[[${mysecret}]]</div> <!--ここが????で秘密の数字部分-->
+      <ul class="user1column">
+        <p class="title">[[${name}]]の推理　Hit　Blow</p>
+        <div class="column">
+          <li th:each="matchInfo : ${matchInfo}" th:if="${matchInfo.userid == loginid}">
+            <p>
+              　[[${matchInfo.guess}]]<!--推理-->
+              　　　[[${matchInfo.hit}]]<!--Hit-->
+              　　[[${matchInfo.blow}]]<!--Blow-->
+            </p>
+          </li>
+        </div>
+      </ul>
     </div>
-    <div class="user2secret">[[${rivalsecret}]]</div> <!--ここが????で秘密の数字部分-->
-    <ul class="user2column">
-      <p class="title">[[${rivalname}]]の推理　Hit　Blow</p>
-      <div class="column">
-        <li th:each="matchInfo : ${matchInfo}" th:if="${matchInfo.userid == battleid}">
-          <p>
-            　[[${matchInfo.guess}]]<!--推理-->
-            　　[[${matchInfo.hit}]]<!--Hit-->
-            　　[[${matchInfo.blow}]]<!--Blow-->
-          </p>
-        </li>
+
+    <!-- User2の表示 -->
+    <div class="user">
+      <div class="user2name">
+        [[${rivalname}]]
       </div>
-    </ul>
+      <div class="user2secret">[[${rivalsecret}]]</div> <!--ここが????で秘密の数字部分-->
+      <ul class="user2column">
+        <p class="title">[[${rivalname}]]の推理　Hit　Blow</p>
+        <div class="column">
+          <li th:each="matchInfo : ${matchInfo}" th:if="${matchInfo.userid == battleid}">
+            <p>
+              　[[${matchInfo.guess}]]<!--推理-->
+              　　[[${matchInfo.hit}]]<!--Hit-->
+              　　[[${matchInfo.blow}]]<!--Blow-->
+            </p>
+          </li>
+        </div>
+      </ul>
+    </div>
+
+    <!-- 表示設定 -->
+    <script>
+      document.getElementById('item').addEventListener('click', function () {
+        document.getElementById('Use-Item').style.display = 'block';
+        document.getElementById('Item-Explanation').style.display = 'block';
+      });
+      document.addEventListener('DOMContentLoaded', function () {
+        const answerElement = document.querySelector('.answer');
+        if (answerElement && answerElement.style.display !== 'none') {
+          // getanswerが表示されている場合
+          document.getElementById('Use-Item').style.display = 'none';
+          document.getElementById('Item-Explanation').style.display = 'none';
+        }
+      });
+    </script>
   </div>
 
 </body>
