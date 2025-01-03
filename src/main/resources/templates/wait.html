@@ -4,6 +4,100 @@
 <head>
   <meta charset="utf-8">
   <title>待機中</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DotGothic16&display=swap');
+
+    body {
+      font-family: 'Courier New', Courier, monospace;
+      background-color: #000;
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+      font-family: 'DotGothic16', sans-serif;
+      /* ドット風フォントを指定 */
+
+    }
+
+    .container {
+      border: 4px solid #fff;
+      display: inline-block;
+      padding: 20px;
+      margin-top: 50px;
+      background-color: #111;
+    }
+
+    h1 {
+      color: #fff;
+    }
+
+    .input-box {
+      margin-top: 20px;
+    }
+
+    .input-box input {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 20px;
+      padding: 5px;
+      border: 2px solid #fff;
+      background-color: #000;
+      color: #fff;
+      text-align: center;
+      width: 40px;
+      margin: 0 5px;
+    }
+
+    .btn {
+      display: block;
+      margin: 20px auto 0;
+      padding: 10px 20px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 18px;
+      color: #fff;
+      background-color: #333;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .btn:hover {
+      background-color: #fff;
+    }
+
+    .dialogue {
+      margin-top: 20px;
+      font-size: 16px;
+      background-color: #222;
+      padding: 10px;
+      border: 2px solid #fff;
+      display: inline-block;
+    }
+
+    .num-pad {
+      margin-top: 20px;
+    }
+
+    .num-pad button {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 20px;
+      width: 40px;
+      height: 40px;
+      margin: 5px;
+      color: #fff;
+      background-color: #333;
+      border: 2px solid #fff;
+      cursor: pointer;
+    }
+
+    .num-pad button:hover {
+      background-color: #555;
+    }
+
+    table {
+      margin: auto;
+      text-align: right;
+    }
+  </style>
+
   <script>
     window.onload = function () {
       console.log("ファンクション開始");
@@ -15,7 +109,7 @@
         var match = JSON.parse(event.data);//matchの全dataを取得
         var matchid = match.matchid;
         var kekka = "<h1>" + "マッチングしました" + "</h1><br>";
-        kekka = kekka + " <a href ='/match2pc?matchid=" + matchid + " '> " + "対戦を始める" + "</a>";//matchのmatchidを取得
+        kekka = kekka + " <a  style='color:white' href ='/match2pc?matchid=" + matchid + " '> " + "対戦を始める" + "</a>";//matchのmatchidを取得
         console.log(kekka);
         var tbody = document.getElementById("kekka");//更新場所
         tbody.innerHTML = kekka;//kekkaを反映
@@ -27,19 +121,94 @@
 
 <body>
   <div id="kekka"> <!-- 入力フォームエリア -->
-    [[${rivalname}]]を待っています。
+    <h1>[[${rivalname}]]を待っています。</h1>
 
     <div th:if="${formboolean}">
-      <h3>数字を入力してください(数字は重複しないでください)</h3> <!--入力を促す-->
-      <form th:action="@{/wait(myid=${myid},rivalid=${rivalid})}" method="post">
-        <input type="number" min="0" max="9" name="line1" />
-        <input type="number" min="0" max="9" name="line2" />
-        <input type="number" min="0" max="9" name="line3" />
-        <input type="number" min="0" max="9" name="line4" />
-        <input type="submit" value="送信"><input type="reset" value="リセット">
-      </form>
+
+      <div class="container">
+        <h1>数字 を入力してください</h1>
+        <form id="codeForm" th:action="@{/wait(myid=${myid},rivalid=${rivalid})}" method="post">
+          <div class="input-box">
+            <input type="text" id="digit1" name="line1" maxlength="1" readonly>
+            <input type="text" id="digit2" name="line2" maxlength="1" readonly>
+            <input type="text" id="digit3" name="line3" maxlength="1" readonly>
+            <input type="text" id="digit4" name="line4" maxlength="1" readonly>
+          </div>
+          <div class="num-pad">
+            <button type="button" onclick="addDigit(0)">0</button>
+            <button type="button" onclick="addDigit(1)">1</button>
+            <button type="button" onclick="addDigit(2)">2</button>
+            <button type="button" onclick="addDigit(3)">3</button>
+            <button type="button" onclick="addDigit(4)">4</button>
+            <button type="button" onclick="addDigit(5)">5</button>
+            <button type="button" onclick="addDigit(6)">6</button>
+            <button type="button" onclick="addDigit(7)">7</button>
+            <button type="button" onclick="addDigit(8)">8</button>
+            <button type="button" onclick="addDigit(9)">9</button>
+          </div>
+          <table style="text-align: right">
+            <tr>
+              <td><button type="button" class="btn" onclick="startGame()">決定</button></td>
+              <td><button type="button" class="btn" onclick="deleteLastDigit()">1つ消す</button></td>
+            </tr>
+          </table>
+          <div class="dialogue" id="dialogueBox" style="display:none;">
+            <p id="dialogueText"></p>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
+
+  <script>
+    let currentInput = 1;
+
+    function addDigit(num) {
+      if (currentInput > 4) return;
+
+      // Check for duplicate numbers
+      for (let i = 1; i < currentInput; i++) {
+        if (document.getElementById(`digit${i}`).value == num) {
+          const dialogueBox = document.getElementById('dialogueBox');
+          const dialogueText = document.getElementById('dialogueText');
+          dialogueText.textContent = '同じ数字は入れられません！';
+          dialogueBox.style.display = 'block';
+          return;
+        }
+      }
+
+      const inputField = document.getElementById(`digit${currentInput}`);
+      inputField.value = num;
+      currentInput++;
+    }
+
+    function deleteLastDigit() {
+      if (currentInput === 1) return;
+
+      currentInput--;
+      const inputField = document.getElementById(`digit${currentInput}`);
+      inputField.value = '';
+    }
+
+    function startGame() {
+      const digit1 = document.getElementById('digit1').value;
+      const digit2 = document.getElementById('digit2').value;
+      const digit3 = document.getElementById('digit3').value;
+      const digit4 = document.getElementById('digit4').value;
+
+      const dialogueBox = document.getElementById('dialogueBox');
+      const dialogueText = document.getElementById('dialogueText');
+
+      if (!digit1 || !digit2 || !digit3 || !digit4) {
+        dialogueText.textContent = '数字　が全部入っていません！';
+        dialogueBox.style.display = 'block';
+      } else {
+        // Submit the form
+        document.getElementById('codeForm').submit();
+      }
+    }
+  </script>
+
 
 </body>
 
