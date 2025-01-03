@@ -5,170 +5,342 @@
   <meta charset="utf-8">
   <title>hit-blow</title>
   <style>
-    /* 基本スタイル */
+    @import url('https://fonts.googleapis.com/css2?family=DotGothic16&display=swap');
+
     body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      /*中央揃え*/
-      margin: 1;
-      padding: 1;
+      font-family: 'DotGothic16', sans-serif;
     }
 
-    /* タイトルスタイル */
-    h1 {
-      text-align: left;
-      /*左寄せと定義*/
-      font-size: 36px;
-      /*文字の大きさ定義*/
-      margin-top: 20px;
-      /*間隔を定義 正であれば遠くなり、負であれば近くなる*/
+    /* 選択mode */
+
+    .selectmode {
+      /* 位置指定 */
+      position: absolute;
+      top: 5%;
+      left: 5%;
+      /* 文字色 */
+      color: white;
+      font-size: 30px;
+      /* 枠の設定 */
+      border: 2px solid white;
+      padding: 1px;
+      display: inline-block;
+      border-radius: 13px;
+      background-color: black;
+      width: 350px;
+      height: 270px;
     }
 
-    /*システムメッセージスタイル*/
-    h2 {
-      text-align: left;
-      font-size: 20px;
-      margin-top: -10px;
+    .selectmode a {
+      display: block;
+      color: white;
+      padding: 10px 15px;
+      position: relative;
+      text-decoration: none;
     }
 
-
-    /* システムメッセージと入力エリアのスタイル */
-    .messageandformarea {
-      display: flex;
-      /* 横並びで表示する設定 */
-      justify-content: space-around;
-
-      margin-top: 40px;
+    .selectmode a:before {
+      content: "＞";
+      position: absolute;
+      left: 0;
+      opacity: 0;
     }
+
+    .selectmode a:hover:before,
+    .selectmode a:focus:before {
+      opacity: 1;
+    }
+
+    .selectmode .title {
+      padding: 10px 15px;
+      color: white;
+      /* クリックを無効化 */
+      pointer-events: none;
+      /* マウスカーソルを通常表示に */
+      cursor: default;
+    }
+
+    .selectmode .column {
+      padding: 10px 15px;
+      color: white;
+      /* クリックを無効化 */
+      pointer-events: none;
+      /* マウスカーソルを通常表示に */
+      cursor: default;
+    }
+
+    /* 説明欄 */
+
+    .explanation {
+      /* 位置指定 */
+      position: absolute;
+      top: 34%;
+      left: 5%;
+      /* 文字色 */
+      color: white;
+      font-size: 30px;
+      /* 枠の設定 */
+      border: 2px solid white;
+      padding: 10px;
+      border-radius: 13px;
+      background-color: black;
+      width: 335px;
+    }
+
+    /* 入力form */
 
     .messagearea {
+      /* 位置指定 */
+      position: absolute;
+      top: 5%;
+      left: 75%;
+      /* 文字色 */
+      color: white;
+      font-size: 30px;
       text-align: center;
+      /* 枠の設定 */
+      width: auto;
+      height: auto;
+      border: 2px solid white;
+      padding: 13px;
+      display: inline-block;
+      border-radius: 7px;
+      background-color: black;
+    }
+
+    /* 入力form部分の変更*/
+
+    input[type="number"] {
+      /* 文字 */
+      color: white;
       font-size: 20px;
-      margin-top: -10px;
-    }
-
-
-
-    /* ユーザー表示エリアのスタイル */
-    .userarea {
-      display: flex;
-      /* 横並びで表示する設定 */
-      justify-content: space-around;
-
-      margin-top: 40px;
-    }
-
-    .user {
+      font-family: 'DotGothic16', sans-serif;
       text-align: center;
-      font-size: 24px;
+      /* 枠内 */
+      border: none;
+      border-bottom: 2px solid white;
+      background: transparent;
+      width: 30px;
+      margin-right: 3px;
+      /* 下線 */
+      outline: none;
+      border-bottom: 2px solid white;
     }
 
-    .username {
-      /*ユーザ名を表示する際のフォント等の設定*/
-      font-size: 32px;
-      font-weight: bold;
+    /* 送信削除ボタン */
+
+    input[type="submit"],
+    input[type="reset"] {
+      margin: 5px 0;
+      font-size: 18px;
+      font-family: 'DotGothic16', sans-serif;
+      padding: 5px 10px;
+      border: 2px solid white;
+      background-color: black;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
     }
 
-    .usersecret {
-      /*秘密の数字を表示する際のフォント等の設定*/
+    input[type="submit"]:hover,
+    input[type="reset"]:hover {
+      background-color: white;
+      color: black;
+    }
+
+    /* Userエリア */
+
+    .user1name {
+      /* 位置指定 */
+      position: absolute;
+      top: 18%;
+      left: 25%;
+      /* 文字 */
+      font-size: 30px;
+      color: white;
+    }
+
+    .user2name {
+      /* 位置指定 */
+      position: absolute;
+      top: 18%;
+      left: 55%;
+      /* 文字 */
+      font-size: 30px;
+      color: white;
+    }
+
+    .user1secret {
+      /* 位置指定 */
+      position: absolute;
+      top: 25%;
+      left: 31%;
+      /*文字*/
       font-size: 48px;
       letter-spacing: 20px;
+      color: white;
     }
 
-    .area {
-      display: flex;
-      /* 横並びで表示する設定 */
-      justify-content: space-around;
-
-      margin-top: 40px;
+    .user2secret {
+      /* 位置指定 */
+      position: absolute;
+      top: 25%;
+      left: 61%;
+      /*文字*/
+      font-size: 48px;
+      letter-spacing: 20px;
+      color: white;
     }
 
-    .list {
+    .user1column {
+      /* 位置指定 */
+      position: absolute;
+      top: 30%;
+      left: 25%;
+      /* 文字色 */
+      color: white;
+      font-size: 30px;
       text-align: center;
-      font-size: 24px;
+      list-style-type: none;
+      /* 枠の設定 */
+      width: auto;
+      height: auto;
+      border: 2px solid white;
+      padding: 13px;
+      display: inline-block;
+      border-radius: 7px;
+      background-color: black;
+      width: 400px;
     }
 
-    .back {
-      /*上下に余白を入れる*/
-      padding: 20px 0;
+    .user2column {
+      /* 位置指定 */
+      position: absolute;
+      top: 30%;
+      left: 55%;
+      /* 文字 */
+      color: white;
+      font-size: 30px;
+      text-align: center;
+      list-style-type: none;
+      /* 枠の設定 */
+      width: auto;
+      height: auto;
+      border: 2px solid white;
+      padding: 13px;
+      display: inline-block;
+      border-radius: 7px;
+      background-color: black;
+      width: 400px;
+    }
+
+    /* 間線 */
+
+    .title {
+      display: block;
+      padding: 10px 0;
+      color: white;
+      text-decoration: none;
+    }
+
+    .column {
+      display: block;
+      padding: 10px 0;
+      color: white;
+      text-decoration: none;
+      border-top: 1.5px solid white;
     }
   </style>
 </head>
 
-<body>
+<body style="background-color:black">
 
-  <div class="messageandformarea">
-    <h1>Hit&Blow</h1>
+  <div class="selectmode">
+    <a calss="title">　Hit&Blow</a>
+    <a class="column">・どうぐ</a>
+    <div th:if="${itemflag}">
+      <a id="item">　ラーのかがみ</a>
+    </div>
+    <div th:if="${goalflag}" class="back">
+      <a href="/">　もどる</a>
+    </div>
+  </div>
 
-    <div class="messagearea" sec:authorize="hasRole('ROLE_USER')"> <!-- 入力フォームエリア -->
+  <div class="explanation">
+    <a>[[${message}]]</a>
+    <div th:if="${goalflag}">
+      <h2>おめでとうございます</h2>
+    </div>
+  </div>
 
-      <h3>数字を入力してください(数字は重複しないでください)</h3> <!--入力を促す-->
-      <form th:action="@{/play}" method="post">
-        <input type="number" min="0" max="9" name="line1" />
-        <input type="number" min="0" max="9" name="line2" />
-        <input type="number" min="0" max="9" name="line3" />
-        <input type="number" min="0" max="9" name="line4" />
-        <input type="submit" value="送信"><input type="reset" value="リセット">
+  <!-- どうぐ -->
+
+  <div>
+    <div th:if="${getanswer}">
+      相手の[[${index}]]番目の数字は[[${getanswer}]]
+    </div>
+
+    <div th:if="${itemflag}">
+      <form th:action="@{/item}" method="post">
+        <input type="number" min="1" max="4" name="useitem" />
+        <input type="submit" value="使用"><input type="reset" value="リセット">
       </form>
     </div>
   </div>
 
-  <div th:if="${getanswer}">
-    相手の[[${index}]]番目の数字は[[${getanswer}]]
-  </div>
+  <!-- 入力form -->
 
-  <div th:if="${itemflag}">
-    <h2>アイテム:ラーの鏡</h2>
-    <form th:action="@{/item}" method="post">
-      <input type="number" min="1" max="4" name="useitem" />
-      <input type="submit" value="使用"><input type="reset" value="リセット">
+  <div class="messagearea" sec:authorize="hasRole('ROLE_USER')">
+    <a class="title">数字の入力(重複✖)</a>
+    <form class="column" th:action=" @{/play}" method="post">
+      <input type="number" min="0" max="9" name="line1" />
+      <input type="number" min="0" max="9" name="line2" />
+      <input type="number" min="0" max="9" name="line3" />
+      <input type="number" min="0" max="9" name="line4" />
+      <input type="submit" value="けってい"><input type="reset" value="もどる">
     </form>
   </div>
 
-  <h2>[[${message}]]</h2>
+  <!--Userエリア-->
 
-  <div th:if="${goalflag}">
-    <h2>おめでとうございます</h2>
-  </div>
-
-  <!--ユーザーエリア-->
-  <div class="userarea">
-    <div class="user">
-      <div class="username">
-        [[${name}]]
-      </div>
-      <div class="usersecret">[[${mysecret}]]</div> <!--ここが????で秘密の数字部分-->
-      <ul>
+  <!-- User1の表示 -->
+  <div>
+    <div class="user1name">
+      [[${name}]]
+    </div>
+    <div class="user1secret">[[${mysecret}]]</div> <!--ここが????で秘密の数字部分-->
+    <ul class="user1column">
+      <p class="title">[[${name}]]の推理　Hit　Blow</p>
+      <div class="column">
         <li th:each="matchInfo : ${matchInfo}" th:if="${matchInfo.userid == loginid}">
           <p>
-            [[${name}]]の推理: [[${matchInfo.guess}]],
-            Hit: [[${matchInfo.hit}]],
-            Blow: [[${matchInfo.blow}]]
+            　[[${matchInfo.guess}]]<!--推理-->
+            　　　[[${matchInfo.hit}]]<!--Hit-->
+            　　[[${matchInfo.blow}]]<!--Blow-->
           </p>
         </li>
-      </ul>
-    </div>
-    <div class="user">
-      <div class="username">[[${rivalname}]]</div>
-      <div class="usersecret">[[${rivalsecret}]]</div> <!--ここが????で秘密の数字部分-->
-      <ul>
-        <li th:each="matchInfo : ${matchInfo}" th:if="${matchInfo.userid == battleid}">
-          <p>
-            [[${rivalname}]]の推理: [[${matchInfo.guess}]],
-            Hit: [[${matchInfo.hit}]],
-            Blow: [[${matchInfo.blow}]]
-          </p>
-        </li>
-      </ul>
-    </div>
+      </div>
+    </ul>
   </div>
 
-  <!-- <div>
-    <li th:each="answer : ${debuganswer}" th:text="${answer}"></li>
-  </div> -->
-
-  <div th:if="${goalflag}" class="back">
-    <a href="/">もどる</a>
+  <!-- User2の表示 -->
+  <div class="user">
+    <div class="user2name">
+      [[${rivalname}]]
+    </div>
+    <div class="user2secret">[[${rivalsecret}]]</div> <!--ここが????で秘密の数字部分-->
+    <ul class="user2column">
+      <p class="title">[[${rivalname}]]の推理　Hit　Blow</p>
+      <div class="column">
+        <li th:each="matchInfo : ${matchInfo}" th:if="${matchInfo.userid == battleid}">
+          <p>
+            　[[${matchInfo.guess}]]<!--推理-->
+            　　[[${matchInfo.hit}]]<!--Hit-->
+            　　[[${matchInfo.blow}]]<!--Blow-->
+          </p>
+        </li>
+      </div>
+    </ul>
   </div>
 
 </body>
