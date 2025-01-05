@@ -156,6 +156,7 @@ public class HitAndBlowController {
   public String match(@RequestParam Integer userid, ModelMap model, Principal prin) {
     String loginUser = prin.getName(); // ログイン名を取得
     String rivalname = this.HitAndBlow.asyncSelectNameByUsers(userid);// 対戦相手の名前を取得する変数
+    this.itemflag = 1;// ラーの鏡を使用可能にする
     if (userid == 3) {// CPU戦のとき
       String message = loginUser + "の秘密の数字入力を待っています。";// システムメッセージを格納する変数
       model.addAttribute("name", loginUser);
@@ -254,7 +255,7 @@ public class HitAndBlowController {
       goakflag = 1;
       this.flag = 0;
       message = loginUser + "の勝利です。";
-
+      this.itemflag = 0;// ゲーム終了時にラーの鏡を押させないようにするため
       rivalsecret = this.Rivalanswers;// 相手の？？？？を開示
       Match match = new Match(matchid, loginUser_id, battleid, this.Myanswers, this.Rivalanswers, loginUser + "の勝利!",
           false);// 勝敗を更新
@@ -272,18 +273,19 @@ public class HitAndBlowController {
       rivalHit = Hit_Blow[0];
       rivalBlow = Hit_Blow[1];
 
-      //強化学習
+      // 強化学習
       this.candidates = cheak.filterCandidates(this.candidates, guess, rivalHit, rivalBlow);
 
       String rivalguesshand = cheak.translateString(rivalguess);// ここで相手の予想を4桁の文字列にする
       MatchInfo rivalmatchInfo = new MatchInfo(matchid, battleid, rivalguesshand, rivalHit, rivalBlow, true); // 情報を格納する
       this.HitAndBlow.asyncInsertMatchInfo(rivalmatchInfo);
-//
+      //
     }
 
     if (rivalHit == 4) {// Hitが4だと正解にする
       goakflag = 1;
       this.flag = 0;
+      this.itemflag = 0;// ゲーム終了時にラーの鏡を押させないようにするため
       message = rivalname + "の勝利です。";
       Match match = new Match(matchid, loginUser_id, battleid, this.Myanswers, this.Rivalanswers, rivalname + "の勝利!",
           false);// 勝敗を更新
@@ -323,7 +325,7 @@ public class HitAndBlowController {
     String user2name = this.HitAndBlow.asyncSelectNameByUsers(user2id);// user2の名前を取得
     String user1num = this.HitAndBlow.asyncSelectUserNum1ByMatchId(matchid);// user1の秘密の数字
     String user2num = this.HitAndBlow.asyncSelectUserNum2ByMatchId(matchid);// user2の秘密の数字
-    ArrayList<MatchInfo> matchinfo = this.HitAndBlow.asyncSelectByMatchId(matchid);//matchinfoの情報を全て取得
+    ArrayList<MatchInfo> matchinfo = this.HitAndBlow.asyncSelectByMatchId(matchid);// matchinfoの情報を全て取得
     // ArrayList<MatchInfo> hogehoge; //SSE通信でリアルタイム試合状況を共有
 
     model.addAttribute("message", message);

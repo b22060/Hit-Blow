@@ -27,7 +27,7 @@ public class AuthConfiguration {
             .requestMatchers(AntPathRequestMatcher.antMatcher("/**"))
             .permitAll())
         .csrf(csrf -> csrf
-            .ignoringRequestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/*")))
+            .ignoringRequestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/*"))) // /h2-consoleのみ認証がいらない
         .headers(headers -> headers
             .frameOptions(frameOptions -> frameOptions
                 .sameOrigin()));
