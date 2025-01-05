@@ -22,8 +22,8 @@ public class AuthConfiguration {
             .logoutUrl("/logout")
             .logoutSuccessUrl("/"))
         .authorizeHttpRequests(authz -> authz
-            .requestMatchers(AntPathRequestMatcher.antMatcher("/hit-blow"))
-            .authenticated() // /jankenは認証が必要
+            .requestMatchers(AntPathRequestMatcher.antMatcher("/**"))
+            .authenticated() // すべてのパスで認証が必要
             .requestMatchers(AntPathRequestMatcher.antMatcher("/**"))
             .permitAll())
         .csrf(csrf -> csrf
