@@ -203,12 +203,16 @@ public class Play2PCController {
 
       ArrayList<MatchInfo> matchInfo = this.HitAndBlow.asyncSelectByMatchId(matchid);
 
+      cheak.setMyItemFlag(user1, user2, myname, 0);// 使用できないようにするため0に変更する
+      myitemflag = cheak.getMyItemFlag(user1, user2, myname);// ０に値を更新
+
       model.addAttribute("matchInfo", matchInfo);// Thymeleafで試合情報をHTMLに渡す
       model.addAttribute("message", message);// システムメッセージを表示するために用いる
       model.addAttribute("goalflag", goakflag);// ゲーム終了時用のフラグ
       model.addAttribute("debuganswer", cheak.translateInt(cheak.getRivalSecret(user1, user2, myname)));// デバッグ用製品版で削除すること。
 
       model.addAttribute("name", myname);// 自身の名前を表示するために用いる
+      
       model.addAttribute("mysecret", mysecret);// 自身の秘密の数字部分を表示する
       model.addAttribute("loginid", myid);// matchInfoで自身の試合情報を表示するために用いる
       model.addAttribute("itemflag", myitemflag);// アイテムを使用したか

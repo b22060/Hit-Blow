@@ -128,6 +128,11 @@
 
         var goalflag = SSEmatch.goalflag;//もどるをSSE通信で表示させる
         if (goalflag == 1) {
+          const itemElement = document.getElementById("item");//ラーの鏡を使わせないように変更する
+          if (itemElement) { // 要素が存在する場合に処理を実行
+            itemElement.style.display = "none";
+          }
+
           var ret = " <a href='/'>もどる</a>";//デバッグ時ここの処理が起こらない場合があった（再現性なし）
           var retbody = document.getElementById("return");
           retbody.innerHTML = ret;
@@ -164,7 +169,7 @@
     相手の[[${index}]]番目の数字は[[${getanswer}]]
   </div>
 
-  <div th:if="${itemflag}">
+  <div th:if="${itemflag}" id="item">
     <h2>アイテム:ラーの鏡</h2>
     <form th:action="@{/item2PC}" method="post">
       <input type="number" min="1" max="4" name="useitem" />
