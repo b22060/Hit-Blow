@@ -22,12 +22,12 @@ public class AuthConfiguration {
             .logoutUrl("/logout")
             .logoutSuccessUrl("/"))
         .authorizeHttpRequests(authz -> authz
-            .requestMatchers(AntPathRequestMatcher.antMatcher("/hit-blow"))
-            .authenticated() // /jankenは認証が必要
-            .requestMatchers(AntPathRequestMatcher.antMatcher("/**"))
-            .permitAll())
+            .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/*"))
+            .permitAll() // /h2-console/* は認証不要
+            .anyRequest()
+            .authenticated()) // それ以外は認証必須
         .csrf(csrf -> csrf
-            .ignoringRequestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/*")))
+            .ignoringRequestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/*"))) // /h2-console/* はCSRF保護対象外
         .headers(headers -> headers
             .frameOptions(frameOptions -> frameOptions
                 .sameOrigin()));
