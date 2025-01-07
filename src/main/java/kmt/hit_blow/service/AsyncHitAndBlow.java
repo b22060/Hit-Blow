@@ -138,20 +138,20 @@ public class AsyncHitAndBlow {
       while (true) {
 
         if (this.updateflag == false) {// 変化なし
-          TimeUnit.MILLISECONDS.sleep(50);
+          TimeUnit.MILLISECONDS.sleep(100);
           continue;
         }
         // updateflag がtrueのとき以下の処理が実行
-        TimeUnit.MILLISECONDS.sleep(50);
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         Match match = this.asyncSelectMatchById(this.matchid);
 
         emitter.send(match);
         logger.info("成功！！");
-        TimeUnit.MILLISECONDS.sleep(5);
+        TimeUnit.MILLISECONDS.sleep(100);
         updateflag = false;
 
-        TimeUnit.MILLISECONDS.sleep(1);
+        TimeUnit.MILLISECONDS.sleep(50);
       }
     } catch (Exception e) {
       e.printStackTrace();
@@ -169,11 +169,11 @@ public class AsyncHitAndBlow {
       while (true) {
 
         if (this.updateflag == false) {// 変化なし
-          TimeUnit.MILLISECONDS.sleep(50);
+          TimeUnit.MILLISECONDS.sleep(100);
           continue;
         }
         // updateflag がtrueのとき以下の処理が実行
-        TimeUnit.MILLISECONDS.sleep(50);
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         ArrayList<MatchInfo> matchInfo = this.asyncSelectByMatchId(matchid);
         SSEMatch info = new SSEMatch(matchInfo, this.message, this.goalflag);
