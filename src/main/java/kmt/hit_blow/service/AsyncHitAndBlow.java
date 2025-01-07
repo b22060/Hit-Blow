@@ -169,11 +169,11 @@ public class AsyncHitAndBlow {
       while (true) {
 
         if (this.updateflag == false) {// 変化なし
-          TimeUnit.MILLISECONDS.sleep(100);
+          TimeUnit.MILLISECONDS.sleep(50);
           continue;
         }
         // updateflag がtrueのとき以下の処理が実行
-        TimeUnit.MILLISECONDS.sleep(1000);
+        TimeUnit.MILLISECONDS.sleep(500);
 
         ArrayList<MatchInfo> matchInfo = this.asyncSelectByMatchId(matchid);
         SSEMatch info = new SSEMatch(matchInfo, this.message, this.goalflag);

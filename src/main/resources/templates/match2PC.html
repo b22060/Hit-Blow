@@ -11,7 +11,7 @@
       font-family: 'DotGothic16', sans-serif;
     }
 
-    .selectmode {
+    .selectmode2PC {
       position: absolute;
       top: 5%;
       left: 5%;
@@ -29,7 +29,7 @@
       height: 25%;
     }
 
-    .selectmode a {
+    .selectmode2PC a {
       display: block;
       color: white;
       padding: 0.5vw 1.5vw;
@@ -37,27 +37,27 @@
       text-decoration: none;
     }
 
-    .selectmode a:before {
+    .selectmode2PC a:before {
       content: "＞";
       position: absolute;
       left: 0;
       opacity: 0;
     }
 
-    .selectmode a:hover:before,
-    .selectmode a:focus:before {
+    .selectmode2PC a:hover:before,
+    .selectmode2PC a:focus:before {
       opacity: 1;
     }
 
-    .selectmode .title,
-    .selectmode .column {
+    .selectmode2PC .title,
+    .selectmode2PC .column {
       padding: 1vw 2vw;
       color: white;
       pointer-events: none;
       cursor: default;
     }
 
-    .explanation {
+    .explanation2PC {
       position: absolute;
       top: 31.5%;
       left: 5%;
@@ -71,13 +71,13 @@
       height: auto;
     }
 
-    .explanation a {
+    .explanation2PC a {
       display: block;
     }
 
     /* 入力 */
 
-    .messagearea {
+    .messagearea2PC {
       position: absolute;
       top: 46%;
       left: 5%;
@@ -154,24 +154,24 @@
 
     /* ユーザー */
 
-    .user1name,
-    .user2name {
+    .user1name2PC,
+    .user2name2PC {
       position: absolute;
       top: 5%;
       font-size: 1.5vw;
       color: white;
     }
 
-    .user1name {
+    .user1name2PC {
       left: 32%;
     }
 
-    .user2name {
+    .user2name2PC {
       left: 66%;
     }
 
-    .user1secret,
-    .user2secret {
+    .user1secret2PC,
+    .user2secret2PC {
       position: absolute;
       top: 10%;
       font-size: 4vw;
@@ -179,16 +179,16 @@
       color: white;
     }
 
-    .user1secret {
+    .user1secret2PC {
       left: 37%;
     }
 
-    .user2secret {
+    .user2secret2PC {
       left: 70%;
     }
 
-    .user1column,
-    .user2column {
+    .user1column2PC,
+    .user2column2PC {
       position: absolute;
       top: 20%;
       color: white;
@@ -205,17 +205,17 @@
       width: 30%;
     }
 
-    .user1column {
+    .user1column2PC {
       left: 26%;
     }
 
-    .user2column {
+    .user2column2PC {
       left: 60%;
     }
 
-    .answer,
-    .useitem,
-    .itemexplanation {
+    .answer2PC,
+    .useitem2PC,
+    .itemexplanation2PC {
       position: absolute;
       color: white;
       text-align: center;
@@ -225,7 +225,7 @@
       background-color: black;
     }
 
-    .answer {
+    .answer2PC {
       top: 43%;
       left: 5%;
       font-size: 1.5vw;
@@ -233,14 +233,14 @@
       height: auto;
     }
 
-    .useitem {
+    .useitem2PC {
       top: 46%;
       left: 5%;
       font-size: 1.5vw;
       display: none;
     }
 
-    .itemexplanation {
+    .itemexplanation2PC {
       top: 31.5%;
       left: 5%;
       font-size: 1.5vw;
@@ -289,14 +289,14 @@
 
     /* 間線 */
 
-    .title {
+    .title2PC {
       display: block;
       padding: 0.5vw 0;
       color: white;
       text-decoration: none;
     }
 
-    .column {
+    .column2PC {
       display: block;
       padding: 0.5vw 0;
       color: white;
@@ -318,36 +318,36 @@
         var messagebody = document.getElementById("message");
         messagebody.innerHTML = message;
 
-        var rivalarea = "";//SSE通信で更新されたデータを表示する
-        var matchInfo = SSEmatch.matchInfo;
-        var loginid = document.getElementById('loginIdDiv').dataset.loginid;//html内のidがloginIdDivのdata-loginidに格納されているデータを取り出している
-        for (let i = 0; i < matchInfo.length; i++) {
-          var userid = matchInfo[i].userid;
-          if (loginid != userid) {//ログインidとユーザidが異なる場合画面右にデータを表示する
-            rivalarea = rivalarea + "<li>";
-            var guess = matchInfo[i].guess;
-            var hit = matchInfo[i].hit;
-            var blow = matchInfo[i].blow;
-            rivalarea = rivalarea + "<p>";
-            rivalarea = rivalarea + "[[${rivalname}]]の推理:" + guess + ",Hit:" + hit + ",Blow:" + blow;//ポイント：変数名直書きで動く
-            rivalarea = rivalarea + "</p>";
-            rivalarea = rivalarea + "</li>";
-          }
-        }
-        var rivalareabody = document.getElementById("rivalarea");
-        rivalareabody.innerHTML = rivalarea;
+        // var rivalarea = "";//SSE通信で更新されたデータを表示する
+        // var matchInfo = SSEmatch.matchInfo;
+        // var loginid = document.getElementById('loginIdDiv').dataset.loginid;//html内のidがloginIdDivのdata-loginidに格納されているデータを取り出している
+        // for (let i = 0; i < matchInfo.length; i++) {
+        //   var userid = matchInfo[i].userid;
+        //   if (loginid != userid) {//ログインidとユーザidが異なる場合画面右にデータを表示する
+        //     rivalarea = rivalarea + "<li>";
+        //     var guess = matchInfo[i].guess;
+        //     var hit = matchInfo[i].hit;
+        //     var blow = matchInfo[i].blow;
+        //     rivalarea = rivalarea + "<p>";
+        //     rivalarea = rivalarea + "[[${rivalname}]]の推理:" + guess + ",Hit:" + hit + ",Blow:" + blow;//ポイント：変数名直書きで動く
+        //     rivalarea = rivalarea + "</p>";
+        //     rivalarea = rivalarea + "</li>";
+        //   }
+        // }
+        // var rivalareabody = document.getElementById("rivalarea");
+        // rivalareabody.innerHTML = rivalarea;
 
-        var goalflag = SSEmatch.goalflag;//もどるをSSE通信で表示させる
-        if (goalflag == 1) {
-          const itemElement = document.getElementById("item");//ラーの鏡を使わせないように変更する
-          if (itemElement) { // 要素が存在する場合に処理を実行
-            itemElement.style.display = "none";
-          }
+        // var goalflag = SSEmatch.goalflag;//もどるをSSE通信で表示させる
+        // if (goalflag == 1) {
+        //   const itemElement = document.getElementById("item");//ラーの鏡を使わせないように変更する
+        //   if (itemElement) { // 要素が存在する場合に処理を実行
+        //     itemElement.style.display = "none";
+        //   }
 
-          var ret = " <a href='/hit-blow>もどる</a>";//デバッグ時ここの処理が起こらない場合があった（再現性なし）
-          var retbody = document.getElementById("return");
-          retbody.innerHTML = ret;
-        }
+        //   var ret = " <a href='/hit-blow>もどる</a>";//デバッグ時ここの処理が起こらない場合があった（再現性なし）
+        //   var retbody = document.getElementById("return");
+        //   retbody.innerHTML = ret;
+        // }
 
       }
     }
@@ -360,11 +360,11 @@
 <body style="background-color: black;">
 
   <!-- 選択欄 -->
-  <div class="container">
-    <div class="selectmode">
-      <a calss="title">　Hit & Blow</a>
-      <a class="column">・どうぐ</a>
-      <div id="return" class="back">
+  <div class="container2PC">
+    <div class="selectmode2PC">
+      <a class="title2PC">　Hit & Blow</a>
+      <a class="column2PC">・どうぐ</a>
+      <div id="return" class="back2PC">
       </div>
       <div th:if="${itemflag}">
         <a id="item">　ラーのかがみ</a>
@@ -372,17 +372,16 @@
 
     </div>
 
-    <div class="explanation" id="Explanation">
+    <div class="explanation2PC" id="Explanation">
       <a id="message">[[${message}]]</a>
       <div th:if="${goalflag}">
         <a>もう一度遊ぶなら秘密の</a>
         <a>数字を入力してください</a>
       </div>
     </div>
-
     <!-- 入力欄 -->
 
-    <div class="messagearea" sec:authorize="hasRole('ROLE_USER')">
+    <div class="messagearea2PC" sec:authorize="hasRole('ROLE_USER')">
       <form th:action=" @{/play2pc}" method="post">
         <!-- 数字ボタン -->
         <div>
@@ -451,17 +450,17 @@
 
     <!-- どうぐ -->
 
-    <div class="answer" th:if="${getanswer}">
+    <div class="answer2PC" th:if="${getanswer}">
       相手の[[${index}]]番目の数字は[[${getanswer}]]
     </div>
 
-    <div class="itemexplanation" id="Item-Explanation">
+    <div class="itemexplanation2PC" id="Item-Explanation">
       <a>正体を見破りたい</a>
       <a>列を</a>
       <a>入力してください</a>
     </div>
 
-    <div class="useitem" id="item">
+    <div class="useitem2PC" id="Use-Item">
       <form th:action="@{/item2PC}" method="post">
         <!-- 数字選択ボタン -->
         <div id="number-buttons-item">
@@ -503,7 +502,7 @@
 
   <!-- メッセージ -->
 
-  <div class="explanation" id="Explanation">
+  <div class="explanation2PC" id="Explanation">
     <a>[[${message}]]</a>
     <div th:if="${goalflag}">
       <a>おめでとうございます</a>
@@ -514,13 +513,13 @@
 
   <!-- User1の表示 -->
   <div>
-    <div class="user1name">
+    <div class="user1name2PC">
       [[${name}]]
     </div>
-    <div class="user1secret">[[${mysecret}]]</div> <!--ここが????で秘密の数字部分-->
-    <ul class="user1column">
-      <p class="title">[[${name}]]の推理　Hit　Blow</p>
-      <div class="column">
+    <div class="user1secret2PC">[[${mysecret}]]</div> <!--ここが????で秘密の数字部分-->
+    <ul class="user1column2PC">
+      <p class="title2PC">[[${name}]]の推理　Hit　Blow</p>
+      <div class="column2PC">
         <li th:each="matchInfo : ${matchInfo}" th:if="${matchInfo.userid == loginid}">
           <p>
             　[[${matchInfo.guess}]]<!--推理-->
@@ -533,14 +532,14 @@
   </div>
 
   <!-- User2の表示 -->
-  <div class="user">
-    <div class="user2name">
+  <div class="user2PC">
+    <div class="user2name2PC">
       [[${rivalname}]]
     </div>
-    <div class="user2secret">[[${rivalsecret}]]</div> <!--ここが????で秘密の数字部分-->
-    <ul class="user2column" id="rivalarea">
-      <p class="title">[[${rivalname}]]の推理　Hit　Blow</p>
-      <div class="column">
+    <div class="user2secret2PC">[[${rivalsecret}]]</div> <!--ここが????で秘密の数字部分-->
+    <ul class="user2column2PC" id="rivalarea">
+      <p class="title2PC">[[${rivalname}]]の推理　Hit　Blow</p>
+      <div class="column2PC">
         <li th:each="matchInfo : ${matchInfo}" th:if="${matchInfo.userid == battleid}">
           <p>
             　[[${matchInfo.guess}]]<!--推理-->
@@ -588,7 +587,7 @@
     document.getElementById('item').addEventListener('click', function () {
       document.getElementById('Use-Item').style.display = 'block';
       document.getElementById('Item-Explanation').style.display = 'block';
-      document.getElementById('Explanation').style.display = 'none';
+      document.getElementById('Explanation2PC').style.display = 'none';
     });
     document.addEventListener('DOMContentLoaded', function () {
       const answerElement = document.querySelector('.answer');
@@ -596,7 +595,7 @@
         // getanswerが表示されている場合
         document.getElementById('Use-Item').style.display = 'none';
         document.getElementById('Item-Explanation').style.display = 'none';
-        document.getElementById('Explanation').style.display = 'block';
+        document.getElementById('Explanation2PC').style.display = 'block';
       }
     });
   </script>
