@@ -5,92 +5,303 @@
   <meta charset="utf-8">
   <title>hit-blow</title>
   <style>
-    /* 基本スタイル */
+    @import url('https://fonts.googleapis.com/css2?family=DotGothic16&display=swap');
+
     body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      /*中央揃え*/
-      margin: 1;
-      padding: 1;
+      font-family: 'DotGothic16', sans-serif;
     }
 
-    /* タイトルスタイル */
-    h1 {
-      text-align: left;
-      /*左寄せと定義*/
-      font-size: 36px;
-      /*文字の大きさ定義*/
-      margin-top: 20px;
-      /*間隔を定義 正であれば遠くなり、負であれば近くなる*/
+    .selectmode {
+      position: absolute;
+      top: 5%;
+      left: 5%;
+      color: white;
+      font-size: 1.5vw;
+      /* 相対値でフォントサイズを調整 */
+      border: 0.2vw solid white;
+      /* 相対値に変換 */
+      padding: 0vw;
+      display: inline-block;
+      border-radius: 1vw;
+      background-color: black;
+      width: 19%;
+      /* 相対値に調整 */
+      height: 25%;
     }
 
-    /*システムメッセージスタイル*/
-    h2 {
-      text-align: left;
-      font-size: 20px;
-      margin-top: -10px;
+    .selectmode a {
+      display: block;
+      color: white;
+      padding: 0.5vw 1.5vw;
+      position: relative;
+      text-decoration: none;
     }
 
-
-    /* システムメッセージと入力エリアのスタイル */
-    .messageandformarea {
-      display: flex;
-      /* 横並びで表示する設定 */
-      justify-content: space-around;
-
-      margin-top: 40px;
+    .selectmode a:before {
+      content: "＞";
+      position: absolute;
+      left: 0;
+      opacity: 0;
     }
+
+    .selectmode a:hover:before,
+    .selectmode a:focus:before {
+      opacity: 1;
+    }
+
+    .selectmode .title,
+    .selectmode .column {
+      padding: 1vw 2vw;
+      color: white;
+      pointer-events: none;
+      cursor: default;
+    }
+
+    .explanation {
+      position: absolute;
+      top: 31.5%;
+      left: 5%;
+      color: white;
+      font-size: 1.5vw;
+      border: 0.2vw solid white;
+      padding: 0.5vw;
+      border-radius: 1vw;
+      background-color: black;
+      width: 18%;
+      height: auto;
+    }
+
+    .explanation a {
+      display: block;
+    }
+
+    /* 入力 */
 
     .messagearea {
+      position: absolute;
+      top: 46%;
+      left: 5%;
+      border: 4px solid #fff;
+      display: inline-block;
+      padding: 10px;
+      margin-top: 50px;
+      background-color: #111;
+      width: 17.5%;
+      font-size: 1.3vw;
+      color: white;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* 数字選択ボタンエリア */
+    #number-buttons {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.5vw;
+      margin: 1vw 0;
+    }
+
+    /* 数字ボタン */
+    #number-buttons button {
+      font-family: 'DotGothic16', sans-serif;
+      font-size: 1.5vw;
+      color: white;
+      background-color: black;
+      border: 0.2vw solid white;
+      border-radius: 0.5vw;
+      padding: 0.5vw;
+      cursor: pointer;
       text-align: center;
-      font-size: 20px;
-      margin-top: -10px;
+      transition: background-color 0.3s, color 0.3s;
     }
 
-
-
-    /* ユーザー表示エリアのスタイル */
-    .userarea {
-      display: flex;
-      /* 横並びで表示する設定 */
-      justify-content: space-around;
-
-      margin-top: 40px;
+    #number-buttons button:hover {
+      background-color: white;
+      color: black;
     }
 
-    .user {
+    #selected-numbers {
+      margin-top: 1vw;
+      font-size: 1.5vw;
+      color: white;
       text-align: center;
-      font-size: 24px;
+      padding: 0.5vw;
+      border: 0.2vw solid white;
+      border-radius: 0.5vw;
+      background-color: black;
     }
 
-    .username {
-      /*ユーザ名を表示する際のフォント等の設定*/
-      font-size: 32px;
-      font-weight: bold;
+    input[type="submit"],
+    input[type="reset"] {
+      margin: 0.5vw 0;
+      font-size: 1vw;
+      font-family: 'DotGothic16', sans-serif;
+      padding: 0.5vw 0.5vw;
+      border: 0.2vw solid white;
+      background-color: black;
+      color: white;
+      border-radius: 0.5vw;
+      cursor: pointer;
     }
 
-    .usersecret {
-      /*秘密の数字を表示する際のフォント等の設定*/
-      font-size: 48px;
-      letter-spacing: 20px;
+    input[type="submit"]:hover,
+    input[type="reset"]:hover {
+      background-color: white;
+      color: black;
     }
 
-    .area {
-      display: flex;
-      /* 横並びで表示する設定 */
-      justify-content: space-around;
+    /* ユーザー */
 
-      margin-top: 40px;
+    .user1name,
+    .user2name {
+      position: absolute;
+      top: 5%;
+      font-size: 1.5vw;
+      color: white;
     }
 
-    .list {
+    .user1name {
+      left: 32%;
+    }
+
+    .user2name {
+      left: 66%;
+    }
+
+    .user1secret,
+    .user2secret {
+      position: absolute;
+      top: 10%;
+      font-size: 4vw;
+      letter-spacing: 0.5vw;
+      color: white;
+    }
+
+    .user1secret {
+      left: 37%;
+    }
+
+    .user2secret {
+      left: 70%;
+    }
+
+    .user1column,
+    .user2column {
+      position: absolute;
+      top: 20%;
+      color: white;
+      font-size: 1.5vw;
       text-align: center;
-      font-size: 24px;
+      list-style-type: none;
+      /* 相対値に調整 */
+      height: auto;
+      border: 0.2vw solid white;
+      padding: 0vw;
+      display: inline-block;
+      border-radius: 0.5vw;
+      background-color: black;
+      width: 30%;
     }
 
-    .back {
-      /*上下に余白を入れる*/
-      padding: 20px 0;
+    .user1column {
+      left: 26%;
+    }
+
+    .user2column {
+      left: 60%;
+    }
+
+    .answer,
+    .useitem,
+    .itemexplanation {
+      position: absolute;
+      color: white;
+      text-align: center;
+      border: 0.2vw solid white;
+      padding: 0.5vw;
+      border-radius: 0.8vw;
+      background-color: black;
+    }
+
+    .answer {
+      top: 43%;
+      left: 5%;
+      font-size: 1.5vw;
+      width: 18%;
+      height: auto;
+    }
+
+    .useitem {
+      top: 46%;
+      left: 5%;
+      font-size: 1.5vw;
+      display: none;
+    }
+
+    .itemexplanation {
+      top: 31.5%;
+      left: 5%;
+      font-size: 1.5vw;
+      width: 18%;
+      height: auto;
+      display: none;
+    }
+
+    /* 数字選択ボタンエリア */
+    #number-buttons-item {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.5vw;
+      margin: 1vw 0;
+    }
+
+    /* 数字ボタン */
+    #number-buttons-item button {
+      font-family: 'DotGothic16', sans-serif;
+      font-size: 1.5vw;
+      color: white;
+      background-color: black;
+      border: 0.2vw solid white;
+      border-radius: 0.5vw;
+      padding: 0.5vw;
+      cursor: pointer;
+      text-align: center;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    #number-buttons-item button:hover {
+      background-color: white;
+      color: black;
+    }
+
+    #selected-numbers-item {
+      margin-top: 1vw;
+      font-size: 1.5vw;
+      color: white;
+      text-align: center;
+      padding: 0.5vw;
+      border: 0.2vw solid white;
+      border-radius: 0.5vw;
+      background-color: black;
+    }
+
+    /* 間線 */
+
+    .title {
+      display: block;
+      padding: 0.5vw 0;
+      color: white;
+      text-decoration: none;
+    }
+
+    .column {
+      display: block;
+      padding: 0.5vw 0;
+      color: white;
+      text-decoration: none;
+      border-top: 0.2vw solid white;
     }
   </style>
   <script>
@@ -146,86 +357,249 @@
 
 </head>
 
-<body>
+<body style="background-color: black;">
 
-  <div class="messageandformarea">
-    <h1>Hit&Blow</h1>
+  <!-- 選択欄 -->
+  <div class="container">
+    <div class="selectmode">
+      <a calss="title">　Hit & Blow</a>
+      <a class="column">・どうぐ</a>
+      <div th:if="${itemflag}">
+        <a id="item">　ラーのかがみ</a>
+      </div>
+      <div th:if="${goalflag}" class="back">
+        <a id="return" class="back"></a>
+      </div>
+    </div>
 
-    <div class="messagearea" sec:authorize="hasRole('ROLE_USER')"> <!-- 入力フォームエリア -->
+    <div class="explanation" id="Explanation">
+      <a>[[${message}]]</a>
+      <div th:if="${goalflag}">
+        <a>もう一度遊ぶなら秘密の</a>
+        <a>数字を入力してください</a>
+      </div>
+    </div>
 
-      <h3>数字を入力してください(数字は重複しないでください)</h3> <!--入力を促す-->
-      <form th:action="@{/play2pc}" method="post">
-        <input type="number" min="0" max="9" name="line1" />
-        <input type="number" min="0" max="9" name="line2" />
-        <input type="number" min="0" max="9" name="line3" />
-        <input type="number" min="0" max="9" name="line4" />
-        <input type="submit" value="送信"><input type="reset" value="リセット">
+    <!-- 入力欄 -->
+
+    <div class="messagearea" sec:authorize="hasRole('ROLE_USER')">
+      <form th:action=" @{/play2pc}" method="post">
+        <!-- 数字ボタン -->
+        <div>
+          <p>数字を選択してください：</p>
+          <div id="number-buttons">
+            <button type="button" value="0">0</button>
+            <button type="button" value="1">1</button>
+            <button type="button" value="2">2</button>
+            <button type="button" value="3">3</button>
+            <button type="button" value="4">4</button>
+            <button type="button" value="5">5</button>
+            <button type="button" value="6">6</button>
+            <button type="button" value="7">7</button>
+            <button type="button" value="8">8</button>
+            <button type="button" value="9">9</button>
+          </div>
+        </div>
+        <!-- 非表示の入力フィールド -->
+        <input type="hidden" name="line1" id="line1" />
+        <input type="hidden" name="line2" id="line2" />
+        <input type="hidden" name="line3" id="line3" />
+        <input type="hidden" name="line4" id="line4" />
+        <!-- 選択された数字の表示 -->
+        <div id="selected-numbers">番号：</div>
+        <!-- 決定ボタン -->
+        <input type="submit" value="けってい" id="submitButton" disabled>
+        <input type="reset" value="もどる" onclick="resetSelection()" />
       </form>
     </div>
+    <script>
+      const selectedNumbers = [];
+      const selectedNumbersDisplay = document.getElementById('selected-numbers');
+      const lineInputs = [
+        document.getElementById('line1'),
+        document.getElementById('line2'),
+        document.getElementById('line3'),
+        document.getElementById('line4'),
+      ];
+      const submitButton = document.getElementById('submitButton');
 
+      document.getElementById('number-buttons').addEventListener('click', (e) => {
+        if (e.target.tagName === 'BUTTON' && selectedNumbers.length < 4) {
+          const number = e.target.value;
+          if (!selectedNumbers.includes(number)) {
+            selectedNumbers.push(number);
+            lineInputs[selectedNumbers.length - 1].value = number;
+            updateSelectedNumbersDisplay();
+            updateSubmitButtonState();
+          }
+        }
+      });
+      function updateSelectedNumbersDisplay() {
+        selectedNumbersDisplay.textContent = `番号：${selectedNumbers.join(' ')}`;
+      }
+      function updateSubmitButtonState() {
+        // 4文字選択されているときに「決定」ボタンを有効化
+        submitButton.disabled = selectedNumbers.length < 4;
+      }
+      function resetSelection() {
+        selectedNumbers.length = 0;
+        lineInputs.forEach(input => input.value = '');
+        updateSelectedNumbersDisplay();
+        updateSubmitButtonState();
+      }
+    </script>
+
+    <!-- どうぐ -->
+
+    <div class="answer" th:if="${getanswer}">
+      相手の[[${index}]]番目の数字は[[${getanswer}]]
+    </div>
+
+    <div class="itemexplanation" id="Item-Explanation">
+      <a>正体を見破りたい</a>
+      <a>列を</a>
+      <a>入力してください</a>
+    </div>
+
+    <div class="useitem" id="item">
+      <form th:action="@{/item2PC}" method="post">
+        <!-- 数字選択ボタン -->
+        <div id="number-buttons-item">
+          <button type="button" data-value="1">1</button>
+          <button type="button" data-value="2">2</button>
+          <button type="button" data-value="3">3</button>
+          <button type="button" data-value="4">4</button>
+        </div>
+        <!-- 選択された数字を送信するhidden input -->
+        <input type="hidden" name="useitem" id="selected-value" />
+        <div id="selected-numbers-item">何個目？</div>
+        <input type="submit" value="つかう">
+        <input type="reset" value="もどる">
+      </form>
+    </div>
   </div>
 
-  <div th:if="${getanswer}">
-    相手の[[${index}]]番目の数字は[[${getanswer}]]
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const buttons = document.querySelectorAll('#number-buttons-item button');
+      const selectedValueInput = document.getElementById('selected-value');
+      const selectedNumbersDisplay = document.getElementById('selected-numbers-item');
+
+      buttons.forEach(button => {
+        button.addEventListener('click', () => {
+          const value = button.getAttribute('data-value');
+          selectedValueInput.value = value;
+          selectedNumbersDisplay.textContent = `${value}個目`;
+        });
+      });
+
+      // リセットボタンの挙動
+      document.querySelector('input[type="reset"]').addEventListener('click', () => {
+        selectedValueInput.value = '';
+        selectedNumbersDisplay.textContent = '選択した列: なし';
+      });
+    });
+  </script>
+
+  <!-- メッセージ -->
+
+  <div class="explanation" id="Explanation">
+    <a>[[${message}]]</a>
+    <div th:if="${goalflag}">
+      <a>おめでとうございます</a>
+    </div>
   </div>
 
-  <div th:if="${itemflag}" id="item">
-    <h2>アイテム:ラーの鏡</h2>
-    <form th:action="@{/item2PC}" method="post">
-      <input type="number" min="1" max="4" name="useitem" />
-      <input type="submit" value="使用"><input type="reset" value="リセット">
-    </form>
-  </div>
+  <!--Userエリア-->
 
-  <h2 id="message">[[${message}]]</h2>
-  <div th:if="${goalflag}">
-    <h2>おめでとうございます</h2>
-  </div>
-
-  <!--ユーザーエリア-->
-  <div class="userarea">
-    <div class="user">
-      <div class="username">
-        [[${name}]]
-      </div>
-      <div class="usersecret">[[${mysecret}]]</div> <!--ここが????で秘密の数字部分-->
-      <ul id="myarea">
+  <!-- User1の表示 -->
+  <div>
+    <div class="user1name">
+      [[${name}]]
+    </div>
+    <div class="user1secret">[[${mysecret}]]</div> <!--ここが????で秘密の数字部分-->
+    <ul class="user1column">
+      <p class="title">[[${name}]]の推理　Hit　Blow</p>
+      <div class="column">
         <li th:each="matchInfo : ${matchInfo}" th:if="${matchInfo.userid == loginid}">
           <p>
-            [[${name}]]の推理: [[${matchInfo.guess}]],
-            Hit: [[${matchInfo.hit}]],
-            Blow: [[${matchInfo.blow}]]
+            　[[${matchInfo.guess}]]<!--推理-->
+            　　　[[${matchInfo.hit}]]<!--Hit-->
+            　　[[${matchInfo.blow}]]<!--Blow-->
           </p>
         </li>
-      </ul>
+      </div>
+    </ul>
+  </div>
+
+  <!-- User2の表示 -->
+  <div class="user">
+    <div class="user2name">
+      [[${rivalname}]]
     </div>
-    <div class="user">
-      <div class="username">[[${rivalname}]]</div>
-      <div class="usersecret">[[${rivalsecret}]]</div> <!--ここが????で秘密の数字部分-->
-      <ul id="rivalarea">
+    <div class="user2secret">[[${rivalsecret}]]</div> <!--ここが????で秘密の数字部分-->
+    <ul class="user2column">
+      <p class="title">[[${rivalname}]]の推理　Hit　Blow</p>
+      <div class="column">
         <li th:each="matchInfo : ${matchInfo}" th:if="${matchInfo.userid == battleid}">
           <p>
-            [[${rivalname}]]の推理: [[${matchInfo.guess}]],
-            Hit: [[${matchInfo.hit}]],
-            Blow: [[${matchInfo.blow}]]
+            　[[${matchInfo.guess}]]<!--推理-->
+            　　[[${matchInfo.hit}]]<!--Hit-->
+            　　[[${matchInfo.blow}]]<!--Blow-->
           </p>
         </li>
-      </ul>
-    </div>
+      </div>
+    </ul>
   </div>
 
-  <div>
-    <li th:each="answer : ${debuganswer}" th:text="${answer}"></li>
-  </div>
+  <!-- 表示設定 -->
 
-  <div id="return" class="back">
-  </div>
-  <!-- ↑もどるが表示される -->
+  <script>
 
-  <div th:if="${goalflag}" class="back">
-    <a href="/">もどる</a>
-  </div>
-  <!-- ↑もどるが2つ表示される可能性がある -->
+    document.addEventListener('DOMContentLoaded', function () {
+      const useItemElement = document.getElementById('Use-Item');
+      const messageAreaElement = document.querySelector('.messagearea');
+
+      // Use-Item の表示状態に応じて messagearea を切り替える
+      function toggleMessageArea() {
+        if (useItemElement.style.display === 'block') {
+          messageAreaElement.classList.add('hidden');
+        } else {
+          messageAreaElement.classList.remove('hidden');
+        }
+      }
+
+      // 初期状態を確認
+      toggleMessageArea();
+
+      // Use-Item のクリックイベントで切り替え
+      document.getElementById('item').addEventListener('click', function () {
+        useItemElement.style.display = 'block';
+        toggleMessageArea();
+      });
+
+      // Reset ボタンで戻る際の動作
+      document.querySelector('input[type="reset"]').addEventListener('click', function () {
+        useItemElement.style.display = 'none';
+        toggleMessageArea();
+      });
+    });
+
+    document.getElementById('item').addEventListener('click', function () {
+      document.getElementById('Use-Item').style.display = 'block';
+      document.getElementById('Item-Explanation').style.display = 'block';
+      document.getElementById('Explanation').style.display = 'none';
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+      const answerElement = document.querySelector('.answer');
+      if (answerElement && answerElement.style.display !== 'none') {
+        // getanswerが表示されている場合
+        document.getElementById('Use-Item').style.display = 'none';
+        document.getElementById('Item-Explanation').style.display = 'none';
+        document.getElementById('Explanation').style.display = 'block';
+      }
+    });
+  </script>
 
   <div id="loginIdDiv" th:attr="data-loginid=${loginid}"></div>
   <!-- ログインIdをJavaScriptに渡すためだけに使う -->
