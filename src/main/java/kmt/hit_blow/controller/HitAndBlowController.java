@@ -159,6 +159,7 @@ public class HitAndBlowController {
     }
 
     if (this.flag == 0) { // 初回はここに入る
+      this.itemflag = 1;// ラーの鏡を使用可能にする
       this.Myanswers = cheak.translateString(in);// ここで自分の答えを4桁の文字列にする
       this.playeranswer = in;// 自分の答えを格納する
       mysecret = this.Myanswers;// 自分の秘密の数字が確定したため更新
