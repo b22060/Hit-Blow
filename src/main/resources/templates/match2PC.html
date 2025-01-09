@@ -460,7 +460,7 @@
       <a>入力してください</a>
     </div>
 
-    <div class="useitem2PC" id="Use-Item">
+    <div class="useitem2PC" id="Use-Item2PC">
       <form th:action="@{/item2PC}" method="post">
         <!-- 数字選択ボタン -->
         <div id="number-buttons-item">
@@ -470,7 +470,7 @@
           <button type="button" data-value="4">4</button>
         </div>
         <!-- 選択された数字を送信するhidden input -->
-        <input type="hidden" name="useitem" id="selected-value" />
+        <input type="hidden" name="useitem" id="selected-value2PC" />
         <div id="selected-numbers-item">何個目？</div>
         <input type="submit" value="つかう">
         <input type="reset" value="もどる">
@@ -481,7 +481,7 @@
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const buttons = document.querySelectorAll('#number-buttons-item button');
-      const selectedValueInput = document.getElementById('selected-value');
+      const selectedValueInput = document.getElementById('selected-value2PC');
       const selectedNumbersDisplay = document.getElementById('selected-numbers-item');
 
       buttons.forEach(button => {
@@ -556,8 +556,8 @@
   <script>
 
     document.addEventListener('DOMContentLoaded', function () {
-      const useItemElement = document.getElementById('Use-Item');
-      const messageAreaElement = document.querySelector('.messagearea');
+      const useItemElement = document.getElementById('Use-Item2PC');
+      const messageAreaElement = document.querySelector('.messagearea2PC');
 
       // Use-Item の表示状態に応じて messagearea を切り替える
       function toggleMessageArea() {
@@ -585,15 +585,15 @@
     });
 
     document.getElementById('item').addEventListener('click', function () {
-      document.getElementById('Use-Item').style.display = 'block';
+      document.getElementById('Use-Item2PC').style.display = 'block';
       document.getElementById('Item-Explanation').style.display = 'block';
       document.getElementById('Explanation2PC').style.display = 'none';
     });
     document.addEventListener('DOMContentLoaded', function () {
-      const answerElement = document.querySelector('.answer');
+      const answerElement = document.querySelector('.answer2PC');
       if (answerElement && answerElement.style.display !== 'none') {
         // getanswerが表示されている場合
-        document.getElementById('Use-Item').style.display = 'none';
+        document.getElementById('Use-Item2PC').style.display = 'none';
         document.getElementById('Item-Explanation').style.display = 'none';
         document.getElementById('Explanation2PC').style.display = 'block';
       }
