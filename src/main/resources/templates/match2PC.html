@@ -369,7 +369,9 @@
       <div th:if="${itemflag}">
         <a id="item">　ラーのかがみ</a>
       </div>
-
+      <div th:if="${goalflag}" class="back">
+        <a href="/hit-blow">　もどる</a>
+      </div>
     </div>
 
     <div class="explanation2PC" id="Explanation">
@@ -379,6 +381,69 @@
         <a>数字を入力してください</a>
       </div>
     </div>
+
+    <!-- メッセージ -->
+
+    <div class="explanation2PC" id="Explanation">
+      <a>[[${message}]]</a>
+      <div th:if="${goalflag}">
+        <a>おめでとうございます</a>
+      </div>
+    </div>
+
+    <!-- どうぐ -->
+    <div>
+      <div class="answer2PC" th:if="${getanswer}">
+        相手の[[${index}]]番目の数字は[[${getanswer}]]
+      </div>
+
+      <div class="itemexplanation2PC" id="Item-Explanation">
+        <a>正体を見破りたい</a>
+        <a>列を</a>
+        <a>入力してください</a>
+      </div>
+
+      <div class="useitem2PC" id="Use-Item2PC">
+        <form th:action="@{/item2PC}" method="post">
+          <!-- 数字選択ボタン -->
+          <div id="number-buttons-item">
+            <button type="button" data-value="1">1</button>
+            <button type="button" data-value="2">2</button>
+            <button type="button" data-value="3">3</button>
+            <button type="button" data-value="4">4</button>
+          </div>
+          <!-- 選択された数字を送信するhidden input -->
+          <input type="hidden" name="useitem" id="selected-value2PC" />
+          <div id="selected-numbers-item">何個目？</div>
+          <input type="submit" value="つかう">
+          <input type="reset" value="もどる">
+        </form>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const buttons = document.querySelectorAll('#number-buttons-item button');
+        const selectedValueInput = document.getElementById('selected-value2PC');
+        const selectedNumbersDisplay = document.getElementById('selected-numbers-item');
+
+        buttons.forEach(button => {
+          button.addEventListener('click', () => {
+            const value = button.getAttribute('data-value');
+            selectedValueInput.value = value;
+            selectedNumbersDisplay.textContent = `${value}個目`;
+          });
+        });
+
+        // リセットボタンの挙動
+        document.querySelector('input[type="reset"]').addEventListener('click', () => {
+          selectedValueInput.value = '';
+          selectedNumbersDisplay.textContent = '選択した列: なし';
+        });
+      });
+    </script>
+
+
     <!-- 入力欄 -->
 
     <div class="messagearea2PC" sec:authorize="hasRole('ROLE_USER')">
@@ -411,6 +476,7 @@
         <input type="reset" value="もどる" onclick="resetSelection()" />
       </form>
     </div>
+
     <script>
       const selectedNumbers = [];
       const selectedNumbersDisplay = document.getElementById('selected-numbers');
@@ -448,157 +514,101 @@
       }
     </script>
 
-    <!-- どうぐ -->
 
-    <div class="answer2PC" th:if="${getanswer}">
-      相手の[[${index}]]番目の数字は[[${getanswer}]]
-    </div>
 
-    <div class="itemexplanation2PC" id="Item-Explanation">
-      <a>正体を見破りたい</a>
-      <a>列を</a>
-      <a>入力してください</a>
-    </div>
 
-    <div class="useitem2PC" id="Use-Item2PC">
-      <form th:action="@{/item2PC}" method="post">
-        <!-- 数字選択ボタン -->
-        <div id="number-buttons-item">
-          <button type="button" data-value="1">1</button>
-          <button type="button" data-value="2">2</button>
-          <button type="button" data-value="3">3</button>
-          <button type="button" data-value="4">4</button>
+    <!--Userエリア-->
+
+    <!-- User1の表示 -->
+    <div>
+      <div class="user1name2PC">
+        [[${name}]]
+      </div>
+      <div class="user1secret2PC">[[${mysecret}]]</div> <!--ここが????で秘密の数字部分-->
+      <ul class="user1column2PC">
+        <p class="title2PC">[[${name}]]の推理　Hit　Blow</p>
+        <div class="column2PC">
+          <li th:each="matchInfo : ${matchInfo}" th:if="${matchInfo.userid == loginid}">
+            <p>
+              　[[${matchInfo.guess}]]<!--推理-->
+              　　　[[${matchInfo.hit}]]<!--Hit-->
+              　　[[${matchInfo.blow}]]<!--Blow-->
+            </p>
+          </li>
         </div>
-        <!-- 選択された数字を送信するhidden input -->
-        <input type="hidden" name="useitem" id="selected-value2PC" />
-        <div id="selected-numbers-item">何個目？</div>
-        <input type="submit" value="つかう">
-        <input type="reset" value="もどる">
-      </form>
+      </ul>
     </div>
-  </div>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const buttons = document.querySelectorAll('#number-buttons-item button');
-      const selectedValueInput = document.getElementById('selected-value2PC');
-      const selectedNumbersDisplay = document.getElementById('selected-numbers-item');
+    <!-- User2の表示 -->
+    <div class="user2PC">
+      <div class="user2name2PC">
+        [[${rivalname}]]
+      </div>
+      <div class="user2secret2PC">[[${rivalsecret}]]</div> <!--ここが????で秘密の数字部分-->
+      <ul class="user2column2PC" id="rivalarea">
+        <p class="title2PC">[[${rivalname}]]の推理　Hit　Blow</p>
+        <div class="column2PC">
+          <li th:each="matchInfo : ${matchInfo}" th:if="${matchInfo.userid == battleid}">
+            <p>
+              　[[${matchInfo.guess}]]<!--推理-->
+              　　[[${matchInfo.hit}]]<!--Hit-->
+              　　[[${matchInfo.blow}]]<!--Blow-->
+            </p>
+          </li>
+        </div>
+      </ul>
+    </div>
 
-      buttons.forEach(button => {
-        button.addEventListener('click', () => {
-          const value = button.getAttribute('data-value');
-          selectedValueInput.value = value;
-          selectedNumbersDisplay.textContent = `${value}個目`;
+    <!-- 表示設定 -->
+
+    <script>
+
+      document.addEventListener('DOMContentLoaded', function () {
+        const useItemElement = document.getElementById('Use-Item2PC');
+        const messageAreaElement = document.querySelector('.messagearea2PC');
+
+        // Use-Item の表示状態に応じて messagearea を切り替える
+        function toggleMessageArea() {
+          if (useItemElement.style.display === 'block') {
+            messageAreaElement.classList.add('hidden');
+          } else {
+            messageAreaElement.classList.remove('hidden');
+          }
+        }
+
+        // 初期状態を確認
+        toggleMessageArea();
+
+        // Use-Item のクリックイベントで切り替え
+        document.getElementById('item').addEventListener('click', function () {
+          useItemElement.style.display = 'block';
+          toggleMessageArea();
+        });
+
+
+        // Reset ボタンで戻る際の動作
+        document.querySelector('input[type="reset"]').addEventListener('click', function () {
+          useItemElement.style.display = 'none';
+          toggleMessageArea();
         });
       });
 
-      // リセットボタンの挙動
-      document.querySelector('input[type="reset"]').addEventListener('click', () => {
-        selectedValueInput.value = '';
-        selectedNumbersDisplay.textContent = '選択した列: なし';
-      });
-    });
-  </script>
-
-  <!-- メッセージ -->
-
-  <div class="explanation2PC" id="Explanation">
-    <a>[[${message}]]</a>
-    <div th:if="${goalflag}">
-      <a>おめでとうございます</a>
-    </div>
-  </div>
-
-  <!--Userエリア-->
-
-  <!-- User1の表示 -->
-  <div>
-    <div class="user1name2PC">
-      [[${name}]]
-    </div>
-    <div class="user1secret2PC">[[${mysecret}]]</div> <!--ここが????で秘密の数字部分-->
-    <ul class="user1column2PC">
-      <p class="title2PC">[[${name}]]の推理　Hit　Blow</p>
-      <div class="column2PC">
-        <li th:each="matchInfo : ${matchInfo}" th:if="${matchInfo.userid == loginid}">
-          <p>
-            　[[${matchInfo.guess}]]<!--推理-->
-            　　　[[${matchInfo.hit}]]<!--Hit-->
-            　　[[${matchInfo.blow}]]<!--Blow-->
-          </p>
-        </li>
-      </div>
-    </ul>
-  </div>
-
-  <!-- User2の表示 -->
-  <div class="user2PC">
-    <div class="user2name2PC">
-      [[${rivalname}]]
-    </div>
-    <div class="user2secret2PC">[[${rivalsecret}]]</div> <!--ここが????で秘密の数字部分-->
-    <ul class="user2column2PC" id="rivalarea">
-      <p class="title2PC">[[${rivalname}]]の推理　Hit　Blow</p>
-      <div class="column2PC">
-        <li th:each="matchInfo : ${matchInfo}" th:if="${matchInfo.userid == battleid}">
-          <p>
-            　[[${matchInfo.guess}]]<!--推理-->
-            　　[[${matchInfo.hit}]]<!--Hit-->
-            　　[[${matchInfo.blow}]]<!--Blow-->
-          </p>
-        </li>
-      </div>
-    </ul>
-  </div>
-
-  <!-- 表示設定 -->
-
-  <script>
-
-    document.addEventListener('DOMContentLoaded', function () {
-      const useItemElement = document.getElementById('Use-Item2PC');
-      const messageAreaElement = document.querySelector('.messagearea2PC');
-
-      // Use-Item の表示状態に応じて messagearea を切り替える
-      function toggleMessageArea() {
-        if (useItemElement.style.display === 'block') {
-          messageAreaElement.classList.add('hidden');
-        } else {
-          messageAreaElement.classList.remove('hidden');
-        }
-      }
-
-      // 初期状態を確認
-      toggleMessageArea();
-
-      // Use-Item のクリックイベントで切り替え
       document.getElementById('item').addEventListener('click', function () {
-        useItemElement.style.display = 'block';
-        toggleMessageArea();
+        document.getElementById('Use-Item2PC').style.display = 'block';
+        document.getElementById('Item-Explanation').style.display = 'block';
+        document.getElementById('Explanation2PC').style.display = 'none';
       });
-
-      // Reset ボタンで戻る際の動作
-      document.querySelector('input[type="reset"]').addEventListener('click', function () {
-        useItemElement.style.display = 'none';
-        toggleMessageArea();
+      document.addEventListener('DOMContentLoaded', function () {
+        const answerElement = document.querySelector('.answer2PC');
+        if (answerElement && answerElement.style.display !== 'none') {
+          // getanswerが表示されている場合
+          document.getElementById('Use-Item2PC').style.display = 'none';
+          document.getElementById('Item-Explanation').style.display = 'none';
+          document.getElementById('Explanation2PC').style.display = 'block';
+        }
       });
-    });
-
-    document.getElementById('item').addEventListener('click', function () {
-      document.getElementById('Use-Item2PC').style.display = 'block';
-      document.getElementById('Item-Explanation').style.display = 'block';
-      document.getElementById('Explanation2PC').style.display = 'none';
-    });
-    document.addEventListener('DOMContentLoaded', function () {
-      const answerElement = document.querySelector('.answer2PC');
-      if (answerElement && answerElement.style.display !== 'none') {
-        // getanswerが表示されている場合
-        document.getElementById('Use-Item2PC').style.display = 'none';
-        document.getElementById('Item-Explanation').style.display = 'none';
-        document.getElementById('Explanation2PC').style.display = 'block';
-      }
-    });
-  </script>
+    </script>
+  </div>
 
   <div id="loginIdDiv" th:attr="data-loginid=${loginid}"></div>
   <!-- ログインIdをJavaScriptに渡すためだけに使う -->
