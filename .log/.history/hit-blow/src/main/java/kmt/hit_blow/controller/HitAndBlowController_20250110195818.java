@@ -38,8 +38,7 @@ public class HitAndBlowController {
   @GetMapping("/hit-blow") // hit-blow.htmlに遷移する
   public String hit_blow(ModelMap model, Principal prin) {
     // 表示に必要なデータをMapperで格納する
-    String loginUser = prin.getName();// ログイン名を取得
-    ArrayList<User> users = this.HitAndBlow.asyncSelectExceptByloginUsers(loginUser);
+    ArrayList<User> users = this.HitAndBlow.asyncSelectAllByUsers();
     ArrayList<Match> notactivematches = this.HitAndBlow.asyncSelectAllNotActiveByMatches();// 非アクティブの試合を渡す
     ArrayList<MatchUser> notactivematcheslist = new ArrayList<MatchUser>();// アクティブな試合結果を渡す
     for (int i = 0; i < notactivematches.size(); i++) { // Userid1と2に対応する名前を格納する
@@ -47,7 +46,6 @@ public class HitAndBlowController {
       String username2 = this.HitAndBlow.asyncSelectNameByUsers(notactivematches.get(i).getUserid2());
       notactivematcheslist.add(new MatchUser(notactivematches.get(i), username1, username2));
     }
-
 
     ArrayList<Match> activematches = this.HitAndBlow.asyncSelectAllActiveByMatches();// アクティブな試合を取得（観戦者ロール用）
 
@@ -58,6 +56,7 @@ public class HitAndBlowController {
       activematcheslist.add(new MatchUser(activematches.get(i), username1, username2));
     }
     // 次の行にユーザロール用のマッチング待ちのMapper処理を書く
+    String loginUser = prin.getName(); // ログイン名を取得
 
     if (loginUser != "Spectator") {// 観戦者でない場合
       int myid = this.HitAndBlow.asyncSelectIdByName(loginUser);
