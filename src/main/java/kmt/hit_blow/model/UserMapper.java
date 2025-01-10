@@ -10,6 +10,9 @@ public interface UserMapper {
   @Select("SELECT * from users")
   ArrayList<User> selectAllByUsers();
 
+  @Select("SELECT * from users except SELECT * from users where name = #{name}")
+  ArrayList<User> selectExceptByloginUsers(String loginUser);
+
   @Select("SELECT name from users where userid =#{userid}")
   String selectNameByUsers(int userid);
 

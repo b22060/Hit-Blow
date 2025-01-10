@@ -41,6 +41,10 @@ public class AsyncHitAndBlow {
     return this.userMapper.selectAllByUsers();
   }
 
+  public ArrayList<User> asyncSelectExceptByloginUsers(String loginUser) {// ログインuser以外すべて
+    return this.userMapper.selectExceptByloginUsers(loginUser);
+  }
+
   public String asyncSelectNameByUsers(int userid) {// userIdでnameを取得
     return this.userMapper.selectNameByUsers(userid);
   }
