@@ -305,7 +305,7 @@
     }
   </style>
   <script>
-    window.onload = function () {
+    document.addEventListener("DOMContentLoaded", function () {
       console.log("2PC戦開始");
       var sse = new EventSource('/playSSE');
       sse.onmessage = function (event) {
@@ -318,43 +318,43 @@
         var messagebody = document.getElementById("message");
         messagebody.innerHTML = message;
 
-        // var rivalarea = "";//SSE通信で更新されたデータを表示する
-        // var matchInfo = SSEmatch.matchInfo;
-        // var loginid = document.getElementById('loginIdDiv').dataset.loginid;//html内のidがloginIdDivのdata-loginidに格納されているデータを取り出している
-        // for (let i = 0; i < matchInfo.length; i++) {
-        //   var userid = matchInfo[i].userid;
-        //   if (loginid != userid) {//ログインidとユーザidが異なる場合画面右にデータを表示する
-        //     rivalarea = rivalarea + "<li>";
-        //     var guess = matchInfo[i].guess;
-        //     var hit = matchInfo[i].hit;
-        //     var blow = matchInfo[i].blow;
-        //     rivalarea = rivalarea + "<p>";
-        //     rivalarea = rivalarea + "[[${rivalname}]]の推理:" + guess + ",Hit:" + hit + ",Blow:" + blow;//ポイント：変数名直書きで動く
-        //     rivalarea = rivalarea + "</p>";
-        //     rivalarea = rivalarea + "</li>";
-        //   }
-        // }
-        // var rivalareabody = document.getElementById("rivalarea");
-        // rivalareabody.innerHTML = rivalarea;
+        var rivalarea = "";//SSE通信で更新されたデータを表示する
+        var matchInfo = SSEmatch.matchInfo;
+        var loginid = document.getElementById('loginIdDiv').dataset.loginid;//html内のidがloginIdDivのdata-loginidに格納されているデータを取り出している
+        for (let i = 0; i < matchInfo.length; i++) {
+          var userid = matchInfo[i].userid;
+          if (loginid != userid) {//ログインidとユーザidが異なる場合画面右にデータを表示する
+            rivalarea = rivalarea + "<li>";
+            var guess = matchInfo[i].guess;
+            var hit = matchInfo[i].hit;
+            var blow = matchInfo[i].blow;
+            rivalarea = rivalarea + "<p>";
+            rivalarea = rivalarea + " 　" + guess + " 　　　" + hit + " 　　" + blow;
+            rivalarea = rivalarea + "</p>";
+            rivalarea = rivalarea + "</li>";
+          }
+        }
+        var rivalareabody = document.getElementById("rivalarea");
+        rivalareabody.innerHTML = rivalarea;
 
-        // var goalflag = SSEmatch.goalflag;//もどるをSSE通信で表示させる
-        // if (goalflag == 1) {
-        //   const itemElement = document.getElementById("item");//ラーの鏡を使わせないように変更する
-        //   if (itemElement) { // 要素が存在する場合に処理を実行
-        //     itemElement.style.display = "none";
-        //   }
+        var goalflag = SSEmatch.goalflag;//もどるをSSE通信で表示させる
+        if (goalflag == 1) {
+          const itemElement = document.getElementById("item");//ラーの鏡を使わせないように変更する
+          if (itemElement) { // 要素が存在する場合に処理を実行
+            itemElement.style.display = "none";
+          }
+          console.log("デバッグ用")
+          var ret = "<a href='/hit-blow'>　もどる</a>";
+          var retbody = document.getElementById("return");
+          if (retbody) { // 要素が存在する場合に処理を実行
 
-        //   var ret = " <a href='/hit-blow>もどる</a>";//デバッグ時ここの処理が起こらない場合があった（再現性なし）
-        //   var retbody = document.getElementById("return");
-        //   retbody.innerHTML = ret;
-        // }
+            retbody.innerHTML = ret;
+          }
+        }
 
       }
-    }
+    });
   </script>
-
-
-
 </head>
 
 <body style="background-color: black;">
@@ -364,28 +364,17 @@
     <div class="selectmode2PC">
       <a class="title2PC">　Hit & Blow</a>
       <a class="column2PC">・どうぐ</a>
-      <div id="return" class="back2PC">
-      </div>
       <div th:if="${itemflag}">
         <a id="item">　ラーのかがみ</a>
       </div>
-      <div th:if="${goalflag}" class="back">
-        <a href="/hit-blow">　もどる</a>
+      <div class="back" id="return">
       </div>
     </div>
 
-    <div class="explanation2PC" id="Explanation">
-      <a id="message">[[${message}]]</a>
-      <div th:if="${goalflag}">
-        <a>もう一度遊ぶなら秘密の</a>
-        <a>数字を入力してください</a>
-      </div>
-    </div>
 
     <!-- メッセージ -->
-
     <div class="explanation2PC" id="Explanation">
-      <a>[[${message}]]</a>
+      <a id="message">[[${message}]]</a>
       <div th:if="${goalflag}">
         <a>おめでとうございます</a>
       </div>
@@ -397,7 +386,7 @@
         相手の[[${index}]]番目の数字は[[${getanswer}]]
       </div>
 
-      <div class="itemexplanation2PC" id="Item-Explanation">
+      <div class="itemexplanation2PC" id="Item-Explanation2PC">
         <a>正体を見破りたい</a>
         <a>列を</a>
         <a>入力してください</a>
@@ -545,13 +534,13 @@
         [[${rivalname}]]
       </div>
       <div class="user2secret2PC">[[${rivalsecret}]]</div> <!--ここが????で秘密の数字部分-->
-      <ul class="user2column2PC" id="rivalarea">
+      <ul class="user2column2PC">
         <p class="title2PC">[[${rivalname}]]の推理　Hit　Blow</p>
-        <div class="column2PC">
+        <div class="column2PC" id="rivalarea">
           <li th:each="matchInfo : ${matchInfo}" th:if="${matchInfo.userid == battleid}">
             <p>
               　[[${matchInfo.guess}]]<!--推理-->
-              　　[[${matchInfo.hit}]]<!--Hit-->
+              　　　[[${matchInfo.hit}]]<!--Hit-->
               　　[[${matchInfo.blow}]]<!--Blow-->
             </p>
           </li>
@@ -587,27 +576,23 @@
 
 
         // Reset ボタンで戻る際の動作
-        document.querySelector('input[type="reset"]').addEventListener('click', function () {
-          useItemElement.style.display = 'none';
-          toggleMessageArea();
+        document.querySelector('input[type=" reset"]').addEventListener('click', function () {
+          useItemElement.style.display = 'none'; toggleMessageArea();
         });
       });
-
       document.getElementById('item').addEventListener('click', function () {
         document.getElementById('Use-Item2PC').style.display = 'block';
-        document.getElementById('Item-Explanation').style.display = 'block';
-        document.getElementById('Explanation2PC').style.display = 'none';
+        document.getElementById('Item-Explanation2PC').style.display = 'block';
+        document.getElementById('Explanation').style.display = 'none';
       });
       document.addEventListener('DOMContentLoaded', function () {
-        const answerElement = document.querySelector('.answer2PC');
-        if (answerElement && answerElement.style.display !== 'none') {
-          // getanswerが表示されている場合
-          document.getElementById('Use-Item2PC').style.display = 'none';
-          document.getElementById('Item-Explanation').style.display = 'none';
-          document.getElementById('Explanation2PC').style.display = 'block';
+        const
+          answerElement = document.querySelector('.answer2PC'); if (answerElement && answerElement.style.display
+            !== 'none') { // getanswerが表示されている場合 document.getElementById('Use-Item2PC').style.display='none' ;
+          document.getElementById('Item-Explanation2PC').style.display = 'none';
+          document.getElementById('Explanation').style.display = 'block';
         }
-      });
-    </script>
+      }); </script>
   </div>
 
   <div id="loginIdDiv" th:attr="data-loginid=${loginid}"></div>
