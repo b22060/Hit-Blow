@@ -586,13 +586,13 @@
         document.getElementById('Explanation').style.display = 'none';
       });
       document.addEventListener('DOMContentLoaded', function () {
-        const
-          answerElement = document.querySelector('.answer2PC'); if (answerElement && answerElement.style.display
-            !== 'none') { // getanswerが表示されている場合 document.getElementById('Use-Item2PC').style.display='none' ;
+        const answerElement = document.querySelector('.answer2PC');
+        if (answerElement && answerElement.style.display !== 'none') { // getanswerが表示されている場合 document.getElementById('Use-Item2PC').style.display='none' ;
           document.getElementById('Item-Explanation2PC').style.display = 'none';
           document.getElementById('Explanation').style.display = 'block';
         }
-      }); </script>
+      });
+    </script>
   </div>
 
   <div id="loginIdDiv" th:attr="data-loginid=${loginid}"></div>
