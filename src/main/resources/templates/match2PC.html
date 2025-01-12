@@ -420,6 +420,8 @@
         const buttons = document.querySelectorAll('#number-buttons-item button');
         const selectedValueInput = document.getElementById('selected-value2PC');
         const selectedNumbersDisplay = document.getElementById('selected-numbers-item');
+        const itemExplanation = document.getElementById('Item-Explanation2PC');
+        const explanationDiv = document.getElementById('Explanation');
 
         buttons.forEach(button => {
           button.addEventListener('click', () => {
@@ -433,6 +435,8 @@
         document.querySelector('input[type="reset"]').addEventListener('click', () => {
           selectedValueInput.value = '';
           selectedNumbersDisplay.textContent = '選択した列: なし';
+          itemExplanation.style.display = 'none'; // itemexplanationを非表示
+          explanationDiv.style.display = 'block';
         });
       });
     </script>
@@ -555,6 +559,7 @@
 
     <!-- 表示設定 -->
     <script>
+
       document.addEventListener('DOMContentLoaded', function () {
         const useItemElement = document.getElementById('Use-Item2PC');
         const messageAreaElement = document.querySelector('.messagearea2PC');
@@ -578,8 +583,9 @@
         });
 
         // Reset ボタンで戻る際の動作
-        document.querySelector('input[type=" reset"]').addEventListener('click', function () {
-          useItemElement.style.display = 'none'; toggleMessageArea();
+        document.querySelector('input[type="reset"]').addEventListener('click', function () {
+          useItemElement.style.display = 'none';
+          toggleMessageArea();
         });
       });
       document.getElementById('item').addEventListener('click', function () {
@@ -589,7 +595,9 @@
       });
       document.addEventListener('DOMContentLoaded', function () {
         const answerElement = document.querySelector('.answer2PC');
-        if (answerElement && answerElement.style.display !== 'none') { // getanswerが表示されている場合 document.getElementById('Use-Item2PC').style.display='none' ;
+        if (answerElement && answerElement.style.display !== 'none') {
+          // getanswerが表示されている場合
+          document.getElementById('Use-Item2PC').style.display = 'none';
           document.getElementById('Item-Explanation2PC').style.display = 'none';
           document.getElementById('Explanation').style.display = 'block';
         }
