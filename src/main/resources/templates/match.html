@@ -361,6 +361,8 @@
         const buttons = document.querySelectorAll('#number-buttons-item button');
         const selectedValueInput = document.getElementById('selected-value');
         const selectedNumbersDisplay = document.getElementById('selected-numbers-item');
+        const itemExplanation = document.getElementById('Item-Explanation');
+        const explanationDiv = document.getElementById('Explanation');
 
         buttons.forEach(button => {
           button.addEventListener('click', () => {
@@ -374,6 +376,8 @@
         document.querySelector('input[type="reset"]').addEventListener('click', () => {
           selectedValueInput.value = '';
           selectedNumbersDisplay.textContent = '選択した列: なし';
+          itemExplanation.style.display = 'none'; // itemexplanationを非表示
+          explanationDiv.style.display = 'block';
         });
       });
     </script>
