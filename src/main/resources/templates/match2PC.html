@@ -343,6 +343,11 @@
           if (itemElement) { // 要素が存在する場合に処理を実行
             itemElement.style.display = "none";
           }
+          // 入力欄を非表示にする
+          const messageAreaElement = document.querySelector(".messagearea2PC");
+          if (messageAreaElement) {
+            messageAreaElement.style.display = "none"; // 入力欄を非表示
+          }
           console.log("デバッグ用")
           var ret = "<a href='/hit-blow'>　もどる</a>";
           var retbody = document.getElementById("return");
@@ -435,7 +440,7 @@
 
     <!-- 入力欄 -->
 
-    <div class="messagearea2PC" sec:authorize="hasRole('ROLE_USER')">
+    <div class="messagearea2PC" sec:authorize="hasRole('ROLE_USER')" th:if="!${goalflag}">
       <form th:action=" @{/play2pc}" method="post">
         <!-- 数字ボタン -->
         <div>
@@ -549,9 +554,7 @@
     </div>
 
     <!-- 表示設定 -->
-
     <script>
-
       document.addEventListener('DOMContentLoaded', function () {
         const useItemElement = document.getElementById('Use-Item2PC');
         const messageAreaElement = document.querySelector('.messagearea2PC');
@@ -573,7 +576,6 @@
           useItemElement.style.display = 'block';
           toggleMessageArea();
         });
-
 
         // Reset ボタンで戻る際の動作
         document.querySelector('input[type=" reset"]').addEventListener('click', function () {
