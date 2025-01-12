@@ -64,3 +64,15 @@ $ bash ./gradlew bootrun
 1.サーバー接続
 2.hit-blowリポジトリに移動する
 3.Webアプリケーションの実行
+
+〇80番ポートを利用したWebアプリケーションの実行
+80番にすることでポートの指定をなくすことができる。
+javaで1024番ポート以下のポートが利用できるようにする。
+
+$ sudo setcap CAP_NET_BIND_SERVICE+ep /usr/lib/jvm/java-21-amazon-corretto/bin/java
+→以下で確認を行う
+$ sudo getcap /usr/lib/jvm/java-21-amazon-corretto/bin/java
+/usr/lib/jvm/java-21-amazon-corretto/bin/java cap_net_bind_service=ep
+
+springboot_sampleの[springboot_samples][src][main][resources]フォルダにあるapplication.propertiesを80番ポートに設定する。
+→server.port=80
